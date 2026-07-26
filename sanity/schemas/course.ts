@@ -1,0 +1,38 @@
+export const courseSchema = {
+  name: 'course',
+  title: 'Course Catalog',
+  type: 'document',
+  fields: [
+    { name: 'title', title: 'Course Title', type: 'string', validation: (Rule: any) => Rule.required() },
+    { name: 'slug', title: 'Slug', type: 'slug', options: { source: 'title', maxLength: 96 } },
+    {
+      name: 'category',
+      title: 'Category',
+      type: 'string',
+      options: {
+        list: [
+          'Software Development',
+          'Data Science',
+          'Design & UI/UX',
+          'Cloud & DevOps',
+          'Cybersecurity',
+          'Basic Computer',
+          'Database & DBMS',
+          'Financial Accounting',
+          'Full Stack',
+          'Networking',
+        ],
+      },
+    },
+    { name: 'subtitle', title: 'Subtitle / Short Summary', type: 'text', rows: 2 },
+    { name: 'duration', title: 'Duration (e.g. 6 Months)', type: 'string' },
+    { name: 'fee', title: 'Course Fee (INR)', type: 'string', description: 'e.g. 8,000 or 15000' },
+    { name: 'instructor', title: 'Instructor Name', type: 'string' },
+    { name: 'rating', title: 'Rating Stars (e.g. 5.0 or 4.8)', type: 'number', initialValue: 5.0 },
+    { name: 'reviewsCount', title: 'Reviews Count Text (e.g. 120+ reviews)', type: 'string', initialValue: '120+ reviews' },
+    { name: 'thumbnail', title: 'Course Thumbnail Image', type: 'image', options: { hotspot: true } },
+    { name: 'syllabus', title: 'Syllabus Highlights', type: 'array', of: [{ type: 'string' }] },
+    { name: 'description', title: 'Detailed Overview', type: 'text' },
+    { name: 'isFeatured', title: 'Feature on Home Page', type: 'boolean', initialValue: false },
+  ],
+};

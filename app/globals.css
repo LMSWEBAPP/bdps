@@ -1,0 +1,79 @@
+@import './visitor.css';
+
+:root {
+  /* Default: Light Theme (Soft Pastel style) */
+  --bg: #F4F7FB;
+  --s1: #FFFFFF;
+  --s2: #E9EFF6;
+  --s3: #DDE7F2;
+  --border: rgba(91, 140, 248, 0.12);
+  
+  --accent: #4F83F6;        /* Soft Pastel Blue */
+  --accent-tint: rgba(79, 131, 246, 0.1);
+  --green: #34B69E;         /* Soft Pastel Green */
+  --purple: #8B5CF6;        /* Soft Pastel Violet */
+  --amber: #EC9A29;         /* Soft Pastel Amber */
+  --red: #F43F5E;           /* Soft Pastel Red/Pink */
+  
+  --text: #1E293B;
+  --muted: #475569;
+  --dim: #64748B;
+
+  /* BDPS Brand Colors (Global tags for visitor page styling) */
+  --brand-blue: #BD601C;          /* Academic Warmth Orange */
+  --brand-orange: #BD601C;        /* Rich Warm Orange */
+  --brand-orange-hover: #994700;  /* Rich Orange Hover */
+  --brand-blue-dark: #7A3700;     /* Deep Warm Terracotta */
+  --brand-bg: #F9F8F6;            /* Warm Off-white Background */
+}
+
+/* Scoped Visitor Theme - Applied to visitor pages only */
+.visitor-theme {
+  --bg: #F9F8F6;
+  --s1: #FFFFFF;
+  --s2: #F5EFEB;
+  --s3: #EAE0D5;
+  --border: rgba(189, 96, 28, 0.12);
+  
+  --accent: #BD601C;
+  --accent-tint: rgba(189, 96, 28, 0.1);
+  --purple: #994700;
+  
+  --text: #1C1917;
+  --muted: #4B433F;
+  --dim: #786C65;
+  
+  background-color: var(--bg);
+}
+
+[data-theme="dark"] {
+  --bg: #090B14;
+  --s1: #0F1322;
+  --s2: #161D30;
+  --s3: #1E263D;
+  --border: rgba(255, 255, 255, 0.08);
+  
+  --accent: #729DF8;
+  --accent-tint: rgba(114, 157, 248, 0.12);
+  --green: #42D1B2;
+  --purple: #A782F8;
+  --amber: #F0AB46;
+  --red: #F6637D;
+  
+  --text: #F1F5F9;
+  --muted: #94A3B8;
+  --dim: #64748B;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg, #F9F8F6);
+  color: var(--text, #1C1917);
+  font-family: var(--font-outfit), 'Segoe UI', sans-serif;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
