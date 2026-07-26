@@ -838,8 +838,86 @@ html, body {
 }
 
 /* --------------------------------------------------------------------------
-   Premium Overhauled All Courses Catalog Layout
+   Course Details Page - Back Button & Header Top-Left Alignment
    -------------------------------------------------------------------------- */
+.courses-hero-section {
+  background: linear-gradient(135deg, #0A2A73 0%, #061A47 100%);
+  color: #ffffff;
+  padding: 48px 24px 56px 24px;
+  width: 100%;
+}
+
+.courses-banner-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.course-detail-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.btn-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff !important;
+  padding: 9px 20px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 13.5px;
+  text-decoration: none !important;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.btn-back-link:hover {
+  background-color: var(--brand-orange-bright);
+  border-color: var(--brand-orange-bright);
+  color: #ffffff !important;
+  transform: translateX(-4px);
+  box-shadow: 0 6px 20px rgba(255, 117, 24, 0.4);
+}
+
+.course-badge-inline {
+  background-color: rgba(255, 117, 24, 0.2);
+  border: 1px solid rgba(255, 117, 24, 0.4);
+  color: #FF944D;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.courses-banner-title {
+  font-size: clamp(26px, 3.5vw, 42px);
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  line-height: 1.15;
+  color: #ffffff;
+}
+
+.courses-banner-desc {
+  font-size: clamp(14px, 1.5vw, 16px);
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0;
+}
+
 .catalog-container {
   max-width: 1280px;
   margin: 0 auto;
@@ -2699,6 +2777,23 @@ html, body {
   .poster-modal-card {
     max-width: 88vw !important;
     max-height: 85vh !important;
+  }
+
+  .course-detail-header-top {
+    justify-content: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .btn-back-link {
+    padding: 7px 10px !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    justify-content: center !important;
+  }
+
+  .btn-back-text {
+    display: none !important;
   }
 
   .catalog-course-grid, .explore-courses-grid {

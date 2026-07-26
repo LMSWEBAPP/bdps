@@ -139,8 +139,8 @@ export default function CourseDetailsPage({ params }) {
       <section className="courses-banner-header">
         <div className="courses-banner-container">
           <div className="course-detail-header-top">
-            <Link href="/courses" className="btn-back-link">
-              <ArrowLeft size={16} /> Back to All Courses
+            <Link href="/courses" className="btn-back-link" title="Back to All Courses">
+              <ArrowLeft size={16} className="btn-back-icon" /> <span className="btn-back-text">Back to All Courses</span>
             </Link>
             <div className="course-badge-inline">
               {course.category || 'Certification'}
