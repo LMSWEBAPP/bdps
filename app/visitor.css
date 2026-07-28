@@ -2804,49 +2804,208 @@ html, body {
 /* Mobile Screens (< 768px) */
 @media (max-width: 767px) {
   .hero-section {
-    min-height: auto !important;
-    height: auto !important;
-    padding: 20px 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    height: 370px !important;
+    width: 100% !important;
   }
 
   .hero-slide {
-    position: relative !important;
-    padding: 20px 16px !important;
-    height: auto !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 24px 16px 90px 16px !important;
+    display: flex !important;
+    align-items: center !important;
   }
 
   .hero-grid {
-    grid-template-columns: 1fr !important;
-    text-align: center;
-    gap: 16px !important;
+    grid-template-columns: 1.1fr 0.9fr !important;
+    gap: 12px !important;
+    text-align: left !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+
+  .hero-text-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    justify-content: center !important;
+    text-align: left !important;
+  }
+
+  .hero-subtitle {
+    font-size: 9.5px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.5px !important;
+    margin: 0 !important;
+  }
+
+  .hero-title {
+    font-size: 17.5px !important;
+    font-weight: 800 !important;
+    line-height: 1.22 !important;
+    margin: 0 !important;
+  }
+
+  .hero-desc {
+    font-size: 11.5px !important;
+    line-height: 1.35 !important;
+    margin: 0 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
   }
 
   .hero-actions {
-    justify-content: center;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin-top: 6px !important;
+    justify-content: flex-start !important;
+  }
+
+  .btn-explore {
+    padding: 7px 16px !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    border-radius: 20px !important;
+    white-space: nowrap !important;
+    box-shadow: 0 3px 10px rgba(255, 117, 24, 0.35) !important;
+  }
+
+  .btn-counseling {
+    padding: 6px 16px !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    border-radius: 20px !important;
+    white-space: nowrap !important;
   }
 
   .hero-img-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
+  .hero-img-card {
+    width: 100% !important;
+    max-width: 220px !important;
+    height: 155px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28) !important;
+  }
+
+  .hero-nav-prev, .hero-nav-next {
     display: none !important;
   }
 
   .hero-dots-container {
-    position: relative !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    transform: none !important;
-    justify-content: center !important;
-    margin-top: 10px !important;
+    position: absolute !important;
+    bottom: 92px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: flex !important;
+    gap: 6px !important;
+    z-index: 10 !important;
+    margin-top: 0 !important;
+  }
+
+  .hero-dot-btn {
+    height: 7px !important;
+    border-radius: 4px !important;
+  }
+
+  .hero-dot-active {
+    width: 22px !important;
+  }
+
+  .hero-dot-inactive {
+    width: 7px !important;
   }
 
   .hero-courses-overlap {
-    margin-top: 16px !important;
-    margin-bottom: 20px !important;
-    padding: 0 16px !important;
+    position: relative !important;
+    margin-top: -75px !important;
+    margin-bottom: 25px !important;
+    padding: 0 12px !important;
+    z-index: 20 !important;
   }
 
-  .course-grid-laptop-4 {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
+  .explore-courses-section, .catalog-container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .course-grid-laptop-4, .catalog-course-grid, .explore-courses-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .catalog-card-image-box {
+    height: 125px !important;
+  }
+
+  .catalog-badge-category {
+    top: 8px !important;
+    left: 8px !important;
+    padding: 3px 8px !important;
+    font-size: 9.5px !important;
+  }
+
+  .catalog-badge-fee {
+    bottom: 8px !important;
+    right: 8px !important;
+    padding: 3px 8px !important;
+    font-size: 10px !important;
+  }
+
+  .catalog-card-body {
+    padding: 10px 8px 12px 8px !important;
+    gap: 6px !important;
+  }
+
+  .catalog-card-title {
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    min-height: 32px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .course-rating-row {
+    margin: 2px 0 2px 0 !important;
+    gap: 4px !important;
+  }
+
+  .course-rating-text {
+    font-size: 10.5px !important;
+  }
+
+  .course-meta-divider {
+    margin: 4px 0 8px 0 !important;
+    padding-top: 6px !important;
+    gap: 4px !important;
+  }
+
+  .course-meta-item {
+    font-size: 10.5px !important;
+    gap: 4px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .btn-catalog-details {
+    padding: 8px 0 !important;
+    font-size: 11.5px !important;
+    border-radius: 20px !important;
   }
 
   .about-grid {
@@ -3045,6 +3204,65 @@ html, body {
 }
 
 @media (max-width: 480px) {
+  .hero-section {
+    height: 340px !important;
+  }
+  .hero-slide {
+    padding: 18px 12px 80px 12px !important;
+  }
+  .hero-grid {
+    grid-template-columns: 1.1fr 0.9fr !important;
+    gap: 8px !important;
+  }
+  .hero-subtitle {
+    font-size: 9px !important;
+    letter-spacing: 0.4px !important;
+  }
+  .hero-title {
+    font-size: 15.5px !important;
+    line-height: 1.2 !important;
+  }
+  .hero-desc {
+    font-size: 10.5px !important;
+    line-height: 1.3 !important;
+    -webkit-line-clamp: 2 !important;
+  }
+  .hero-actions {
+    gap: 6px !important;
+    margin-top: 4px !important;
+  }
+  .btn-explore {
+    padding: 5.5px 12px !important;
+    font-size: 10.5px !important;
+    border-radius: 18px !important;
+  }
+  .btn-counseling {
+    padding: 5px 12px !important;
+    font-size: 10.5px !important;
+    border-radius: 18px !important;
+  }
+  .hero-img-card {
+    max-width: 175px !important;
+    height: 135px !important;
+    border-radius: 10px !important;
+  }
+  .hero-dots-container {
+    bottom: 80px !important;
+    gap: 5px !important;
+  }
+  .hero-dot-btn {
+    height: 6px !important;
+  }
+  .hero-dot-active {
+    width: 18px !important;
+  }
+  .hero-dot-inactive {
+    width: 6px !important;
+  }
+  .hero-courses-overlap {
+    margin-top: -65px !important;
+    padding: 0 8px !important;
+  }
   .bdps-loader-card {
     padding: 32px 24px;
   }
@@ -3055,8 +3273,42 @@ html, body {
     max-width: 92vw !important;
     max-height: 82vh !important;
   }
-  .catalog-course-grid, .explore-courses-grid {
-    grid-template-columns: 1fr !important;
+  .course-grid-laptop-4, .catalog-course-grid, .explore-courses-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+  .catalog-card-image-box {
+    height: 110px !important;
+  }
+  .catalog-badge-category {
+    top: 6px !important;
+    left: 6px !important;
+    padding: 2px 6px !important;
+    font-size: 8.5px !important;
+  }
+  .catalog-badge-fee {
+    bottom: 6px !important;
+    right: 6px !important;
+    padding: 2px 6px !important;
+    font-size: 9px !important;
+  }
+  .catalog-card-body {
+    padding: 8px 6px 10px 6px !important;
+  }
+  .catalog-card-title {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    min-height: 30px !important;
+  }
+  .course-rating-text {
+    font-size: 10px !important;
+  }
+  .course-meta-item {
+    font-size: 10px !important;
+  }
+  .btn-catalog-details {
+    padding: 7px 0 !important;
+    font-size: 10.5px !important;
   }
   .courses-hero-search-box {
     width: 100% !important;
