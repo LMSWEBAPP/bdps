@@ -4,6 +4,7 @@ import { popupAdSchema } from './popupAd';
 import { leadSubmissionSchema } from './leadSubmission';
 import { stipendApplicationSchema } from './stipendApplication';
 import { heroSlideSchema } from './heroSlide';
+import { jobPostingSchema } from './jobPosting';
 
 export const schemaTypes = [
   courseSchema,
@@ -12,4 +13,6 @@ export const schemaTypes = [
   leadSubmissionSchema,
   stipendApplicationSchema,
   heroSlideSchema,
+  jobPostingSchema,
 ];
+

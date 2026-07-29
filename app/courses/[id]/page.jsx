@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Star, Clock, User, Award, CheckCircle2, BookOpen, 
-  ArrowLeft, ShieldCheck, Send, Calendar, CheckSquare
+  ArrowLeft, ShieldCheck, Send, Calendar, CheckSquare, Lock
 } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
+import CourseLeadGateModal from '@/components/forms/CourseLeadGateModal';
 
 const DEFAULT_COURSES_DB = {
   '1': {
@@ -73,6 +74,7 @@ export default function CourseDetailsPage({ params }) {
   const courseId = params?.id || '1';
 
   const [course, setCourse] = useState(DEFAULT_COURSES_DB[courseId] || DEFAULT_COURSES_DB['1']);
+  const [isUnlocked, setIsUnlocked] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
@@ -88,6 +90,11 @@ export default function CourseDetailsPage({ params }) {
 
   useEffect(() => {
     if (!courseId) return;
+    if (typeof window !== 'undefined') {
+      const unlocked = localStorage.getItem(`bdps_course_unlocked_${courseId}`) === 'true';
+      if (unlocked) setIsUnlocked(true);
+    }
+
     fetch(`/api/courses/${courseId}`)
       .then(res => res.json())
       .then(data => {
@@ -135,6 +142,13 @@ export default function CourseDetailsPage({ params }) {
     <div className="visitor-theme">
       <VisitorHeader />
 
+      {/* Immediate Course Lead Registration Modal */}
+      <CourseLeadGateModal
+        course={course}
+        isOpen={!isUnlocked}
+        onSuccess={() => setIsUnlocked(true)}
+      />
+
       {/* Hero Header Banner */}
       <section className="courses-banner-header">
         <div className="courses-banner-container">
@@ -152,7 +166,7 @@ export default function CourseDetailsPage({ params }) {
       </section>
 
       {/* Main 2-Column Container */}
-      <main className="course-detail-container">
+      <main className={`course-detail-container ${!isUnlocked ? 'course-content-locked' : ''}`}>
         {/* Left Column: Course Overview & Syllabus */}
         <section className="course-detail-main">
           {/* Card 1: Overview */}

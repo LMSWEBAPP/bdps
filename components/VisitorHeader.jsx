@@ -59,6 +59,7 @@ export default function VisitorHeader() {
   const navLinks = [
     { title: 'Home', href: '/' },
     { title: 'All Courses', href: '/courses' },
+    { title: 'Jobs', href: '/jobs' },
     { title: 'About Us', href: '/about' },
     { 
       title: 'Contact Us', 

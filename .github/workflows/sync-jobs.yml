@@ -1,0 +1,15 @@
+name: Daily Adzuna Jobs Auto-Sync
+
+on:
+  schedule:
+    # Runs daily at 00:00 UTC (5:30 AM IST)
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  sync-jobs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Adzuna Jobs Sync Endpoint
+        run: |
+          curl -X POST https://bdps-visitor.vercel.app/api/jobs/sync
