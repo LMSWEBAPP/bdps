@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Briefcase, Search, MapPin, Building2, Calendar, 
-  ExternalLink, Sparkles, Filter, RefreshCw, CheckCircle2, IndianRupee, Layers
+  ExternalLink, Sparkles, Filter, IndianRupee, Layers
 } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
@@ -12,11 +12,9 @@ import VisitorFooter from '@/components/VisitorFooter';
 export default function JobsPage() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [syncing, setSyncing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
-  const [syncStatusMsg, setSyncStatusMsg] = useState('');
 
   const [currentPage, setCurrentPage] = useState(1);
   const JOBS_PER_PAGE = 6;
@@ -49,26 +47,6 @@ export default function JobsPage() {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     fetchJobs();
-  };
-
-  const triggerManualSync = async () => {
-    setSyncing(true);
-    setSyncStatusMsg('');
-    try {
-      const res = await fetch('/api/jobs/sync', { method: 'POST' });
-      const data = await res.json();
-      if (data.success) {
-        setSyncStatusMsg(`Updated! Synced ${data.syncedCount || 50} fresh Indian jobs.`);
-        await fetchJobs();
-      } else {
-        setSyncStatusMsg('Sync error. Please try again.');
-      }
-    } catch (err) {
-      setSyncStatusMsg('Server connection error during sync.');
-    } finally {
-      setSyncing(false);
-      setTimeout(() => setSyncStatusMsg(''), 4000);
-    }
   };
 
   const formatSalary = (min, max) => {
@@ -178,23 +156,6 @@ export default function JobsPage() {
                 </button>
               ))}
             </div>
-          </div>
-
-          <div className="job-sync-action-box">
-            {syncStatusMsg && (
-              <span className="job-sync-badge">
-                <CheckCircle2 size={14} /> {syncStatusMsg}
-              </span>
-            )}
-            <button
-              onClick={triggerManualSync}
-              disabled={syncing}
-              className="btn-sync-jobs"
-              title="Sync latest Indian jobs from Adzuna API"
-            >
-              <RefreshCw size={15} className={syncing ? 'animate-spin' : ''} />
-              {syncing ? 'Syncing Latest Jobs...' : 'Refresh Latest Jobs'}
-            </button>
           </div>
         </div>
 
