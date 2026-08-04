@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { sanityClient } from '@/lib/sanity.client';
 import { fetchAndSyncAdzunaJobs } from './sync/route';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { sanityWriteClient } from '@/lib/sanity.write';
 
+export const dynamic = 'force-dynamic';
+
 const APP_ID = process.env.ADZUNA_APP_ID || 'ddb2fb63';
 const APP_KEY = process.env.ADZUNA_APP_KEY || '138e3c87837a5ae7927652df146fb53a';
 
@@ -22,6 +24,7 @@ export async function fetchAndSyncAdzunaJobs() {
 
     const now = new Date().toISOString();
     let syncedCount = 0;
+    const transaction = sanityWriteClient.transaction();
 
     for (const item of results) {
       const idStr = String(item.id);
@@ -41,9 +44,11 @@ export async function fetchAndSyncAdzunaJobs() {
         syncedAt: now,
       };
 
-      await sanityWriteClient.createOrReplace(doc);
+      transaction.createOrReplace(doc);
       syncedCount++;
     }
+
+    await transaction.commit();
 
     return { success: true, syncedCount, total: results.length, message: `Successfully synced ${syncedCount} Indian jobs to Sanity CMS` };
   } catch (error: any) {

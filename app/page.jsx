@@ -13,6 +13,7 @@ import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
 import RatingStars from '@/components/RatingStars';
 import BDPSLoadingScreen from '@/components/BDPSLoadingScreen';
+import CourseCard from '@/components/CourseCard';
 
 const DEFAULT_HERO_SLIDES = [
   {
@@ -301,45 +302,7 @@ export default function VisitorHomepage() {
       <section className="hero-courses-overlap">
         <div className="course-grid-laptop-4">
           {courses.slice(0, 4).map((course) => (
-            <div key={`hero-${course.id || course._id}`} className="catalog-course-card">
-              <div className="catalog-card-image-box">
-                <img src={course.image || 'https://picsum.photos/seed/bdps/800/600'} alt={course.title} className="catalog-card-img" />
-                <span className="catalog-badge-category">
-                  {course.category || 'Certification'}
-                </span>
-                {course.fee && (
-                  <span className="catalog-badge-fee">₹{course.fee}</span>
-                )}
-              </div>
-
-              <div className="catalog-card-body">
-                <h3 className="catalog-card-title">
-                  {course.title}
-                </h3>
-                
-                <div className="course-rating-row">
-                  <RatingStars rating={course.rating} />
-                  <span className="course-rating-text">
-                    {course.rating ? Number(course.rating).toFixed(1) : '5.0'} ({course.reviewsCount || '120+ reviews'})
-                  </span>
-                </div>
-
-                <div className="course-meta-divider">
-                  <div className="course-meta-item">
-                    <Clock size={15} className="course-meta-icon" />
-                    <span>Duration: {course.duration || '3-4 Months'}</span>
-                  </div>
-                  <div className="course-meta-item">
-                    <User size={15} className="course-meta-icon" />
-                    <span>Mentor: {course.instructor || 'Certified Coach'}</span>
-                  </div>
-                </div>
-
-                <Link href={`/courses/${course.id || course._id}`} className="btn-catalog-details">
-                  View Details <ArrowRight size={14} />
-                </Link>
-              </div>
-            </div>
+            <CourseCard key={`hero-${course.id || course._id}`} course={course} />
           ))}
         </div>
       </section>
@@ -456,49 +419,7 @@ export default function VisitorHomepage() {
         {/* Courses Grid - Up to 6 Courses */}
         <div className="explore-courses-grid">
           {filteredExploreCourses.map((course) => (
-            <div key={`tab-${course.id || course._id}`} className="catalog-course-card">
-              <div className="catalog-card-image-box">
-                <img src={course.image || 'https://picsum.photos/seed/bdps/800/600'} alt={course.title} className="catalog-card-img" />
-                <span className="catalog-badge-category">
-                  {course.category || 'Certification'}
-                </span>
-                {course.fee && (
-                  <span className="catalog-badge-fee">₹{course.fee}</span>
-                )}
-              </div>
-
-              <div className="catalog-card-body">
-                <h3 className="catalog-card-title">
-                  {course.title}
-                </h3>
-
-                <p className="catalog-card-desc">
-                  {course.subtitle || course.tagline || 'Comprehensive hands-on training with lab practice.'}
-                </p>
-
-                <div className="course-rating-row">
-                  <RatingStars rating={course.rating} />
-                  <span className="course-rating-text">
-                    {course.rating ? Number(course.rating).toFixed(1) : '5.0'} ({course.reviewsCount || '120+ reviews'})
-                  </span>
-                </div>
-
-                <div className="course-meta-divider">
-                  <div className="course-meta-item">
-                    <Clock size={15} className="course-meta-icon" />
-                    <span>Duration: {course.duration || '3-4 Months'}</span>
-                  </div>
-                  <div className="course-meta-item">
-                    <User size={15} className="course-meta-icon" />
-                    <span>Mentor: {course.instructor || 'Certified Coach'}</span>
-                  </div>
-                </div>
-
-                <Link href={`/courses/${course.id || course._id}`} className="btn-catalog-details">
-                  View Syllabus & Details <ArrowRight size={14} />
-                </Link>
-              </div>
-            </div>
+            <CourseCard key={`tab-${course.id || course._id}`} course={course} showSubtitle={true} />
           ))}
         </div>
 

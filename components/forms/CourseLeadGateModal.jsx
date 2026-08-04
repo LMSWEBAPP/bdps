@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { BookOpen, User, Phone, Mail, GraduationCap, Clock, CheckCircle2, Lock } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { BookOpen, User, Phone, Mail, GraduationCap, Clock, CheckCircle2, Lock, X } from 'lucide-react';
 
-export default function CourseLeadGateModal({ course, isOpen, onSuccess }) {
+export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose }) {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -13,6 +13,18 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess }) {
 
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && onClose) onClose();
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -58,10 +70,22 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess }) {
   };
 
   return (
-    <div className="modal-backdrop course-gate-backdrop">
-      <div className="modal-content-card course-gate-modal">
+    <div className="modal-backdrop course-gate-backdrop" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="modal-content-card course-gate-modal" onClick={(e) => e.stopPropagation()}>
         {/* Header Banner */}
         <div className="course-gate-header">
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="modal-close-btn course-gate-close-btn"
+              aria-label="Close modal"
+              title="Close & return to courses"
+            >
+              <X size={20} />
+            </button>
+          )}
+
           <div className="course-gate-badge">
             <Lock size={14} /> Course Access Required
           </div>

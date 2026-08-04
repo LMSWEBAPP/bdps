@@ -60,6 +60,7 @@ export default function VisitorHeader() {
     { title: 'Home', href: '/' },
     { title: 'All Courses', href: '/courses' },
     { title: 'Jobs', href: '/jobs' },
+    { title: 'Verify Certificate', href: '/verify-certificate' },
     { title: 'About Us', href: '/about' },
     { 
       title: 'Contact Us', 

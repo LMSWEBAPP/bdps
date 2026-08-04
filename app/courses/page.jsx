@@ -7,6 +7,7 @@ import { Star, Clock, User, Search, Filter, BookOpen, ArrowRight, Sparkles, Awar
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
 import RatingStars from '@/components/RatingStars';
+import CourseCard from '@/components/CourseCard';
 
 const DEFAULT_COURSES = [
   { id: '1', title: 'Post Graduate Diploma in Computer Applications (PGDCA)', category: 'Full Stack', instructor: 'Certified Coach', rating: 5.0, reviewsCount: '120+ reviews', fee: '15,000', subtitle: 'Comprehensive 1-year graduate diploma program covering office software & databases.', image: 'https://picsum.photos/seed/course-pgdca/800/600', duration: '1 Year' },
@@ -155,56 +156,7 @@ function VisitorCoursesCatalogContent() {
         ) : (
           <div className="catalog-course-grid">
             {filteredCourses.map((course) => (
-              <div key={course.id || course._id} className="catalog-course-card">
-                {/* Image & Badges */}
-                <div className="catalog-card-image-box">
-                  <img 
-                    src={course.image || 'https://picsum.photos/seed/bdps/800/600'} 
-                    alt={course.title} 
-                    className="catalog-card-img" 
-                  />
-                  <div className="catalog-badge-category">
-                    {course.category || 'Certification'}
-                  </div>
-                  {course.fee && (
-                    <div className="catalog-badge-fee">
-                      ₹{course.fee}
-                    </div>
-                  )}
-                </div>
-
-                {/* Card Content Body */}
-                <div className="catalog-card-body">
-                  <h3 className="catalog-card-title">
-                    {course.title}
-                  </h3>
-                  <p className="catalog-card-desc">
-                    {course.subtitle || course.tagline || 'Comprehensive hands-on training with lab practice.'}
-                  </p>
-
-                  <div className="course-rating-row">
-                    <RatingStars rating={course.rating} />
-                    <span className="course-rating-text">
-                      {course.rating ? Number(course.rating).toFixed(1) : '5.0'} ({course.reviewsCount || '120+ reviews'})
-                    </span>
-                  </div>
-
-                  <div className="course-meta-divider">
-                    <div className="course-meta-item">
-                      <Clock size={15} className="course-meta-icon" />
-                      <span>Duration: {course.duration || '3-4 Months'}</span>
-                    </div>
-                    <div className="course-meta-item">
-                      <User size={15} className="course-meta-icon" />
-                      <span>Mentor: {course.instructor || 'Certified Coach'}</span>
-                    </div>
-                  </div>
-
-                  <Link href={`/courses/${course.id || course._id}`} className="btn-catalog-details">
-                    View Syllabus & Enroll <ArrowRight size={15} />
-                  </Link>
-                </div>
-              </div>
+              <CourseCard key={course.id || course._id} course={course} showSubtitle={true} />
             ))}
           </div>
         )}

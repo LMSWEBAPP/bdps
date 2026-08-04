@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { X, Award, CheckCircle, AlertCircle, Calendar, GraduationCap, Building2, User, Mail, Phone, MapPin } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { X, Award, CheckCircle, AlertCircle, Calendar, GraduationCap, Building2, User, Mail, Phone, MapPin, Loader2, Send } from 'lucide-react';
 
 export default function StipendRegistrationModal({ isOpen, onClose, siteSettings }) {
   const [fullName, setFullName] = useState('');
@@ -19,6 +19,20 @@ export default function StipendRegistrationModal({ isOpen, onClose, siteSettings
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -84,13 +98,13 @@ export default function StipendRegistrationModal({ isOpen, onClose, siteSettings
   };
 
   return (
-    <div className="modal-backdrop">
-      <div className="modal-content-card">
+    <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="modal-content-card" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="modal-header">
           <div>
             <div className="modal-tag">
-              <Award size={16} /> Scholarship & Stipend Intake
+              <Award size={15} /> Scholarship & Stipend Intake
             </div>
             <h2 className="modal-title">
               Stipend Registration
@@ -99,6 +113,7 @@ export default function StipendRegistrationModal({ isOpen, onClose, siteSettings
           <button
             onClick={onClose}
             className="modal-close-btn"
+            aria-label="Close modal"
           >
             <X size={20} />
           </button>
@@ -343,7 +358,19 @@ export default function StipendRegistrationModal({ isOpen, onClose, siteSettings
                     disabled={loading || !isStipendActive}
                     className={`btn-submit-stipend ${!isStipendActive ? 'btn-disabled' : ''}`}
                   >
-                    {loading ? 'Submitting Application...' : isStipendActive ? 'Submit Stipend Registration' : 'Registration Closed'}
+                    {loading ? (
+                      <>
+                        <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
+                        <span>Submitting Application...</span>
+                      </>
+                    ) : isStipendActive ? (
+                      <>
+                        <Send size={16} />
+                        <span>Submit Stipend Application</span>
+                      </>
+                    ) : (
+                      'Registration Closed'
+                    )}
                   </button>
 
                 </div>

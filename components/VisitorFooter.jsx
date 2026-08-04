@@ -33,6 +33,7 @@ export default function VisitorFooter() {
   ];
 
   const quickLinks = [
+    { label: 'Certificate Verification', href: '/verify-certificate' },
     { label: 'Job Openings & Placements', href: '/jobs' },
     { label: 'Upcoming Batches', href: '/courses' },
     { label: `About ${branding.shortName}`, href: '/about' },

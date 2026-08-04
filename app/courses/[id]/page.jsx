@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { 
   Star, Clock, User, Award, CheckCircle2, BookOpen, 
   ArrowLeft, ShieldCheck, Send, Calendar, CheckSquare, Lock
@@ -71,6 +72,7 @@ const DEFAULT_COURSES_DB = {
 };
 
 export default function CourseDetailsPage({ params }) {
+  const router = useRouter();
   const courseId = params?.id || '1';
 
   const [course, setCourse] = useState(DEFAULT_COURSES_DB[courseId] || DEFAULT_COURSES_DB['1']);
@@ -138,6 +140,14 @@ export default function CourseDetailsPage({ params }) {
     }
   };
 
+  const handleCloseGate = () => {
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push('/courses');
+    }
+  };
+
   return (
     <div className="visitor-theme">
       <VisitorHeader />
@@ -147,6 +157,7 @@ export default function CourseDetailsPage({ params }) {
         course={course}
         isOpen={!isUnlocked}
         onSuccess={() => setIsUnlocked(true)}
+        onClose={handleCloseGate}
       />
 
       {/* Hero Header Banner */}

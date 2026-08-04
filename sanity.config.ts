@@ -1,10 +1,11 @@
 import { defineConfig, Tool } from 'sanity';
 import { structureTool } from 'sanity/structure';
-import { DownloadIcon, RefreshIcon } from '@sanity/icons';
+import { DownloadIcon, RefreshIcon, PublishIcon } from '@sanity/icons';
 import { schemaTypes } from './sanity/schemas';
 import { projectId, dataset } from './lib/sanity.client';
 import LeadExportComponent from './sanity/tools/LeadExportComponent';
 import JobSyncComponent from './sanity/tools/JobSyncComponent';
+import CertificateImportTool from './sanity/tools/CertificateImportTool';
 
 const leadExportTool: Tool = {
   name: 'lead-export',
@@ -20,6 +21,13 @@ const jobSyncTool: Tool = {
   component: JobSyncComponent,
 };
 
+const certificateImportTool: Tool = {
+  name: 'certificate-import',
+  title: 'Import Certificates (CSV)',
+  icon: PublishIcon,
+  component: CertificateImportTool,
+};
+
 export default defineConfig({
   name: 'default',
   title: 'BDPS Computers CMS & Lead Dashboard',
@@ -31,7 +39,7 @@ export default defineConfig({
 
   plugins: [structureTool()],
 
-  tools: (prev) => [...prev, leadExportTool, jobSyncTool],
+  tools: (prev) => [...prev, leadExportTool, jobSyncTool, certificateImportTool],
 
   schema: {
     types: schemaTypes,

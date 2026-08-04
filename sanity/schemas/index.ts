@@ -5,6 +5,7 @@ import { leadSubmissionSchema } from './leadSubmission';
 import { stipendApplicationSchema } from './stipendApplication';
 import { heroSlideSchema } from './heroSlide';
 import { jobPostingSchema } from './jobPosting';
+import { certificateSchema } from './certificate';
 
 export const schemaTypes = [
   courseSchema,
@@ -14,5 +15,6 @@ export const schemaTypes = [
   stipendApplicationSchema,
   heroSlideSchema,
   jobPostingSchema,
+  certificateSchema,
 ];
 
