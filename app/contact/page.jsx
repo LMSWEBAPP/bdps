@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { MapPin, Phone, Mail, Send, CheckCircle2, Clock, Building, Handshake } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
@@ -11,12 +11,29 @@ function ContactFormContent() {
   const formType = searchParams.get('type') || 'student';
   const isCollab = formType === 'collaboration';
 
+  const [siteSettings, setSiteSettings] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/site-settings', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.settings) {
+          setSiteSettings(data.settings);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const phone = siteSettings?.contactPhone || '+91 85001 08016';
+  const email = siteSettings?.contactEmail || 'bdpskkd@gmail.com';
+  const address = siteSettings?.address || 'Flat No. 1, Sai Prameela Apartment, B-Block, Backside Ulavacharu Restaurant, Nagamallithota Junction, Pithapuram Road, Kakinada - 533003';
+
   const branches = [
     {
       name: 'Kakinada Campus (Corporate HQ)',
-      address: 'Flat No. 1, Sai Prameela Apartment, B-Block, Backside Ulavacharu Restaurant, Nagamallithota Junction, Pithapuram Road, Kakinada - 533003',
-      phone: '+91 83099 74799',
-      email: 'bdpsdocs@gmail.com',
+      address,
+      phone,
+      email,
       mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3815.7196022838426!2d82.25141071112674!3d16.988220084364417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3828414ca0cd97%3A0x88981e6992d9f2d1!2sNagamallithota%20Junction%2C%20Kakinada%2C%20Andhra%20Pradesh%20533003!5e0!3m2!1sen!2sin!4v1720000000000!5m2!1sen!2sin'
     }
   ];

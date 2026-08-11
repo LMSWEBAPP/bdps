@@ -174,9 +174,9 @@ export default function CertificateImportTool() {
   return (
     <Card padding={5} height="fill" tone="inherit">
       <Container width={2}>
-        <Card padding={4} radius={3} shadow={2} border style={{ backgroundColor: '#ffffff' }}>
+        <Card padding={4} radius={3} shadow={2} border>
           <Stack space={4}>
-            <Flex align="center" justify="space-between">
+            <Flex align="center" justify="space-between" wrap="wrap" gap={3}>
               <Heading size={3}>🎓 Student Certificate Batch CSV Importer</Heading>
               <Button
                 icon={DownloadIcon}
@@ -188,22 +188,48 @@ export default function CertificateImportTool() {
             </Flex>
 
             <Text size={2} muted>
-              Upload CSV file containing student certificate records. Required columns: <code>regNumber</code>, <code>fullName</code>, <code>courseName</code>, <code>issueDate</code>, <code>issuedBy</code>, <code>grade</code>, <code>duration</code>.
+              Upload a CSV file containing student certificate records to batch-import into Sanity CMS.
             </Text>
 
+            <Flex align="center" gap={2} wrap="wrap">
+              <Text size={1} weight="semibold" muted>
+                Required Columns:
+              </Text>
+              {['regNumber', 'fullName', 'courseName', 'issueDate', 'issuedBy', 'grade', 'duration'].map((col) => (
+                <Badge key={col} tone="primary" mode="outline" size={1} style={{ fontFamily: 'monospace', letterSpacing: '0.3px' }}>
+                  {col}
+                </Badge>
+              ))}
+            </Flex>
+
             {/* File Upload Box */}
-            <Card padding={4} radius={2} border style={{ backgroundColor: '#F9FAFB', borderStyle: 'dashed' }}>
+            <Card
+              padding={5}
+              radius={3}
+              border
+              tone="transparent"
+              style={{
+                borderStyle: 'dashed',
+                borderWidth: '1.5px',
+                textAlign: 'center',
+              }}
+            >
               <Stack space={3} align="center">
-                <DocumentIcon style={{ fontSize: 32, color: '#3B82F6' }} />
-                <Text weight="bold" size={2}>Select CSV File from Computer</Text>
+                <DocumentIcon style={{ fontSize: 36, color: '#3B82F6' }} />
+                <Stack space={1} align="center">
+                  <Text weight="bold" size={2}>Select CSV File from Computer</Text>
+                  <Text size={1} muted>Accepts standard comma-delimited .csv files</Text>
+                </Stack>
                 <input
                   type="file"
                   accept=".csv"
                   onChange={handleFileUpload}
-                  style={{ cursor: 'pointer', fontSize: '13px' }}
+                  style={{ cursor: 'pointer', fontSize: '13px', color: 'inherit' }}
                 />
                 {fileName && (
-                  <Badge tone="primary" size={2}>Selected: {fileName} ({records.length} rows)</Badge>
+                  <Badge tone="positive" size={2} style={{ marginTop: '4px' }}>
+                    Selected: {fileName} ({records.length} records ready)
+                  </Badge>
                 )}
               </Stack>
             </Card>
@@ -231,7 +257,7 @@ export default function CertificateImportTool() {
             {records.length > 0 && (
               <Stack space={3} style={{ marginTop: '10px' }}>
                 <Heading size={2}>Preview ({records.length} Records)</Heading>
-                <Card padding={3} radius={2} border style={{ maxHeight: '200px', overflowY: 'auto', backgroundColor: '#FFFFFF' }}>
+                <Card padding={3} radius={2} border style={{ maxHeight: '200px', overflowY: 'auto' }}>
                   <Stack space={2}>
                     {records.slice(0, 5).map((r, idx) => (
                       <Text key={idx} size={1}>

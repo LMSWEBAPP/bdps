@@ -15,7 +15,16 @@ export async function GET() {
           stipendNoticeText: 'Stipend registrations for the current batch are now closed. Please check back for upcoming cohort announcements.',
           internshipActive: true,
           internshipNoticeText: 'Internship applications for the current batch are currently closed. Please check back for upcoming cohort announcements.',
-          internshipCourses: []
+          internshipCourses: [],
+          contactEmail: 'bdpskkd@gmail.com',
+          contactPhone: '+91 85001 08016',
+          whatsappNumber: '+91 85001 08016',
+          address: 'Flat No. 1, Sai Prameela Apartment, B-Block, Backside Ulavacharu Restaurant, Nagamallithota Junction, Pithapuram Road, Kakinada - 533003',
+          facebook: 'https://facebook.com',
+          instagram: 'https://instagram.com',
+          linkedin: 'https://linkedin.com',
+          youtube: 'https://youtube.com',
+          twitter: 'https://twitter.com'
         }
       },
       {
