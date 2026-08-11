@@ -4,9 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
-  Search, ChevronDown, Award, Phone, Mail, Clock, MapPin, Menu, X, ShieldCheck
+  Search, ChevronDown, Award, Phone, Mail, Clock, MapPin, Menu, X, ShieldCheck, Briefcase
 } from 'lucide-react';
 import StipendRegistrationModal from './StipendRegistrationModal';
+import InternshipModal from './forms/InternshipModal';
 
 export default function VisitorHeader() {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export default function VisitorHeader() {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [stipendModalOpen, setStipendModalOpen] = useState(false);
+  const [internshipModalOpen, setInternshipModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
 
@@ -73,6 +75,7 @@ export default function VisitorHeader() {
   ];
 
   const isStipendActive = siteSettings !== null && siteSettings.stipendRegistrationActive !== false;
+  const isInternshipActive = siteSettings !== null && siteSettings.internshipActive !== false;
 
   return (
     <>
@@ -157,21 +160,31 @@ export default function VisitorHeader() {
             ))}
 
             <div className="header-cta-group">
+              <button
+                onClick={() => setInternshipModalOpen(true)}
+                className={`btn-stipend btn-internship-nav ${!isInternshipActive ? 'btn-stipend-disabled' : ''}`}
+                title="Apply for Internship"
+              >
+                <Briefcase size={14} className="icon-orange-accent" />
+                <span className="cta-label-text">Internship</span>
+                {!isInternshipActive && <span className="btn-stipend-tag tag-closed">CLOSED</span>}
+              </button>
+
               {isStipendActive && (
                 <button
                   onClick={() => setStipendModalOpen(true)}
-                  className="btn-stipend stipend-pulse-highlight"
+                  className="btn-stipend stipend-pulse-highlight btn-stipend-nav"
+                  title="Stipend Registration"
                 >
-                  <Award size={15} className="stipend-icon" />
-                  <span>Stipend Registration</span>
-                  <span className="btn-stipend-tag tag-open">
-                    OPEN
-                  </span>
+                  <Award size={14} className="stipend-icon" />
+                  <span className="cta-label-text">Stipend</span>
+                  <span className="btn-stipend-tag tag-open">OPEN</span>
                 </button>
               )}
               <a
                 href={process.env.NEXT_PUBLIC_FRAPPE_URL ? `${process.env.NEXT_PUBLIC_FRAPPE_URL}/login` : 'http://localhost:3000/login'}
                 className="btn-login"
+                title="Student Login Portal"
               >
                 Student Login
               </a>
@@ -228,6 +241,16 @@ export default function VisitorHeader() {
                   <Search size={16} />
                 </button>
               </form>
+              <button
+                onClick={() => { setMenuOpen(false); setInternshipModalOpen(true); }}
+                className={`btn-stipend mobile-btn-stipend ${!isInternshipActive ? 'btn-stipend-disabled' : ''}`}
+                style={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#fff' }}
+              >
+                <Briefcase size={16} style={{ color: '#FF7518' }} />
+                <span>Apply for Internship</span>
+                {!isInternshipActive && <span className="btn-stipend-tag tag-closed" style={{ marginLeft: '6px' }}>CLOSED</span>}
+              </button>
+
               {isStipendActive && (
                 <button
                   onClick={() => { setMenuOpen(false); setStipendModalOpen(true); }}
@@ -256,6 +279,13 @@ export default function VisitorHeader() {
       <StipendRegistrationModal
         isOpen={stipendModalOpen}
         onClose={() => setStipendModalOpen(false)}
+        siteSettings={siteSettings}
+      />
+
+      {/* Internship Application Modal */}
+      <InternshipModal
+        isOpen={internshipModalOpen}
+        onClose={() => setInternshipModalOpen(false)}
         siteSettings={siteSettings}
       />
     </>

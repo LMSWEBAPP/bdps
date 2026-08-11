@@ -96,6 +96,9 @@ export async function getSanitySiteSettings() {
       announcementBanner,
       stipendRegistrationActive,
       stipendNoticeText,
+      internshipActive,
+      internshipNoticeText,
+      internshipCourses,
       contactEmail,
       contactPhone
     }`;

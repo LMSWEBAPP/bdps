@@ -4,10 +4,11 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Briefcase, Search, MapPin, Building2, Calendar, 
-  ExternalLink, Sparkles, Filter, IndianRupee, Layers
+  ExternalLink, Sparkles, Filter, IndianRupee, Layers, GraduationCap
 } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
+import InternshipModal from '@/components/forms/InternshipModal';
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState([]);
@@ -15,6 +16,7 @@ export default function JobsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
+  const [internshipModalOpen, setInternshipModalOpen] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
   const JOBS_PER_PAGE = 6;
@@ -121,6 +123,19 @@ export default function JobsPage() {
               </button>
             )}
           </form>
+
+          {/* Internship Callout Banner */}
+          <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <span style={{ color: '#94a3b8', fontSize: '0.9rem' }}>Looking for Internship Opportunities?</span>
+            <button
+              type="button"
+              onClick={() => setInternshipModalOpen(true)}
+              className="btn-stipend"
+              style={{ backgroundColor: '#FF7518', color: '#ffffff', borderColor: '#FF7518', fontWeight: '600', padding: '8px 18px' }}
+            >
+              <GraduationCap size={16} /> Apply for BDPS Internship
+            </button>
+          </div>
         </div>
       </section>
 
@@ -274,6 +289,11 @@ export default function JobsPage() {
       </main>
 
       <VisitorFooter />
+
+      <InternshipModal
+        isOpen={internshipModalOpen}
+        onClose={() => setInternshipModalOpen(false)}
+      />
     </div>
   );
 }

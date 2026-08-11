@@ -1,9 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, Mail, Facebook, Twitter, Linkedin, Youtube, Instagram, ArrowRight, ShieldCheck } from 'lucide-react';
+import { MapPin, Phone, Mail, Facebook, Twitter, Linkedin, Youtube, Instagram, ArrowRight, ShieldCheck, Briefcase } from 'lucide-react';
+import InternshipModal from './forms/InternshipModal';
 
 export default function VisitorFooter() {
+  const [internshipModalOpen, setInternshipModalOpen] = useState(false);
   const currentYear = new Date().getFullYear();
 
   const branding = {
@@ -33,6 +36,7 @@ export default function VisitorFooter() {
   ];
 
   const quickLinks = [
+    { label: 'Apply for Internship', isModal: true },
     { label: 'Certificate Verification', href: '/verify-certificate' },
     { label: 'Job Openings & Placements', href: '/jobs' },
     { label: 'Upcoming Batches', href: '/courses' },
@@ -104,9 +108,19 @@ export default function VisitorFooter() {
           <ul className="footer-links-list">
             {quickLinks.map((link, idx) => (
               <li key={idx}>
-                <Link href={link.href} className="footer-link-item">
-                  <ArrowRight size={12} className="contact-icon" /> {link.label}
-                </Link>
+                {link.isModal ? (
+                  <button 
+                    onClick={() => setInternshipModalOpen(true)}
+                    className="footer-link-item"
+                    style={{ background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer' }}
+                  >
+                    <ArrowRight size={12} className="contact-icon" /> {link.label}
+                  </button>
+                ) : (
+                  <Link href={link.href} className="footer-link-item">
+                    <ArrowRight size={12} className="contact-icon" /> {link.label}
+                  </Link>
+                )}
               </li>
             ))}
           </ul>
@@ -147,6 +161,11 @@ export default function VisitorFooter() {
           <Link href="/contact" className="footer-bottom-link">Terms of Service</Link>
         </div>
       </div>
+
+      <InternshipModal
+        isOpen={internshipModalOpen}
+        onClose={() => setInternshipModalOpen(false)}
+      />
     </footer>
   );
 }

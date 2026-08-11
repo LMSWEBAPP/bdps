@@ -206,17 +206,17 @@ html, body {
   position: sticky;
   top: 0;
   z-index: 999;
-  padding: 12px 24px;
+  padding: 10px 24px;
   width: 100%;
 }
 
 .navbar-container {
-  max-width: 1280px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   width: 100%;
 }
 
@@ -259,19 +259,20 @@ html, body {
 }
 
 .header-search-form {
-  flex: 0 1 200px;
+  flex: 0 1 170px;
   position: relative;
   display: flex;
   align-items: center;
+  transition: all 0.3s ease;
 }
 
 .search-input {
   width: 100%;
-  padding: 8px 34px 8px 12px;
+  padding: 7px 32px 7px 12px;
   border-radius: 30px;
   border: 1px solid rgba(189, 96, 28, 0.2);
   outline: none;
-  font-size: 13px;
+  font-size: 12.5px;
   background-color: var(--brand-bg);
   transition: all 0.3s ease;
 }
@@ -296,7 +297,7 @@ html, body {
 
 .desktop-nav {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   align-items: center;
   flex-shrink: 0;
 }
@@ -309,11 +310,11 @@ html, body {
   color: var(--text);
   text-decoration: none;
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 13px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 0;
+  gap: 3px;
+  padding: 6px 2px;
   white-space: nowrap;
   transition: color 0.2s ease;
 }
@@ -363,9 +364,9 @@ html, body {
   background-color: transparent;
   color: var(--brand-orange);
   border: 1.5px solid var(--brand-orange);
-  padding: 8px 14px;
+  padding: 7px 13px;
   border-radius: 30px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
@@ -373,6 +374,21 @@ html, body {
   gap: 5px;
   white-space: nowrap;
   transition: all 0.3s ease;
+}
+
+.btn-internship-nav {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+.btn-internship-nav:hover {
+  background-color: #1e293b !important;
+  border-color: #475569 !important;
+}
+
+.icon-orange-accent {
+  color: #FF7518 !important;
 }
 
 .btn-stipend:hover {
@@ -566,6 +582,78 @@ html, body {
   font-weight: 800;
   font-size: 14px;
   box-shadow: 0 4px 15px rgba(255, 117, 24, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   Header Navigation Responsive Breakpoints
+   -------------------------------------------------------------------------- */
+@media (max-width: 1400px) {
+  .navbar-container {
+    gap: 8px;
+  }
+  .header-search-form {
+    flex: 0 1 140px;
+  }
+  .desktop-nav {
+    gap: 8px;
+  }
+  .nav-item-link {
+    font-size: 12.5px;
+    padding: 6px 1px;
+  }
+  .header-cta-group {
+    gap: 6px;
+  }
+  .btn-stipend {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  .btn-login {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 1260px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .header-search-form {
+    display: none !important;
+  }
+  .mobile-toggle-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background-color: rgba(255, 117, 24, 0.08);
+    color: var(--brand-orange-bright);
+  }
+}
+
+@media (max-width: 768px) {
+  .visitor-top-bar {
+    flex-direction: column;
+    gap: 6px;
+    text-align: center;
+    padding: 8px 12px;
+  }
+  .top-bar-contact, .top-bar-links-group {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .logo-title {
+    font-size: 14px;
+  }
+  .logo-subtitle {
+    font-size: 8.5px;
+  }
+  .logo-badge {
+    font-size: 17px;
+    padding: 6px 10px;
+  }
 }
 
 /* --------------------------------------------------------------------------

@@ -12,7 +12,10 @@ export async function GET() {
         success: true,
         settings: settings || {
           stipendRegistrationActive: true,
-          stipendNoticeText: 'Stipend registrations for the current batch are now closed. Please check back for upcoming cohort announcements.'
+          stipendNoticeText: 'Stipend registrations for the current batch are now closed. Please check back for upcoming cohort announcements.',
+          internshipActive: true,
+          internshipNoticeText: 'Internship applications for the current batch are currently closed. Please check back for upcoming cohort announcements.',
+          internshipCourses: []
         }
       },
       {
