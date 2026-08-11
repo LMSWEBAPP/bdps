@@ -1,31 +1,38 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { MapPin, Phone, Mail, Facebook, Twitter, Linkedin, Youtube, Instagram, ArrowRight, ShieldCheck, Briefcase } from 'lucide-react';
 import InternshipModal from './forms/InternshipModal';
 
 export default function VisitorFooter() {
   const [internshipModalOpen, setInternshipModalOpen] = useState(false);
+  const [siteSettings, setSiteSettings] = useState(null);
   const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    fetch('/api/site-settings', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.settings) {
+          setSiteSettings(data.settings);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const phone = siteSettings?.contactPhone || '+91 85001 08016';
+  const email = siteSettings?.contactEmail || 'bdpskkd@gmail.com';
+  const address = siteSettings?.address || 'Flat No. 1, Sai Prameela Apartment, B-Block, Backside Ulavacharu Restaurant, Nagamallithota Junction, Pithapuram Road, Kakinada - 533003';
 
   const branding = {
     title: 'BDPS Computer Education',
     shortName: 'BDPS',
     tagline: 'Learn Today | 🚀 Lead Tomorrow | 🌍 Transform Tomorrow',
-    phone: '+91 83099 74799',
-    email: 'bdpsdocs@gmail.com',
+    phone,
+    email,
     logoText: 'BDPS'
   };
-
-  const branches = [
-    {
-      name: 'Kakinada Campus (Corporate HQ)',
-      address: 'Flat No. 1, Sai Prameela Apartment, B-Block, Backside Ulavacharu Restaurant, Nagamallithota Junction, Pithapuram Road, Kakinada - 533003',
-      phone: '+91 83099 74799',
-      email: 'bdpsdocs@gmail.com'
-    }
-  ];
 
   const courseLinks = [
     { label: 'PGDCA Diploma', href: '/courses' },
@@ -46,6 +53,14 @@ export default function VisitorFooter() {
     { label: 'Contact Us', href: '/contact' }
   ];
 
+  const socialLinks = [
+    { icon: <Facebook size={18} />, href: siteSettings?.facebook || 'https://facebook.com', label: 'Facebook' },
+    { icon: <Twitter size={18} />, href: siteSettings?.twitter || 'https://twitter.com', label: 'Twitter' },
+    { icon: <Linkedin size={18} />, href: siteSettings?.linkedin || 'https://linkedin.com', label: 'LinkedIn' },
+    { icon: <Youtube size={18} />, href: siteSettings?.youtube || 'https://youtube.com', label: 'YouTube' },
+    { icon: <Instagram size={18} />, href: siteSettings?.instagram || 'https://instagram.com', label: 'Instagram' }
+  ];
+
   return (
     <footer className="visitor-footer">
       <div className="footer-grid">
@@ -64,19 +79,14 @@ export default function VisitorFooter() {
             🤝 CSR Initiatives in Collaboration with Embracing Humanity Foundation (EHF)
           </p>
           <div className="footer-social-row">
-            {[
-              { icon: <Facebook size={18} />, href: 'https://facebook.com' },
-              { icon: <Twitter size={18} />, href: 'https://twitter.com' },
-              { icon: <Linkedin size={18} />, href: 'https://linkedin.com' },
-              { icon: <Youtube size={18} />, href: 'https://youtube.com' },
-              { icon: <Instagram size={18} />, href: 'https://instagram.com' }
-            ].map((social, idx) => (
+            {socialLinks.map((social, idx) => (
               <a
                 key={idx}
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="footer-social-btn"
+                aria-label={social.label}
               >
                 {social.icon}
               </a>
@@ -134,15 +144,15 @@ export default function VisitorFooter() {
           <div className="footer-contact-list">
             <div className="footer-contact-item">
               <MapPin size={18} className="footer-contact-icon" />
-              <span>{branches[0].address}</span>
+              <span>{address}</span>
             </div>
             <div className="footer-contact-item">
               <Phone size={18} className="footer-contact-icon" />
-              <a href={`tel:${branches[0].phone}`} className="footer-contact-link">{branches[0].phone}</a>
+              <a href={`tel:${phone.replace(/\s+/g, '')}`} className="footer-contact-link">{phone}</a>
             </div>
             <div className="footer-contact-item">
               <Mail size={18} className="footer-contact-icon" />
-              <a href={`mailto:${branches[0].email}`} className="footer-contact-link">{branches[0].email}</a>
+              <a href={`mailto:${email}`} className="footer-contact-link">{email}</a>
             </div>
             <div className="footer-accreditation">
               <ShieldCheck size={16} /> ISO 9001:2015 Accredited
@@ -165,6 +175,7 @@ export default function VisitorFooter() {
       <InternshipModal
         isOpen={internshipModalOpen}
         onClose={() => setInternshipModalOpen(false)}
+        siteSettings={siteSettings}
       />
     </footer>
   );

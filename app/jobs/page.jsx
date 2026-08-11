@@ -17,9 +17,21 @@ export default function JobsPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
   const [internshipModalOpen, setInternshipModalOpen] = useState(false);
+  const [siteSettings, setSiteSettings] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const JOBS_PER_PAGE = 6;
+
+  useEffect(() => {
+    fetch('/api/site-settings', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.settings) {
+          setSiteSettings(data.settings);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const fetchJobs = async () => {
     setLoading(true);
@@ -130,10 +142,22 @@ export default function JobsPage() {
             <button
               type="button"
               onClick={() => setInternshipModalOpen(true)}
-              className="btn-stipend"
-              style={{ backgroundColor: '#FF7518', color: '#ffffff', borderColor: '#FF7518', fontWeight: '600', padding: '8px 18px' }}
+              className={`btn-stipend ${siteSettings?.internshipActive === false ? 'btn-stipend-disabled' : ''}`}
+              style={{
+                backgroundColor: siteSettings?.internshipActive === false ? '#1e293b' : '#FF7518',
+                color: '#ffffff',
+                borderColor: siteSettings?.internshipActive === false ? '#334155' : '#FF7518',
+                fontWeight: '600',
+                padding: '8px 18px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
             >
               <GraduationCap size={16} /> Apply for BDPS Internship
+              {siteSettings?.internshipActive === false && (
+                <span className="btn-stipend-tag tag-closed" style={{ marginLeft: '4px' }}>CLOSED</span>
+              )}
             </button>
           </div>
         </div>
@@ -293,6 +317,7 @@ export default function JobsPage() {
       <InternshipModal
         isOpen={internshipModalOpen}
         onClose={() => setInternshipModalOpen(false)}
+        siteSettings={siteSettings}
       />
     </div>
   );

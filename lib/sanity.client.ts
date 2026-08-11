@@ -100,7 +100,14 @@ export async function getSanitySiteSettings() {
       internshipNoticeText,
       internshipCourses,
       contactEmail,
-      contactPhone
+      contactPhone,
+      whatsappNumber,
+      address,
+      facebook,
+      instagram,
+      linkedin,
+      youtube,
+      twitter
     }`;
     const settings = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
     return settings || null;
