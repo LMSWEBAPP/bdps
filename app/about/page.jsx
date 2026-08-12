@@ -1,62 +1,32 @@
 'use client';
 
-import { Award, GraduationCap, Users, CheckCircle2, ShieldCheck, Cpu, Briefcase, BookOpen } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Award, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
+import DynamicIcon from '@/components/DynamicIcon';
+import { DEFAULT_ABOUT_PAGE } from '@/app/api/about-page/route';
 
 export default function VisitorAboutPage() {
-  const branding = {
-    title: 'BDPS Computer Education',
-    shortName: 'BDPS',
-    tagline: 'Empowering Kakinada with professional computer applications and programming literacy since 2006.',
-    establishedYear: 2006
-  };
+  const [pageData, setPageData] = useState(DEFAULT_ABOUT_PAGE);
 
-  const stats = [
-    { 
-      label: 'Years of Legacy', 
-      value: '20', 
-      suffix: '+', 
-      description: 'Years of continuous IT education & academic trust in Kakinada.' 
-    },
-    { 
-      label: 'Graduated Students', 
-      value: '12,000', 
-      suffix: '+', 
-      description: 'Students trained in desktop software, diplomas & coding.' 
-    },
-    { 
-      label: 'Hiring Partners', 
-      value: '800', 
-      suffix: '+', 
-      description: 'Registered IT MNCs, banks & local enterprise partners.' 
-    },
-    { 
-      label: 'Placement Success', 
-      value: '94', 
-      suffix: '%', 
-      description: 'Career transition & job referral success rate.' 
-    }
-  ];
+  useEffect(() => {
+    fetch('/api/about-page', { cache: 'no-store' })
+      .then((res) => res.json())
+      .then((res) => {
+        if (res.success && res.data) {
+          setPageData(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
-  const beliefs = [
-    {
-      title: 'Practical Lab-First Learning',
-      desc: 'We focus heavily on hands-on desktop configurations, spreadsheets, data structures, and capstone project modules rather than mere syntax memorisation.',
-      icon: <GraduationCap size={22} className="icon-orange" />
-    },
-    {
-      title: 'Industry Veteran Faculty',
-      desc: 'Our senior mentors bring 10+ years of active technical training experience specialized in diplomas, web stack, database engines, and accounting systems.',
-      icon: <Users size={22} className="icon-orange" />
-    },
-    {
-      title: 'Dedicated Placement Support',
-      desc: 'We assist with technical resume building, mock viva-voce presentation preparation, and coordinate direct job referrals with hiring companies.',
-      icon: <Award size={22} className="icon-orange" />
-    }
-  ];
+  const stats = (pageData.stats && pageData.stats.length > 0) ? pageData.stats : DEFAULT_ABOUT_PAGE.stats;
+  const beliefs = (pageData.beliefs && pageData.beliefs.length > 0) ? pageData.beliefs : DEFAULT_ABOUT_PAGE.beliefs;
+  const storyParagraphs = (pageData.storyParagraphs && pageData.storyParagraphs.length > 0) ? pageData.storyParagraphs : DEFAULT_ABOUT_PAGE.storyParagraphs;
+  const highlights = (pageData.highlightsList && pageData.highlightsList.length > 0) ? pageData.highlightsList : DEFAULT_ABOUT_PAGE.highlightsList;
+  const spotlightPillars = (pageData.spotlightPillars && pageData.spotlightPillars.length > 0) ? pageData.spotlightPillars : DEFAULT_ABOUT_PAGE.spotlightPillars;
 
   return (
     <div className="visitor-theme">
@@ -66,11 +36,11 @@ export default function VisitorAboutPage() {
       <section className="page-banner-header">
         <div className="page-banner-container">
           <div className="support-tag">
-            <ShieldCheck size={14} /> Established 2006 • Kakinada HQ
+            <ShieldCheck size={14} /> {pageData.bannerBadge || 'Established 2006 • Kakinada HQ'}
           </div>
-          <h1 className="page-banner-title">About {branding.shortName}</h1>
+          <h1 className="page-banner-title">{pageData.bannerTitle || 'About BDPS'}</h1>
           <p className="page-banner-desc">
-            Empowering tech aspirants with practical computing skills, industry certifications, and career launchpads.
+            {pageData.bannerDesc || 'Empowering tech aspirants with practical computing skills, industry certifications, and career launchpads.'}
           </p>
         </div>
       </section>
@@ -81,60 +51,48 @@ export default function VisitorAboutPage() {
         <section className="about-grid">
           <div>
             <div className="about-badge-header">
-              <SparklesIcon /> 20+ Years of Academic Trust
+              <SparklesIcon /> {pageData.legacyBadge || '20+ Years of Academic Trust'}
             </div>
             <h2 className="about-heading">
-              Over {new Date().getFullYear() - branding.establishedYear} Years of Software Training Excellence
+              {pageData.legacyHeading || 'Over 20 Years of Software Training Excellence'}
             </h2>
-            <p className="about-paragraph">
-              {branding.title} ({branding.shortName}) has grown to become Kakinada's premier training hub for computer applications, financial accounting, and software programming. We have successfully trained and graduated over 12,000 students into software engineering, office administration, and commercial accounting roles.
-            </p>
-            <p className="about-paragraph">
-              Through structured interactive study plans, direct mentor guidance, and 100% practical lab practice, we deliver a learning platform that bridges the gap between college curricula and industry job requirements.
-            </p>
+
+            {storyParagraphs.map((para, pIdx) => (
+              <p key={pIdx} className="about-paragraph">
+                {para}
+              </p>
+            ))}
 
             <div className="about-highlights-list">
-              <div className="about-highlight-item">
-                <CheckCircle2 size={18} className="icon-orange" />
-                <span>Government Recognized & Industry Certified Diplomas</span>
-              </div>
-              <div className="about-highlight-item">
-                <CheckCircle2 size={18} className="icon-orange" />
-                <span>24/7 Access to BDPS AI Tutor for Instant Doubts Resolution</span>
-              </div>
-              <div className="about-highlight-item">
-                <CheckCircle2 size={18} className="icon-orange" />
-                <span>100% Hands-on Desktop Lab Configurations for Every Student</span>
-              </div>
+              {highlights.map((item, hIdx) => (
+                <div key={hIdx} className="about-highlight-item">
+                  <CheckCircle2 size={18} className="icon-orange" />
+                  <span>{item}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Featured Trust Spotlight Box */}
           <div className="about-featured-card">
             <div className="ai-tutor-badge">
-              <Award size={14} /> Premier Institute
+              <Award size={14} /> {pageData.spotlightBadge || 'Premier Institute'}
             </div>
-            <h3 className="bento-card-title-dark">Why Kakinada Trusts BDPS</h3>
+            <h3 className="bento-card-title-dark">{pageData.spotlightTitle || 'Why Kakinada Trusts BDPS'}</h3>
             <p className="bento-card-desc-dark">
-              From high school graduates to degree students and working professionals, our flexible morning, afternoon, and evening batches fit every schedule.
+              {pageData.spotlightDesc || 'From high school graduates to degree students and working professionals, our flexible morning, afternoon, and evening batches fit every schedule.'}
             </p>
             
             <div className="support-pillars-grid support-grid-none">
-              <div className="support-pillar-card">
-                <Cpu size={20} className="icon-orange" />
-                <div>
-                  <h5 className="card-heading-light">Modern Computer Labs</h5>
-                  <p className="card-desc-light">High-speed workstations with latest software</p>
+              {spotlightPillars.map((p, sIdx) => (
+                <div key={sIdx} className="support-pillar-card">
+                  <DynamicIcon name={p.icon || 'Cpu'} size={20} className="icon-orange" />
+                  <div>
+                    <h5 className="card-heading-light">{p.title}</h5>
+                    <p className="card-desc-light">{p.desc}</p>
+                  </div>
                 </div>
-              </div>
-
-              <div className="support-pillar-card">
-                <Briefcase size={20} className="icon-orange" />
-                <div>
-                  <h5 className="card-heading-light">Job Placement Desk</h5>
-                  <p className="card-desc-light">Direct referrals to 800+ hiring partners</p>
-                </div>
-              </div>
+              ))}
             </div>
 
             <Link href="/courses" className="btn-explore">
@@ -148,7 +106,7 @@ export default function VisitorAboutPage() {
           <div className="about-stats-grid-4">
             {stats.map((s, idx) => (
               <div key={idx} className="about-stat-card-rich">
-                <div className="about-stat-number">{s.value}{s.suffix}</div>
+                <div className="about-stat-number">{s.value}{s.suffix || '+'}</div>
                 <div className="about-stat-title">{s.label}</div>
                 <div className="about-stat-subdesc">{s.description}</div>
               </div>
@@ -159,9 +117,13 @@ export default function VisitorAboutPage() {
         {/* Core Beliefs Section */}
         <section className="bento-section">
           <div className="section-header-center">
-            <span className="section-subtitle-tag">OUR CORE BELIEFS</span>
+            <span className="section-subtitle-tag">{pageData.beliefsSubtitle || 'OUR CORE BELIEFS'}</span>
             <h2 className="section-title">
-              Why Students Choose <span className="section-title-accent">BDPS</span>
+              {pageData.beliefsTitle ? (
+                <span>{pageData.beliefsTitle}</span>
+              ) : (
+                <>Why Students Choose <span className="section-title-accent">BDPS</span></>
+              )}
             </h2>
           </div>
 
@@ -169,7 +131,7 @@ export default function VisitorAboutPage() {
             {beliefs.map((b, i) => (
               <div key={i} className="belief-card-clean">
                 <div className="belief-icon-box">
-                  {b.icon}
+                  <DynamicIcon name={b.icon || 'GraduationCap'} size={22} className="icon-orange" />
                 </div>
                 <h3 className="bento-card-title">{b.title}</h3>
                 <p className="bento-card-desc">{b.desc}</p>

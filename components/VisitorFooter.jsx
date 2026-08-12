@@ -2,8 +2,27 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { MapPin, Phone, Mail, Facebook, Twitter, Linkedin, Youtube, Instagram, ArrowRight, ShieldCheck, Briefcase } from 'lucide-react';
+import { MapPin, Phone, Mail, Facebook, Twitter, Linkedin, Youtube, Instagram, ArrowRight, ShieldCheck } from 'lucide-react';
 import InternshipModal from './forms/InternshipModal';
+
+const DEFAULT_COURSE_LINKS = [
+  { label: 'PGDCA Diploma', href: '/courses' },
+  { label: 'Core Java Certification', href: '/courses' },
+  { label: 'Tally Prime Accounting', href: '/courses' },
+  { label: 'C Language & Web Dev', href: '/courses' },
+  { label: 'Academic Projects Lab', href: '/courses' }
+];
+
+const DEFAULT_QUICK_LINKS = [
+  { label: 'Apply for Internship', href: '/courses', isModal: true },
+  { label: 'Certificate Verification', href: '/verify-certificate', isModal: false },
+  { label: 'Job Openings & Placements', href: '/jobs', isModal: false },
+  { label: 'Upcoming Batches', href: '/courses', isModal: false },
+  { label: 'About BDPS', href: '/about', isModal: false },
+  { label: 'Services Offered', href: '/courses', isModal: false },
+  { label: 'Student Reviews', href: '/', isModal: false },
+  { label: 'Contact Us', href: '/contact', isModal: false }
+];
 
 export default function VisitorFooter() {
   const [internshipModalOpen, setInternshipModalOpen] = useState(false);
@@ -24,41 +43,35 @@ export default function VisitorFooter() {
   const phone = siteSettings?.contactPhone || '+91 85001 08016';
   const email = siteSettings?.contactEmail || 'bdpskkd@gmail.com';
   const address = siteSettings?.address || 'Flat No. 1, Sai Prameela Apartment, B-Block, Backside Ulavacharu Restaurant, Nagamallithota Junction, Pithapuram Road, Kakinada - 533003';
+  const tagline = siteSettings?.footerTagline || 'Learn Today | 🚀 Lead Tomorrow | 🌍 Transform Tomorrow';
+  const showCsr = siteSettings?.footerShowCsr !== false;
+  const csrText = siteSettings?.footerCsrText || '🤝 CSR Initiatives in Collaboration with Embracing Humanity Foundation (EHF)';
+  const accreditation = siteSettings?.footerAccreditationText || 'ISO 9001:2015 Accredited';
+  const copyrightText = siteSettings?.footerCopyrightText || 'All Rights Reserved.';
 
   const branding = {
     title: 'BDPS Computer Education',
     shortName: 'BDPS',
-    tagline: 'Learn Today | 🚀 Lead Tomorrow | 🌍 Transform Tomorrow',
+    tagline,
     phone,
     email,
     logoText: 'BDPS'
   };
 
-  const courseLinks = [
-    { label: 'PGDCA Diploma', href: '/courses' },
-    { label: 'Core Java Certification', href: '/courses' },
-    { label: 'Tally Prime Accounting', href: '/courses' },
-    { label: 'C Language & Web Dev', href: '/courses' },
-    { label: 'Academic Projects Lab', href: '/courses' }
-  ];
+  const courseLinks = (siteSettings?.footerPopularCourses && siteSettings.footerPopularCourses.length > 0)
+    ? siteSettings.footerPopularCourses
+    : DEFAULT_COURSE_LINKS;
 
-  const quickLinks = [
-    { label: 'Apply for Internship', isModal: true },
-    { label: 'Certificate Verification', href: '/verify-certificate' },
-    { label: 'Job Openings & Placements', href: '/jobs' },
-    { label: 'Upcoming Batches', href: '/courses' },
-    { label: `About ${branding.shortName}`, href: '/about' },
-    { label: 'Services Offered', href: '/courses' },
-    { label: 'Student Reviews', href: '/' },
-    { label: 'Contact Us', href: '/contact' }
-  ];
+  const quickLinks = (siteSettings?.footerQuickLinks && siteSettings.footerQuickLinks.length > 0)
+    ? siteSettings.footerQuickLinks
+    : DEFAULT_QUICK_LINKS;
 
   const socialLinks = [
-    { icon: <Facebook size={18} />, href: siteSettings?.facebook || 'https://facebook.com', label: 'Facebook' },
-    { icon: <Twitter size={18} />, href: siteSettings?.twitter || 'https://twitter.com', label: 'Twitter' },
-    { icon: <Linkedin size={18} />, href: siteSettings?.linkedin || 'https://linkedin.com', label: 'LinkedIn' },
-    { icon: <Youtube size={18} />, href: siteSettings?.youtube || 'https://youtube.com', label: 'YouTube' },
-    { icon: <Instagram size={18} />, href: siteSettings?.instagram || 'https://instagram.com', label: 'Instagram' }
+    { icon: <Facebook size={18} />, href: siteSettings?.facebook || 'https://facebook.com/bdpscomputers', label: 'Facebook' },
+    { icon: <Twitter size={18} />, href: siteSettings?.twitter || 'https://twitter.com/bdpscomputers', label: 'Twitter' },
+    { icon: <Linkedin size={18} />, href: siteSettings?.linkedin || 'https://linkedin.com/company/bdps', label: 'LinkedIn' },
+    { icon: <Youtube size={18} />, href: siteSettings?.youtube || 'https://youtube.com/@bdpscomputers', label: 'YouTube' },
+    { icon: <Instagram size={18} />, href: siteSettings?.instagram || 'https://instagram.com/bdpscomputers', label: 'Instagram' }
   ];
 
   return (
@@ -75,9 +88,11 @@ export default function VisitorFooter() {
           <p className="footer-tagline">
             {branding.tagline}
           </p>
-          <p className="footer-csr-tag">
-            🤝 CSR Initiatives in Collaboration with Embracing Humanity Foundation (EHF)
-          </p>
+          {showCsr && (
+            <p className="footer-csr-tag">
+              {csrText}
+            </p>
+          )}
           <div className="footer-social-row">
             {socialLinks.map((social, idx) => (
               <a
@@ -102,7 +117,7 @@ export default function VisitorFooter() {
           <ul className="footer-links-list">
             {courseLinks.map((course, idx) => (
               <li key={idx}>
-                <Link href={course.href} className="footer-link-item">
+                <Link href={course.href || '/courses'} className="footer-link-item">
                   <ArrowRight size={12} className="contact-icon" /> {course.label}
                 </Link>
               </li>
@@ -127,7 +142,7 @@ export default function VisitorFooter() {
                     <ArrowRight size={12} className="contact-icon" /> {link.label}
                   </button>
                 ) : (
-                  <Link href={link.href} className="footer-link-item">
+                  <Link href={link.href || '/'} className="footer-link-item">
                     <ArrowRight size={12} className="contact-icon" /> {link.label}
                   </Link>
                 )}
@@ -154,9 +169,11 @@ export default function VisitorFooter() {
               <Mail size={18} className="footer-contact-icon" />
               <a href={`mailto:${email}`} className="footer-contact-link">{email}</a>
             </div>
-            <div className="footer-accreditation">
-              <ShieldCheck size={16} /> ISO 9001:2015 Accredited
-            </div>
+            {accreditation && (
+              <div className="footer-accreditation">
+                <ShieldCheck size={16} /> {accreditation}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -164,7 +181,7 @@ export default function VisitorFooter() {
       {/* Bottom Bar */}
       <div className="footer-bottom-bar">
         <div>
-          © {currentYear} {branding.title}. All Rights Reserved.
+          © {currentYear} {branding.title}. {copyrightText}
         </div>
         <div className="footer-bottom-links">
           <Link href="/contact" className="footer-bottom-link">Privacy Policy</Link>

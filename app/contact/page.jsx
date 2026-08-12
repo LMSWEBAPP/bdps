@@ -2,48 +2,71 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { MapPin, Phone, Mail, Send, CheckCircle2, Clock, Building, Handshake } from 'lucide-react';
+import { MapPin, Phone, Mail, Send, CheckCircle2, Clock, Handshake } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
+
+const DEFAULT_BRANCH = {
+  name: 'Kakinada Campus (Corporate HQ)',
+  address: 'Flat No. 1, Sai Prameela Apartment, B-Block, Backside Ulavacharu Restaurant, Nagamallithota Junction, Pithapuram Road, Kakinada - 533003',
+  phone: '+91 85001 08016',
+  email: 'bdpskkd@gmail.com',
+  timings: 'Mon - Sat: 7:30 AM - 8:30 PM IST',
+  description: 'Visit our primary campus in Kakinada to review lab setups, interact with faculty mentors, or request course counseling.',
+  mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3815.7196022838426!2d82.25141071112674!3d16.988220084364417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3828414ca0cd97%3A0x88981e6992d9f2d1!2sNagamallithota%20Junction%2C%20Kakinada%2C%20Andhra%20Pradesh%20533003!5e0!3m2!1sen!2sin!4v1720000000000!5m2!1sen!2sin'
+};
+
+const DEFAULT_COURSES = [
+  'General Counseling',
+  'Software Development (Full Stack)',
+  'Data Science & AI',
+  'Tally Prime & GST',
+  'PGDCA Diploma'
+];
+
+const DEFAULT_COLLAB_TYPES = [
+  'Campus Placement / Talent Recruitment',
+  'Corporate Employee Upskilling',
+  'Lab & Capstone Project Sponsorship',
+  'Guest Lecture & IEEE Workshops'
+];
 
 function ContactFormContent() {
   const searchParams = useSearchParams();
   const formType = searchParams.get('type') || 'student';
   const isCollab = formType === 'collaboration';
 
-  const [siteSettings, setSiteSettings] = useState(null);
+  const [contactData, setContactData] = useState({
+    studentBannerTitle: 'Contact Our Advisors',
+    studentBannerDesc: 'Get in touch to clear course doubts, check batch timings, or request custom syllabus modules.',
+    collabBannerTitle: 'Corporate & Institutional Collaboration',
+    collabBannerDesc: 'Partner with BDPS to recruit skilled software talent, execute corporate training bootcamps, or sponsor academic project labs.',
+    branches: [DEFAULT_BRANCH],
+    studentCourses: DEFAULT_COURSES,
+    collabTypes: DEFAULT_COLLAB_TYPES
+  });
 
   useEffect(() => {
-    fetch('/api/site-settings', { cache: 'no-store' })
+    fetch('/api/contact-page', { cache: 'no-store' })
       .then(res => res.json())
-      .then(data => {
-        if (data.success && data.settings) {
-          setSiteSettings(data.settings);
+      .then(res => {
+        if (res.success && res.data) {
+          setContactData(res.data);
         }
       })
       .catch(() => {});
   }, []);
 
-  const phone = siteSettings?.contactPhone || '+91 85001 08016';
-  const email = siteSettings?.contactEmail || 'bdpskkd@gmail.com';
-  const address = siteSettings?.address || 'Flat No. 1, Sai Prameela Apartment, B-Block, Backside Ulavacharu Restaurant, Nagamallithota Junction, Pithapuram Road, Kakinada - 533003';
-
-  const branches = [
-    {
-      name: 'Kakinada Campus (Corporate HQ)',
-      address,
-      phone,
-      email,
-      mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3815.7196022838426!2d82.25141071112674!3d16.988220084364417!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a3828414ca0cd97%3A0x88981e6992d9f2d1!2sNagamallithota%20Junction%2C%20Kakinada%2C%20Andhra%20Pradesh%20533003!5e0!3m2!1sen!2sin!4v1720000000000!5m2!1sen!2sin'
-    }
-  ];
+  const branches = (contactData.branches && contactData.branches.length > 0) ? contactData.branches : [DEFAULT_BRANCH];
+  const studentCourses = (contactData.studentCourses && contactData.studentCourses.length > 0) ? contactData.studentCourses : DEFAULT_COURSES;
+  const collabTypes = (contactData.collabTypes && contactData.collabTypes.length > 0) ? contactData.collabTypes : DEFAULT_COLLAB_TYPES;
 
   // Forms states
   const [studentForm, setStudentForm] = useState({
     name: '',
     email: '',
     phone: '',
-    course: 'General Inquiry',
+    course: studentCourses[0] || 'General Counseling',
     message: ''
   });
 
@@ -52,7 +75,7 @@ function ContactFormContent() {
     contactName: '',
     email: '',
     phone: '',
-    collabType: 'Placement Partnership',
+    collabType: collabTypes[0] || 'Campus Placement / Talent Recruitment',
     message: ''
   });
 
@@ -87,7 +110,7 @@ function ContactFormContent() {
       const data = await res.json();
       if (data.success) {
         setStatus({ loading: false, success: true, error: null });
-        setStudentForm({ name: '', email: '', phone: '', course: 'General Inquiry', message: '' });
+        setStudentForm({ name: '', email: '', phone: '', course: studentCourses[0] || 'General Counseling', message: '' });
       } else {
         setStatus({ loading: false, success: false, error: data.message || 'Submission failed.' });
       }
@@ -121,7 +144,7 @@ function ContactFormContent() {
       const data = await res.json();
       if (data.success) {
         setStatus({ loading: false, success: true, error: null });
-        setCollabForm({ companyName: '', contactName: '', email: '', phone: '', collabType: 'Placement Partnership', message: '' });
+        setCollabForm({ companyName: '', contactName: '', email: '', phone: '', collabType: collabTypes[0] || 'Campus Placement / Talent Recruitment', message: '' });
       } else {
         setStatus({ loading: false, success: false, error: data.message || 'Submission failed.' });
       }
@@ -138,12 +161,12 @@ function ContactFormContent() {
       <section className="page-banner-header">
         <div className="page-banner-container">
           <h1 className="page-banner-title">
-            {isCollab ? 'Corporate & Institutional Collaboration' : 'Contact Our Advisors'}
+            {isCollab ? (contactData.collabBannerTitle || 'Corporate & Institutional Collaboration') : (contactData.studentBannerTitle || 'Contact Our Advisors')}
           </h1>
           <p className="page-banner-desc">
             {isCollab
-              ? 'Partner with BDPS to recruit skilled software talent, execute corporate training bootcamps, or sponsor academic project labs.'
-              : 'Get in touch to clear course doubts, check batch timings, or request custom syllabus modules.'
+              ? (contactData.collabBannerDesc || 'Partner with BDPS to recruit skilled software talent, execute corporate training bootcamps, or sponsor academic project labs.')
+              : (contactData.studentBannerDesc || 'Get in touch to clear course doubts, check batch timings, or request custom syllabus modules.')
             }
           </p>
         </div>
@@ -157,46 +180,54 @@ function ContactFormContent() {
             {branches.map((branch, idx) => (
               <div key={idx} className="contact-card-inner">
                 <h3 className="contact-card-title">
-                  {isCollab ? 'Corporate Alliances Desk' : branch.name}
+                  {isCollab ? 'Corporate Alliances Desk' : (branch.name || 'Campus Location')}
                 </h3>
                 <p className="about-paragraph">
                   {isCollab
                     ? 'BDPS works closely with software enterprises, accounting firms, and technical colleges to bridge academic preparation and hiring needs.'
-                    : 'Visit our primary campus in Kakinada to review lab setups, interact with faculty mentors, or request course counseling.'
+                    : (branch.description || 'Visit our primary campus in Kakinada to review lab setups, interact with faculty mentors, or request course counseling.')
                   }
                 </p>
 
                 <div className="contact-info-list">
-                  <div className="contact-detail-row">
-                    <MapPin size={18} className="contact-icon" />
-                    <span>{branch.address}</span>
-                  </div>
-                  <div className="contact-detail-row">
-                    <Phone size={18} className="contact-icon" />
-                    <a href={`tel:${branch.phone}`} className="footer-contact-link">{branch.phone}</a>
-                  </div>
-                  <div className="contact-detail-row">
-                    <Mail size={18} className="contact-icon" />
-                    <a href={`mailto:${branch.email}`} className="footer-contact-link">{branch.email}</a>
-                  </div>
+                  {branch.address && (
+                    <div className="contact-detail-row">
+                      <MapPin size={18} className="contact-icon" />
+                      <span>{branch.address}</span>
+                    </div>
+                  )}
+                  {branch.phone && (
+                    <div className="contact-detail-row">
+                      <Phone size={18} className="contact-icon" />
+                      <a href={`tel:${branch.phone}`} className="footer-contact-link">{branch.phone}</a>
+                    </div>
+                  )}
+                  {branch.email && (
+                    <div className="contact-detail-row">
+                      <Mail size={18} className="contact-icon" />
+                      <a href={`mailto:${branch.email}`} className="footer-contact-link">{branch.email}</a>
+                    </div>
+                  )}
                   <div className="contact-detail-row">
                     <Clock size={18} className="contact-icon" />
-                    <span><strong>Office Timings:</strong> Mon - Sat: 7:30 AM - 8:30 PM IST</span>
+                    <span><strong>Office Timings:</strong> {branch.timings || 'Mon - Sat: 7:30 AM - 8:30 PM IST'}</span>
                   </div>
                 </div>
 
                 {/* Map Wrapper Expands to Fill Available Height */}
-                <div className="contact-map-wrapper">
-                  <iframe
-                    src={branch.mapEmbedUrl}
-                    width="100%"
-                    height="100%"
-                    className="contact-map-frame"
-                    allowFullScreen=""
-                    loading="lazy"
-                    title="BDPS Location Map"
-                  />
-                </div>
+                {branch.mapEmbedUrl && (
+                  <div className="contact-map-wrapper">
+                    <iframe
+                      src={branch.mapEmbedUrl}
+                      width="100%"
+                      height="100%"
+                      className="contact-map-frame"
+                      allowFullScreen=""
+                      loading="lazy"
+                      title={`${branch.name || 'BDPS'} Location Map`}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -282,10 +313,9 @@ function ContactFormContent() {
                     onChange={(e) => setCollabForm({ ...collabForm, collabType: e.target.value })}
                     className="form-select-plain"
                   >
-                    <option value="Placement Partnership">Campus Placement / Talent Recruitment</option>
-                    <option value="Corporate Upskilling">Corporate Employee Upskilling</option>
-                    <option value="Lab Sponsorship">Lab & Capstone Project Sponsorship</option>
-                    <option value="Guest Lecture">Guest Lecture & IEEE Workshops</option>
+                    {collabTypes.map((type, idx) => (
+                      <option key={idx} value={type}>{type}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -358,11 +388,9 @@ function ContactFormContent() {
                     onChange={(e) => setStudentForm({ ...studentForm, course: e.target.value })}
                     className="form-select-plain"
                   >
-                    <option value="General Inquiry">General Counseling</option>
-                    <option value="Software Development">Software Development (Full Stack)</option>
-                    <option value="Data Science & AI">Data Science & AI</option>
-                    <option value="Tally Prime">Tally Prime & GST</option>
-                    <option value="PGDCA Diploma">PGDCA Diploma</option>
+                    {studentCourses.map((crs, idx) => (
+                      <option key={idx} value={crs}>{crs}</option>
+                    ))}
                   </select>
                 </div>
 

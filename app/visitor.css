@@ -200,18 +200,65 @@ html, body {
   color: rgba(255, 255, 255, 0.3);
 }
 
+/* ========================================================
+   Top Announcement Banner with Close Button
+   ======================================================== */
+.visitor-announcement-bar {
+  background: linear-gradient(90deg, #BD601C 0%, #E87A28 100%);
+  color: #ffffff;
+  padding: 6px 18px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 32px;
+}
+
+.announcement-text {
+  text-align: center;
+  padding-right: 32px;
+  padding-left: 32px;
+  line-height: 1.35;
+}
+
+.announcement-close-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.18);
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.announcement-close-btn:hover {
+  background: rgba(0, 0, 0, 0.4);
+  transform: translateY(-50%) scale(1.1);
+}
+
 .visitor-navbar {
   background-color: #ffffff;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
   z-index: 999;
-  padding: 10px 24px;
+  padding: 8px 16px;
   width: 100%;
 }
 
 .navbar-container {
-  max-width: 1400px;
+  max-width: 1440px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -223,7 +270,7 @@ html, body {
 .navbar-logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   text-decoration: none;
   flex-shrink: 0;
 }
@@ -231,10 +278,10 @@ html, body {
 .logo-badge {
   background-color: var(--brand-orange);
   color: #ffffff;
-  padding: 8px 12px;
+  padding: 7px 11px;
   border-radius: 6px;
   font-weight: 800;
-  font-size: 20px;
+  font-size: 18px;
   letter-spacing: 0.5px;
   box-shadow: 0 4px 10px rgba(189, 96, 28, 0.2);
 }
@@ -245,36 +292,41 @@ html, body {
 }
 
 .logo-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
   color: var(--brand-orange);
   line-height: 1.1;
 }
 
 .logo-subtitle {
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 600;
   color: var(--muted);
   letter-spacing: 0.5px;
 }
 
 .header-search-form {
-  flex: 0 1 170px;
+  flex: 0 1 150px;
   position: relative;
   display: flex;
   align-items: center;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
+}
+
+.header-search-form:focus-within {
+  flex: 0 1 180px;
 }
 
 .search-input {
   width: 100%;
-  padding: 7px 32px 7px 12px;
-  border-radius: 30px;
-  border: 1px solid rgba(189, 96, 28, 0.2);
+  height: 33px;
+  padding: 6px 28px 6px 11px;
+  border-radius: 20px;
+  border: 1px solid rgba(189, 96, 28, 0.22);
   outline: none;
-  font-size: 12.5px;
+  font-size: 12px;
   background-color: var(--brand-bg);
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .search-input:focus {
@@ -285,7 +337,7 @@ html, body {
 
 .search-btn {
   position: absolute;
-  right: 10px;
+  right: 8px;
   background: none;
   border: none;
   color: var(--brand-orange);
@@ -297,7 +349,7 @@ html, body {
 
 .desktop-nav {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
   flex-shrink: 0;
 }
@@ -310,11 +362,11 @@ html, body {
   color: var(--text);
   text-decoration: none;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12.5px;
   display: flex;
   align-items: center;
-  gap: 3px;
-  padding: 6px 2px;
+  gap: 2px;
+  padding: 6px 3px;
   white-space: nowrap;
   transition: color 0.2s ease;
 }
@@ -351,6 +403,159 @@ html, body {
   background-color: rgba(255, 117, 24, 0.08);
   color: var(--brand-orange-bright);
   padding-left: 22px;
+}
+
+/* ========================================================
+   Mega Main Menu Dropdown for All Courses
+   ======================================================== */
+.nav-mega-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-40%);
+  width: min(680px, 92vw);
+  background-color: #ffffff;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  padding: 16px 18px 14px 18px;
+  border: 1px solid var(--border);
+  z-index: 1100;
+  animation: megaMenuSlideDown 0.18s ease-out forwards;
+}
+
+@keyframes megaMenuSlideDown {
+  from {
+    opacity: 0;
+    transform: translate(-40%, -8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-40%, 0);
+  }
+}
+
+.mega-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+.mega-menu-header-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: #64748B;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.mega-menu-header-badge {
+  background-color: rgba(232, 122, 40, 0.12);
+  color: var(--brand-orange);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 12px;
+}
+
+.mega-menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px 14px;
+  max-height: 360px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.mega-menu-grid::-webkit-scrollbar {
+  width: 5px;
+}
+.mega-menu-grid::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+.mega-menu-course-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: #1E293B;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  transition: all 0.15s ease;
+}
+
+.mega-menu-course-item:hover {
+  background-color: rgba(232, 122, 40, 0.08);
+  color: var(--brand-orange);
+  transform: translateX(3px);
+}
+
+.mega-course-bullet {
+  color: var(--brand-orange);
+  font-size: 14px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.mega-course-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mega-menu-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mega-menu-footer-hint {
+  font-size: 11.5px;
+  color: #64748B;
+  font-weight: 500;
+}
+
+.mega-menu-footer-link {
+  color: var(--brand-orange);
+  font-size: 12.5px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.mega-menu-footer-link:hover {
+  color: #C55310;
+  transform: translateX(2px);
+}
+
+@media (max-width: 768px) {
+  .nav-mega-menu {
+    position: static;
+    transform: none;
+    width: 100%;
+    box-shadow: none;
+    border: none;
+    padding: 8px 0;
+  }
+  .mega-menu-grid {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
 }
 
 .header-cta-group {
@@ -1112,6 +1317,7 @@ html, body {
   height: 100%;
   transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
   width: 100%;
+  cursor: pointer;
 }
 
 .catalog-course-card:hover {
@@ -3710,6 +3916,29 @@ html, body {
 }
 
 .form-select-plain:focus {
+  border-color: #FF7518 !important;
+  box-shadow: 0 0 0 3px rgba(255, 117, 24, 0.15) !important;
+}
+
+.form-select-with-icon {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  height: 44px;
+  padding: 0 32px 0 44px !important;
+  border: 1.5px solid #E9E1DD;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  color: #1C1917;
+  background-color: #FFFFFF;
+  transition: all 0.2s ease;
+  outline: none;
+  cursor: pointer;
+  appearance: auto;
+}
+
+.form-select-with-icon:focus {
   border-color: #FF7518 !important;
   box-shadow: 0 0 0 3px rgba(255, 117, 24, 0.15) !important;
 }

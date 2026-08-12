@@ -7,16 +7,30 @@ import { heroSlideSchema } from './heroSlide';
 import { jobPostingSchema } from './jobPosting';
 import { certificateSchema } from './certificate';
 import { internshipApplicantSchema } from './internshipApplicant';
+import { homePageSchema } from './homePage';
+import { aboutPageSchema } from './aboutPage';
+import { contactPageSchema } from './contactPage';
+import { testimonialSchema } from './testimonial';
 
 export const schemaTypes = [
-  courseSchema,
+  // Global & Page Singletons
   siteSettingsSchema,
-  popupAdSchema,
-  leadSubmissionSchema,
-  stipendApplicationSchema,
+  homePageSchema,
+  aboutPageSchema,
+  contactPageSchema,
+
+  // Collections & Catalog
+  courseSchema,
+  testimonialSchema,
   heroSlideSchema,
+  popupAdSchema,
   jobPostingSchema,
   certificateSchema,
+
+  // Applications & Leads
+  leadSubmissionSchema,
+  stipendApplicationSchema,
   internshipApplicantSchema,
 ];
+
 

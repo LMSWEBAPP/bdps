@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
-  Search, ChevronDown, Award, Phone, Mail, Clock, MapPin, Menu, X, ShieldCheck, Briefcase
+  Search, ChevronDown, Award, Phone, Mail, Clock, MapPin, Menu, X, ShieldCheck, Briefcase, ArrowRight, BookOpen
 } from 'lucide-react';
 import StipendRegistrationModal from './StipendRegistrationModal';
 import InternshipModal from './forms/InternshipModal';
@@ -18,13 +18,19 @@ export default function VisitorHeader() {
   const [internshipModalOpen, setInternshipModalOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [mobileCoursesExpanded, setMobileCoursesExpanded] = useState(false);
+  const [announcementClosed, setAnnouncementClosed] = useState(false);
 
-  // Dynamic Site Settings from Sanity CMS (Zero flicker with sessionStorage cache)
+  // Dynamic Site Settings & Live Courses strictly from Sanity CMS
   const [siteSettings, setSiteSettings] = useState(null);
+  const [liveCourses, setLiveCourses] = useState([]);
 
   useEffect(() => {
     // Check local session cache for instant zero-flash rendering
     try {
+      if (sessionStorage.getItem('bdps_announcement_closed') === 'true') {
+        setAnnouncementClosed(true);
+      }
       const cachedActive = sessionStorage.getItem('bdps_stipend_active');
       if (cachedActive !== null) {
         setSiteSettings({
@@ -34,7 +40,7 @@ export default function VisitorHeader() {
       }
     } catch (e) {}
 
-    // Fresh fetch from Sanity API
+    // Fresh fetch site settings
     fetch('/api/site-settings', { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
@@ -49,7 +55,24 @@ export default function VisitorHeader() {
         }
       })
       .catch(err => console.error('Error fetching site settings:', err));
+
+    // Fetch live courses for mega dropdown
+    fetch('/api/courses', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.courses) && data.courses.length > 0) {
+          setLiveCourses(data.courses);
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  const handleCloseAnnouncement = () => {
+    setAnnouncementClosed(true);
+    try {
+      sessionStorage.setItem('bdps_announcement_closed', 'true');
+    } catch (e) {}
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -60,7 +83,11 @@ export default function VisitorHeader() {
 
   const navLinks = [
     { title: 'Home', href: '/' },
-    { title: 'All Courses', href: '/courses' },
+    { 
+      title: 'All Courses', 
+      href: '/courses',
+      isMegaMenu: true 
+    },
     { title: 'Jobs', href: '/jobs' },
     { title: 'Verify Certificate', href: '/verify-certificate' },
     { title: 'About Us', href: '/about' },
@@ -79,6 +106,22 @@ export default function VisitorHeader() {
 
   return (
     <>
+      {/* Optional Top Announcement Banner with Close Button */}
+      {siteSettings?.announcementBanner && !announcementClosed && (
+        <div className="visitor-announcement-bar">
+          <span className="announcement-text">{siteSettings.announcementBanner}</span>
+          <button
+            type="button"
+            onClick={handleCloseAnnouncement}
+            className="announcement-close-btn"
+            aria-label="Close Announcement Banner"
+            title="Dismiss Announcement"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
+
       {/* Top Contact Bar */}
       <div className="visitor-top-bar">
         <div className="top-bar-contact">
@@ -91,11 +134,11 @@ export default function VisitorHeader() {
         </div>
         <div className="top-bar-links-group">
           <Link href="/about" className="top-bar-sublink">
-            Our Legacy (Since 2006)
+            {siteSettings?.headerTopBarLegacyText || 'Our Legacy (Since 2006)'}
           </Link>
           <span className="top-bar-divider">|</span>
           <Link href="/contact?type=collaboration" className="top-bar-sublink">
-            Placement Alliances
+            {siteSettings?.headerTopBarAlliancesText || 'Placement Alliances'}
           </Link>
         </div>
       </div>
@@ -105,10 +148,10 @@ export default function VisitorHeader() {
         <div className="navbar-container">
           {/* Logo */}
           <Link href="/" className="navbar-logo">
-            <div className="logo-badge">BDPS</div>
+            <div className="logo-badge">{siteSettings?.headerLogoBadge || 'BDPS'}</div>
             <div className="logo-title-group">
-              <span className="logo-title">BDPS Computer Education</span>
-              <span className="logo-subtitle">COMPUTER TRAINING INSTITUTE</span>
+              <span className="logo-title">{siteSettings?.headerBrandTitle || 'BDPS Computer Education'}</span>
+              <span className="logo-subtitle">{siteSettings?.headerBrandSubtitle || 'COMPUTER TRAINING INSTITUTE'}</span>
             </div>
           </Link>
 
@@ -132,7 +175,7 @@ export default function VisitorHeader() {
               <div
                 key={idx}
                 className="nav-item-wrapper"
-                onMouseEnter={() => link.dropdown && setActiveDropdown(idx)}
+                onMouseEnter={() => (link.dropdown || link.isMegaMenu) && setActiveDropdown(idx)}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <Link
@@ -140,9 +183,10 @@ export default function VisitorHeader() {
                   className={`nav-item-link ${pathname === link.href ? 'active' : ''}`}
                 >
                   {link.title}
-                  {link.dropdown && <ChevronDown size={14} />}
+                  {(link.dropdown || link.isMegaMenu) && <ChevronDown size={14} />}
                 </Link>
 
+                {/* Regular Dropdown */}
                 {link.dropdown && activeDropdown === idx && (
                   <div className="nav-dropdown-menu">
                     {link.dropdown.map((item, subIdx) => (
@@ -154,6 +198,39 @@ export default function VisitorHeader() {
                         {item.label}
                       </Link>
                     ))}
+                  </div>
+                )}
+
+                {/* Mega Main Menu for All Courses */}
+                {link.isMegaMenu && activeDropdown === idx && (
+                  <div className="nav-mega-menu">
+                    <div className="mega-menu-header">
+                      <span className="mega-menu-header-title">Our Flagship IT Programs</span>
+                      <span className="mega-menu-header-badge">{liveCourses.length} Courses Available</span>
+                    </div>
+
+                    <div className="mega-menu-grid">
+                      {liveCourses.map((c, cIdx) => (
+                        <Link
+                          key={cIdx}
+                          href={`/courses/${c.id || c._id}`}
+                          className="mega-menu-course-item"
+                          title={c.title}
+                        >
+                          <span className="mega-course-bullet">›</span>
+                          <span className="mega-course-title">{c.title}</span>
+                        </Link>
+                      ))}
+                    </div>
+
+                    <div className="mega-menu-footer">
+                      <span className="mega-menu-footer-hint">
+                        💡 100% Practical Computer Labs & Placement Assistance
+                      </span>
+                      <Link href="/courses" className="mega-menu-footer-link">
+                        <span>Explore All Programs</span> <ArrowRight size={13} />
+                      </Link>
+                    </div>
                   </div>
                 )}
               </div>
@@ -205,29 +282,73 @@ export default function VisitorHeader() {
           <div className="mobile-nav-drawer">
             {navLinks.map((link, idx) => (
               <div key={idx} className="mobile-nav-group">
-                <Link
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="mobile-nav-link"
-                >
-                  {link.title}
-                </Link>
-                {link.dropdown && (
-                  <div className="mobile-nav-subgroup">
-                    {link.dropdown.map((item, subIdx) => (
-                      <Link
-                        key={subIdx}
-                        href={item.href}
-                        onClick={() => setMenuOpen(false)}
-                        className="mobile-nav-sublink"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
+                {link.isMegaMenu ? (
+                  <>
+                    <div 
+                      onClick={() => setMobileCoursesExpanded(!mobileCoursesExpanded)}
+                      className="mobile-nav-link"
+                      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                    >
+                      <span>{link.title}</span>
+                      <ChevronDown 
+                        size={16} 
+                        style={{ 
+                          transform: mobileCoursesExpanded ? 'rotate(180deg)' : 'none', 
+                          transition: 'transform 0.2s' 
+                        }} 
+                      />
+                    </div>
+                    {mobileCoursesExpanded && (
+                      <div className="mobile-nav-subgroup">
+                        <Link
+                          href="/courses"
+                          onClick={() => setMenuOpen(false)}
+                          className="mobile-nav-sublink"
+                          style={{ fontWeight: '700', color: 'var(--brand-orange)' }}
+                        >
+                          📁 All Courses Catalog & Syllabus →
+                        </Link>
+                        {liveCourses.map((c, cIdx) => (
+                          <Link
+                            key={cIdx}
+                            href={`/courses/${c.id || c._id}`}
+                            onClick={() => setMenuOpen(false)}
+                            className="mobile-nav-sublink"
+                          >
+                            • {c.title}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="mobile-nav-link"
+                    >
+                      {link.title}
+                    </Link>
+                    {link.dropdown && (
+                      <div className="mobile-nav-subgroup">
+                        {link.dropdown.map((item, subIdx) => (
+                          <Link
+                            key={subIdx}
+                            href={item.href}
+                            onClick={() => setMenuOpen(false)}
+                            className="mobile-nav-sublink"
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             ))}
+
             <div className="mobile-cta-wrapper">
               <form onSubmit={handleSearch} className="mobile-search-form">
                 <input

@@ -1,11 +1,25 @@
 import { defineConfig, Tool } from 'sanity';
 import { structureTool } from 'sanity/structure';
-import { DownloadIcon, RefreshIcon, PublishIcon } from '@sanity/icons';
+import { 
+  DownloadIcon, RefreshIcon, PublishIcon, 
+  CogIcon, HomeIcon, InfoOutlineIcon, PhoneIcon, 
+  BookIcon, CommentIcon, ImageIcon, CaseIcon, UsersIcon, SparklesIcon 
+} from '@sanity/icons';
 import { schemaTypes } from './sanity/schemas';
 import { projectId, dataset } from './lib/sanity.client';
 import LeadExportComponent from './sanity/tools/LeadExportComponent';
 import JobSyncComponent from './sanity/tools/JobSyncComponent';
 import CertificateImportTool from './sanity/tools/CertificateImportTool';
+import SeedContentTool from './sanity/tools/SeedContentTool';
+
+const SINGLETON_TYPES = new Set(['siteSettings', 'homePage', 'aboutPage', 'contactPage']);
+
+const seedContentTool: Tool = {
+  name: 'seed-content',
+  title: 'Pre-Fill Page Content',
+  icon: SparklesIcon,
+  component: SeedContentTool,
+};
 
 const leadExportTool: Tool = {
   name: 'lead-export',
@@ -37,11 +51,129 @@ export default defineConfig({
 
   basePath: '/studio',
 
-  plugins: [structureTool()],
+  plugins: [
+    structureTool({
+      structure: (S) =>
+        S.list()
+          .title('BDPS Content Management')
+          .items([
+            // ⚙️ Global Settings (Locked Singleton)
+            S.listItem()
+              .title('Global Site Settings')
+              .id('siteSettings')
+              .icon(CogIcon)
+              .child(S.document().schemaType('siteSettings').documentId('siteSettings')),
 
-  tools: (prev) => [...prev, leadExportTool, jobSyncTool, certificateImportTool],
+            S.divider(),
+
+            // 📄 Page Singletons (Locked Singletons)
+            S.listItem()
+              .title('Pages & Content')
+              .icon(HomeIcon)
+              .child(
+                S.list()
+                  .title('Manage Page Contents')
+                  .items([
+                    S.listItem()
+                      .title('Home Page Content')
+                      .id('homePage')
+                      .icon(HomeIcon)
+                      .child(S.document().schemaType('homePage').documentId('homePage')),
+                    S.listItem()
+                      .title('About Us Page Content')
+                      .id('aboutPage')
+                      .icon(InfoOutlineIcon)
+                      .child(S.document().schemaType('aboutPage').documentId('aboutPage')),
+                    S.listItem()
+                      .title('Contact Us Page Content')
+                      .id('contactPage')
+                      .icon(PhoneIcon)
+                      .child(S.document().schemaType('contactPage').documentId('contactPage')),
+                  ])
+              ),
+
+            S.divider(),
+
+            // 📦 Collections & Content
+            S.listItem()
+              .title('Courses Catalog')
+              .icon(BookIcon)
+              .schemaType('course')
+              .child(S.documentTypeList('course').title('All Courses')),
+
+            S.listItem()
+              .title('Student Testimonials')
+              .icon(CommentIcon)
+              .schemaType('testimonial')
+              .child(S.documentTypeList('testimonial').title('Student Testimonials')),
+
+            S.listItem()
+              .title('Hero Carousel Slides')
+              .icon(ImageIcon)
+              .schemaType('heroSlide')
+              .child(S.documentTypeList('heroSlide').title('Hero Carousel Slides')),
+
+            S.listItem()
+              .title('Popup Ad Banner')
+              .icon(SparklesIcon)
+              .schemaType('popupAd')
+              .child(S.documentTypeList('popupAd').title('Popup Ads')),
+
+            S.listItem()
+              .title('Job Postings')
+              .icon(CaseIcon)
+              .schemaType('jobPosting')
+              .child(S.documentTypeList('jobPosting').title('Job Postings')),
+
+            S.listItem()
+              .title('Certificates')
+              .icon(PublishIcon)
+              .schemaType('certificate')
+              .child(S.documentTypeList('certificate').title('Student Certificates')),
+
+            S.divider(),
+
+            // 📥 Leads & Applications
+            S.listItem()
+              .title('Inquiries & Leads')
+              .icon(UsersIcon)
+              .child(
+                S.list()
+                  .title('Leads & Applications')
+                  .items([
+                    S.listItem()
+                      .title('Contact & Course Leads')
+                      .schemaType('leadSubmission')
+                      .child(S.documentTypeList('leadSubmission').title('General Leads')),
+                    S.listItem()
+                      .title('Stipend Applications')
+                      .schemaType('stipendApplication')
+                      .child(S.documentTypeList('stipendApplication').title('Stipend Applications')),
+                    S.listItem()
+                      .title('Internship Applicants')
+                      .schemaType('internshipApplicant')
+                      .child(S.documentTypeList('internshipApplicant').title('Internship Applicants')),
+                  ])
+              ),
+          ]),
+    }),
+  ],
+
+  tools: (prev) => [...prev, seedContentTool, leadExportTool, jobSyncTool, certificateImportTool],
 
   schema: {
     types: schemaTypes,
+    // Hide singletons from the global "+" (Create New) menu
+    templates: (templates) =>
+      templates.filter(({ schemaType }) => !SINGLETON_TYPES.has(schemaType)),
+  },
+
+  document: {
+    // Prevent unpublishing or deleting singleton documents
+    actions: (prev, context) =>
+      SINGLETON_TYPES.has(context.schemaType)
+        ? prev.filter(({ action }) => action === 'publish' || action === 'discardChanges')
+        : prev,
   },
 });
+

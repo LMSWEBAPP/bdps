@@ -92,8 +92,13 @@ export async function getSanityPopupAd() {
 
 export async function getSanitySiteSettings() {
   try {
-    const query = `*[_type == "siteSettings" && !(_id in path("drafts.**"))] | order(_updatedAt desc)[0] {
+    const query = `*[_type == "siteSettings" && !(_id in path("drafts.**"))] | order((_id == "siteSettings") desc, _updatedAt desc)[0] {
       announcementBanner,
+      headerBrandTitle,
+      headerBrandSubtitle,
+      headerLogoBadge,
+      headerTopBarLegacyText,
+      headerTopBarAlliancesText,
       stipendRegistrationActive,
       stipendNoticeText,
       internshipActive,
@@ -107,7 +112,14 @@ export async function getSanitySiteSettings() {
       instagram,
       linkedin,
       youtube,
-      twitter
+      twitter,
+      footerTagline,
+      footerShowCsr,
+      footerCsrText,
+      footerPopularCourses,
+      footerQuickLinks,
+      footerAccreditationText,
+      footerCopyrightText
     }`;
     const settings = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
     return settings || null;
@@ -140,3 +152,99 @@ export async function getSanityHeroSlides() {
     return [];
   }
 }
+
+export async function getSanityHomePage() {
+  try {
+    const query = `*[_type == "homePage" && !(_id in path("drafts.**"))] | order((_id == "homePage") desc, _updatedAt desc)[0] {
+      featuredCoursesTitle,
+      featuredCoursesSubtitle,
+      supportPillarsTitle,
+      supportPillarsSubtitle,
+      testimonialsTitle,
+      testimonialsSubtitle,
+      whyBdpsBadge,
+      whyBdpsTitle,
+      whyBdpsDescription,
+      whyBdpsHighlights,
+      csrActive,
+      csrTitle,
+      csrDescription,
+      supportPillars,
+      hiringPartnersTitle,
+      hiringPartnersSubtitle,
+      hiringPartners
+    }`;
+    const homeData = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
+    return homeData || null;
+  } catch (error) {
+    console.error('Error fetching home page data from Sanity:', error);
+    return null;
+  }
+}
+
+export async function getSanityAboutPage() {
+  try {
+    const query = `*[_type == "aboutPage" && !(_id in path("drafts.**"))] | order((_id == "aboutPage") desc, _updatedAt desc)[0] {
+      bannerBadge,
+      bannerTitle,
+      bannerDesc,
+      legacyBadge,
+      legacyHeading,
+      storyParagraphs,
+      highlightsList,
+      spotlightBadge,
+      spotlightTitle,
+      spotlightDesc,
+      spotlightPillars,
+      stats,
+      beliefsSubtitle,
+      beliefsTitle,
+      beliefs
+    }`;
+    const aboutData = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
+    return aboutData || null;
+  } catch (error) {
+    console.error('Error fetching about page data from Sanity:', error);
+    return null;
+  }
+}
+
+export async function getSanityContactPage() {
+  try {
+    const query = `*[_type == "contactPage" && !(_id in path("drafts.**"))] | order((_id == "contactPage") desc, _updatedAt desc)[0] {
+      studentBannerTitle,
+      studentBannerDesc,
+      collabBannerTitle,
+      collabBannerDesc,
+      branches,
+      studentCourses,
+      collabTypes
+    }`;
+    const contactData = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
+    return contactData || null;
+  } catch (error) {
+    console.error('Error fetching contact page data from Sanity:', error);
+    return null;
+  }
+}
+
+export async function getSanityTestimonials() {
+  try {
+    const query = `*[_type == "testimonial" && !(_id in path("drafts.**"))] | order(order asc, _createdAt desc) {
+      "_id": _id,
+      name,
+      role,
+      company,
+      courseName,
+      quote,
+      rating,
+      "avatar": avatar.asset->url
+    }`;
+    const testimonials = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
+    return testimonials || [];
+  } catch (error) {
+    console.error('Error fetching testimonials from Sanity:', error);
+    return [];
+  }
+}
+
