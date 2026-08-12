@@ -14,6 +14,9 @@ import VisitorFooter from '@/components/VisitorFooter';
 import RatingStars from '@/components/RatingStars';
 import BDPSLoadingScreen from '@/components/BDPSLoadingScreen';
 import CourseCard from '@/components/CourseCard';
+import DynamicIcon from '@/components/DynamicIcon';
+import { DEFAULT_HOME_PAGE } from '@/app/api/home-page/route';
+import { DEFAULT_TESTIMONIALS } from '@/app/api/testimonials/route';
 
 const DEFAULT_HERO_SLIDES = [
   {
@@ -60,52 +63,6 @@ const DEFAULT_HOMEPAGE_COURSES = [
   { id: '6', title: 'Cybersecurity & Ethical Hacking Essentials', category: 'Cybersecurity', duration: '4 Months', instructor: 'Security Analyst', rating: 5.0, reviewsCount: '80+ reviews', fee: '10,000', subtitle: 'Learn network security, vulnerability assessment, penetration testing & defense.', image: 'https://picsum.photos/seed/course-cyber/800/600' }
 ];
 
-const STUDENT_SUPPORT_PILLARS = [
-  { icon: <Briefcase size={22} />, title: 'Internship Programs', desc: 'Real-world workplace experience & stipend exposure.' },
-  { icon: <Code size={22} />, title: 'Live Projects', desc: 'Hands-on software application development.' },
-  { icon: <FileText size={22} />, title: 'Academic Project Reports', desc: 'Comprehensive review & documentation assistance.' },
-  { icon: <Cpu size={22} />, title: 'Final Year Project Guidance', desc: 'IEEE capstone guidance for B.Tech/M.Tech reviews.' },
-  { icon: <FileText size={22} />, title: 'Resume Building', desc: 'ATS-friendly professional resume crafting.' },
-  { icon: <Target size={22} />, title: 'Interview Preparation', desc: 'Technical testing & mock interview sessions.' },
-  { icon: <Award size={22} />, title: 'Placement Assistance', desc: 'Direct job referrals to AP & MNC employer partners.' },
-  { icon: <Compass size={22} />, title: 'Career Counseling', desc: '1-on-1 personalized career roadmap guidance.' }
-];
-
-const WHY_BDPS_HIGHLIGHTS = [
-  "🚀 20+ Years Legacy of IT Excellence",
-  "💻 100% Practical Computer Lab Practice",
-  "🎓 IEEE Capstone Final Year Project Guidance",
-  "💼 Direct Job Referrals to 800+ MNC Partners",
-  "🤖 BDPS AI Tutor 24/7 Academic Support",
-  "📜 Government Recognized ISO Certifications",
-  "💰 Scholarship & Stipend Programs",
-  "👨‍🏫 1-on-1 Certified Industry Mentors"
-];
-
-const DEFAULT_TESTIMONIALS = [
-  {
-    name: "Amit Patel",
-    courseName: "Core Java & Software Programming",
-    quote: "The structural focus on writing clean programs and solving coding problems prepared me for actual interviews. The instructors guided me through every lab assignment.",
-    role: "Junior Java Developer",
-    company: "Tech Services"
-  },
-  {
-    name: "Neha Kulkarni",
-    courseName: "PGDCA Diploma",
-    quote: "The PGDCA program is extremely thorough. It covers office automation, spreadsheets, and databases. I gained confidence and transitioned into systems operations.",
-    role: "Systems Operator",
-    company: "Enterprise Ltd"
-  },
-  {
-    name: "Vikram Sen",
-    courseName: "Tally Prime & Financial Accounting",
-    quote: "BDPS teaches Tally with real financial books and GST calculations. The lab assistants helped me clear all my accounting doubts immediately.",
-    role: "Junior Accountant",
-    company: "Finance Corp"
-  }
-];
-
 export default function VisitorHomepage() {
   const router = useRouter();
   const [courses, setCourses] = useState([]);
@@ -114,12 +71,12 @@ export default function VisitorHomepage() {
   const [heroSlides, setHeroSlides] = useState([]);
   const [heroSlidesLoaded, setHeroSlidesLoaded] = useState(false);
 
+  const [homeData, setHomeData] = useState(DEFAULT_HOME_PAGE);
+  const [testimonials, setTestimonials] = useState(DEFAULT_TESTIMONIALS);
+
   const [selectedCategoryTab, setSelectedCategoryTab] = useState('All');
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
-
-  const testimonials = DEFAULT_TESTIMONIALS;
-  const partners = ["TCS", "Infosys", "Wipro", "Cognizant", "Accenture", "Tech Mahindra", "HCL Tech", "Local IT Solutions", "Business Accounts Firms"];
 
   // Fetch live courses from Sanity CMS — fall back to defaults only if Sanity returns nothing
   useEffect(() => {
@@ -151,6 +108,30 @@ export default function VisitorHomepage() {
       .finally(() => setHeroSlidesLoaded(true));
   }, []);
 
+  // Fetch home page section settings
+  useEffect(() => {
+    fetch('/api/home-page', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success && res.data) {
+          setHomeData(res.data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Fetch testimonials
+  useEffect(() => {
+    fetch('/api/testimonials', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(res => {
+        if (res.success && res.testimonials && res.testimonials.length > 0) {
+          setTestimonials(res.testimonials);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
     if (heroSlides.length === 0) return;
     const timer = setInterval(() => {
@@ -165,6 +146,18 @@ export default function VisitorHomepage() {
     ? courses
     : courses.filter(c => c.category && c.category.toLowerCase().includes(selectedCategoryTab.toLowerCase()))
   ).slice(0, 6);
+
+  const partners = (homeData.hiringPartners && homeData.hiringPartners.length > 0) 
+    ? homeData.hiringPartners 
+    : DEFAULT_HOME_PAGE.hiringPartners;
+
+  const supportPillars = (homeData.supportPillars && homeData.supportPillars.length > 0)
+    ? homeData.supportPillars
+    : DEFAULT_HOME_PAGE.supportPillars;
+
+  const whyHighlights = (homeData.whyBdpsHighlights && homeData.whyBdpsHighlights.length > 0)
+    ? homeData.whyBdpsHighlights
+    : DEFAULT_HOME_PAGE.whyBdpsHighlights;
 
   const handlePrevTestimonial = () => {
     setActiveTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length);
@@ -312,7 +305,7 @@ export default function VisitorHomepage() {
       <section className="marquee-section">
         <div className="marquee-header">
           <span className="marquee-tag">
-            🤝 Our Graduates Work at Leading Global & National Brands
+            🤝 {homeData.hiringPartnersTitle || 'Our Graduates Work at Leading Global & National Brands'}
           </span>
         </div>
 
@@ -333,29 +326,28 @@ export default function VisitorHomepage() {
         <div className="about-grid">
           <div>
             <div className="about-badge-header">
-              <Award size={16} /> 20+ Years of Academic Excellence
+              <Award size={16} /> {homeData.whyBdpsBadge || '20+ Years of Academic Excellence'}
             </div>
             <h2 className="about-heading">
-              BDPS Computer Education <span className="about-heading-accent">📍 Kakinada, AP</span>
+              {homeData.whyBdpsTitle || 'BDPS Computer Education 📍 Kakinada, AP'}
             </h2>
             <p className="about-paragraph">
-              BDPS Computer Education is one of Andhra Pradesh's most trusted and experienced computer training institutes, with over 20 years of dedication to technical skill development and digital literacy.
-            </p>
-            <p className="about-paragraph">
-              Over the past two decades, we have educated thousands of students who are now working in Government Departments, IT Companies, Healthcare, MNCs, Private Organizations, and successful Businesses across India and abroad.
+              {homeData.whyBdpsDescription || "BDPS Computer Education is one of Andhra Pradesh's most trusted and experienced computer training institutes, with over 20 years of dedication to technical skill development and digital literacy."}
             </p>
 
-            <div className="csr-badge">
-              <HeartHandshake size={32} className="contact-icon" />
-              <div>
-                <h4 className="csr-title">
-                  CSR Initiative Collaboration
-                </h4>
-                <p className="csr-desc">
-                  BDPS proudly collaborates with <strong>Embracing Humanity Foundation (EHF)</strong> to implement CSR skill development, digital literacy, and youth employment training.
-                </p>
+            {homeData.csrActive !== false && (
+              <div className="csr-badge">
+                <HeartHandshake size={32} className="contact-icon" />
+                <div>
+                  <h4 className="csr-title">
+                    {homeData.csrTitle || 'CSR Initiative Collaboration'}
+                  </h4>
+                  <p className="csr-desc">
+                    {homeData.csrDescription || 'BDPS proudly collaborates with Embracing Humanity Foundation (EHF) to implement CSR skill development, digital literacy, and youth employment training.'}
+                  </p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="ai-tutor-card">
@@ -396,10 +388,14 @@ export default function VisitorHomepage() {
       <section id="courses-section" className="explore-courses-section">
         <div className="section-header-center">
           <h2 className="section-title">
-            Explore Our <span className="section-title-accent">Courses</span>
+            {homeData.featuredCoursesTitle ? (
+              <span>{homeData.featuredCoursesTitle}</span>
+            ) : (
+              <>Explore Our <span className="section-title-accent">Courses</span></>
+            )}
           </h2>
           <p className="about-paragraph">
-            Choose from our job-oriented software, AI, accounting, and technical tracks.
+            {homeData.featuredCoursesSubtitle || 'Choose from our job-oriented software, AI, accounting, and technical tracks.'}
           </p>
         </div>
 
@@ -443,18 +439,18 @@ export default function VisitorHomepage() {
             </div>
 
             <h2 className="support-heading">
-              🎯 Complete Student Support System
+              🎯 {homeData.supportPillarsTitle || 'Complete Student Support System'}
             </h2>
             <p className="support-desc">
-              From real-world workplace internships and IEEE capstone projects to ATS resume building and 1-on-1 career counseling, we empower every learner end-to-end.
+              {homeData.supportPillarsSubtitle || 'From real-world workplace internships and IEEE capstone projects to ATS resume building and 1-on-1 career counseling, we empower every learner end-to-end.'}
             </p>
           </div>
 
           <div className="support-pillars-grid">
-            {STUDENT_SUPPORT_PILLARS.map((pillar, idx) => (
+            {supportPillars.map((pillar, idx) => (
               <div key={idx} className="support-pillar-card">
                 <div className="support-icon-box">
-                  {pillar.icon}
+                  <DynamicIcon name={pillar.icon || 'Briefcase'} size={22} className="icon-orange" />
                 </div>
                 <div>
                   <h4 className="support-pillar-title">
@@ -484,13 +480,13 @@ export default function VisitorHomepage() {
       <section className="marquee-section marquee-section-why">
         <div className="marquee-header">
           <span className="marquee-tag">
-            🌟 Why Choose BDPS Computer Education?
+            🌟 {homeData.whyBdpsBadge || 'Why Choose BDPS Computer Education?'}
           </span>
         </div>
 
         <div className="marquee-container">
           <div className="marquee-track">
-            {[...WHY_BDPS_HIGHLIGHTS, ...WHY_BDPS_HIGHLIGHTS, ...WHY_BDPS_HIGHLIGHTS, ...WHY_BDPS_HIGHLIGHTS].map((item, idx) => (
+            {[...whyHighlights, ...whyHighlights, ...whyHighlights, ...whyHighlights].map((item, idx) => (
               <div key={idx} className="marquee-item">
                 <span>{item}</span>
                 <span className="marquee-bullet">•</span>
@@ -501,25 +497,32 @@ export default function VisitorHomepage() {
       </section>
 
       {/* Section 7: Student Testimonials (Manual Control Slider) */}
+      {testimonials.length > 0 && (
       <section className="testimonials-section">
         <div className="section-header-center">
           <span className="section-subtitle-tag">STUDENT SUCCESS STORIES</span>
           <h2 className="section-title">
-            What Our Students <span className="section-title-accent">Say</span>
+            {homeData.testimonialsTitle ? (
+              <span>{homeData.testimonialsTitle}</span>
+            ) : (
+              <>What Our Students <span className="section-title-accent">Say</span></>
+            )}
           </h2>
         </div>
 
         <div className="testimonials-card">
           <p className="testimonial-quote">
-            "{testimonials[activeTestimonial].quote}"
+            "{testimonials[activeTestimonial % testimonials.length]?.quote || 'BDPS provides exceptional practical lab training.'}"
           </p>
 
           <div>
             <h4 className="testimonial-author">
-              {testimonials[activeTestimonial].name}
+              {testimonials[activeTestimonial % testimonials.length]?.name}
             </h4>
             <span className="testimonial-role">
-              {testimonials[activeTestimonial].role} at {testimonials[activeTestimonial].company} ({testimonials[activeTestimonial].courseName})
+              {testimonials[activeTestimonial % testimonials.length]?.role}
+              {testimonials[activeTestimonial % testimonials.length]?.company ? ` at ${testimonials[activeTestimonial % testimonials.length].company}` : ''}
+              {testimonials[activeTestimonial % testimonials.length]?.courseName ? ` (${testimonials[activeTestimonial % testimonials.length].courseName})` : ''}
             </span>
           </div>
 
@@ -533,7 +536,7 @@ export default function VisitorHomepage() {
                 <button
                   key={idx}
                   onClick={() => setActiveTestimonial(idx)}
-                  className={`testimonial-dot ${idx === activeTestimonial ? 'testimonial-dot-active' : 'testimonial-dot-inactive'}`}
+                  className={`testimonial-dot ${idx === (activeTestimonial % testimonials.length) ? 'testimonial-dot-active' : 'testimonial-dot-inactive'}`}
                 />
               ))}
             </div>
@@ -544,6 +547,7 @@ export default function VisitorHomepage() {
           </div>
         </div>
       </section>
+      )}
 
       <VisitorFooter />
     </div>

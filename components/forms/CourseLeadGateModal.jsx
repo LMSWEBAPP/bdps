@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { BookOpen, User, Phone, Mail, GraduationCap, Clock, CheckCircle2, Lock, X } from 'lucide-react';
 
 export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose }) {
+  const [availableCourses, setAvailableCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState(course?.title || '');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -13,6 +15,30 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose
 
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Fetch only the live courses present on the website from Sanity CMS
+  useEffect(() => {
+    fetch('/api/courses', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.courses) && data.courses.length > 0) {
+          const titles = data.courses
+            .map(c => c.title || c.name || c.courseTitle)
+            .filter(Boolean);
+          if (titles.length > 0) {
+            setAvailableCourses(titles);
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Sync selected course when prop changes
+  useEffect(() => {
+    if (course?.title) {
+      setSelectedCourse(course.title);
+    }
+  }, [course]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -34,11 +60,12 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose
     setErrorMessage('');
 
     try {
+      const chosenCourse = selectedCourse || course?.title || 'General Course Inquiry';
       const payload = {
         fullName: fullName.trim(),
         phone: phone.trim(),
         email: email.trim(),
-        course: course?.title || 'General Course Inquiry',
+        course: chosenCourse,
         message: `Qualification: ${qualification} | Preferred Batch: ${preferredBatch}${notes.trim() ? ` | Notes: ${notes.trim()}` : ''}`
       };
 
@@ -53,7 +80,7 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose
         if (typeof window !== 'undefined' && course?.id) {
           try {
             localStorage.setItem(`bdps_course_unlocked_${course.id}`, 'true');
-            localStorage.setItem(`bdps_user_lead_${course.id}`, JSON.stringify({ fullName, email, phone }));
+            localStorage.setItem(`bdps_user_lead_${course.id}`, JSON.stringify({ fullName, email, phone, course: chosenCourse }));
           } catch (e) {
             console.warn('LocalStorage error:', e);
           }
@@ -68,6 +95,11 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose
       setSubmitting(false);
     }
   };
+
+  // Only list the actual courses from the website
+  const allDropdownOptions = availableCourses.length > 0
+    ? (course?.title && !availableCourses.includes(course.title) ? [course.title, ...availableCourses] : availableCourses)
+    : (course?.title ? [course.title] : []);
 
   return (
     <div className="modal-backdrop course-gate-backdrop" onClick={onClose} role="dialog" aria-modal="true">
@@ -90,10 +122,10 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose
             <Lock size={14} /> Course Access Required
           </div>
           <h2 className="course-gate-title">
-            Unlock Full Syllabus & Course Details
+            Enroll & Unlock Full Syllabus Details
           </h2>
           <p className="course-gate-subtitle">
-            Please submit your contact details to access full course curriculum, schedule, and fee breakdown for <strong>{course?.title || 'this course'}</strong>.
+            Submit your contact details to access full course curriculum, batch schedules, and fee breakdown for <strong>{selectedCourse || course?.title || 'this course'}</strong>.
           </p>
         </div>
 
@@ -106,17 +138,23 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose
               </div>
             )}
 
-            {/* Selected Course Field (Pre-selected & Locked) */}
+            {/* Selected Course Dropdown with proper icon spacing */}
             <div className="form-group-block">
-              <label className="form-label-text">Selected Course</label>
-              <div className="course-selected-input-box">
-                <BookOpen size={16} className="icon-orange" />
-                <input
-                  type="text"
-                  readOnly
-                  value={course?.title || 'Course Details'}
-                  className="course-selected-readonly"
-                />
+              <label className="form-label-text">Select Course to Enroll *</label>
+              <div className="input-icon-wrapper">
+                <BookOpen size={16} className="input-icon" />
+                <select
+                  value={selectedCourse}
+                  onChange={(e) => setSelectedCourse(e.target.value)}
+                  className="form-select-with-icon"
+                  required
+                >
+                  {allDropdownOptions.map((title, idx) => (
+                    <option key={idx} value={title}>
+                      {title}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -207,11 +245,11 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose
               disabled={submitting}
               className="btn-enroll-submit course-gate-submit-btn"
             >
-              {submitting ? 'Unlocking Course Content...' : 'Submit & Access Course Details'}
+              {submitting ? 'Enrolling & Submitting...' : 'Enroll / Submit Registration'}
             </button>
 
             <p className="form-lock-subtext text-center">
-              🔒 Form details are saved to BDPS Leads database in Sanity CMS.
+              🔒 Form details are saved to BDPS Admissions database in Sanity CMS.
             </p>
           </form>
         </div>

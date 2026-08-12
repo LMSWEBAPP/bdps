@@ -76,12 +76,14 @@ export default function CourseDetailsPage({ params }) {
   const courseId = params?.id || '1';
 
   const [course, setCourse] = useState(DEFAULT_COURSES_DB[courseId] || DEFAULT_COURSES_DB['1']);
+  const [allCourses, setAllCourses] = useState([]);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
     phone: '',
     email: '',
-    qualification: 'Degree',
+    selectedCourseTitle: '',
+    qualification: 'Degree (B.Sc / B.Com / B.A)',
     preferredBatch: 'Morning (9 AM - 11 AM)',
     message: ''
   });
@@ -102,9 +104,22 @@ export default function CourseDetailsPage({ params }) {
       .then(data => {
         if (data.success && data.course) {
           setCourse(data.course);
+          setFormData(prev => ({
+            ...prev,
+            selectedCourseTitle: prev.selectedCourseTitle || data.course.title
+          }));
         }
       })
       .catch(err => console.error('Error fetching single course details:', err));
+
+    fetch('/api/courses')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.courses) && data.courses.length > 0) {
+          setAllCourses(data.courses);
+        }
+      })
+      .catch(() => {});
   }, [courseId]);
 
   const handleSubmit = async (e) => {
@@ -113,11 +128,12 @@ export default function CourseDetailsPage({ params }) {
     setErrorMessage('');
 
     try {
+      const chosenCourse = formData.selectedCourseTitle || course.title;
       const payload = {
         fullName: formData.fullName,
         phone: formData.phone,
         email: formData.email,
-        course: course.title,
+        course: chosenCourse,
         message: `Qualification: ${formData.qualification} | Preferred Batch: ${formData.preferredBatch}${formData.message ? ` | Notes: ${formData.message}` : ''}`
       };
 
@@ -278,6 +294,27 @@ export default function CourseDetailsPage({ params }) {
                     {errorMessage}
                   </div>
                 )}
+
+                {/* Course Selection Dropdown */}
+                <div className="form-group-block">
+                  <label className="form-label-text">Select Course to Enroll *</label>
+                  <select
+                    value={formData.selectedCourseTitle || course.title}
+                    onChange={(e) => setFormData({ ...formData, selectedCourseTitle: e.target.value })}
+                    className="form-input-box"
+                    style={{ fontWeight: '600' }}
+                    required
+                  >
+                    {Array.from(new Set([
+                      course.title,
+                      ...allCourses.map(c => c.title || c.name || c.courseTitle).filter(Boolean)
+                    ].filter(Boolean))).map((title, idx) => (
+                      <option key={idx} value={title}>
+                        {title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 <div className="form-group-block">
                   <label className="form-label-text">Full Name *</label>

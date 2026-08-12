@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Share2, Check, ArrowRight, Clock, User, Star } from 'lucide-react';
 
@@ -26,12 +27,21 @@ function RatingStars({ rating }) {
 }
 
 export default function CourseCard({ course, showSubtitle = false }) {
+  const router = useRouter();
   const [copied, setCopied] = useState(false);
 
   if (!course) return null;
 
   const courseId = course.id || course._id;
   const courseUrl = `/courses/${courseId}`;
+
+  const handleCardClick = (e) => {
+    // If clicked on share button or direct link, don't trigger parent handler
+    if (e.target.closest('.catalog-share-overlay-btn') || e.target.closest('.btn-share-course')) {
+      return;
+    }
+    router.push(courseUrl);
+  };
 
   const handleShare = async (e) => {
     e.preventDefault();
@@ -64,7 +74,18 @@ export default function CourseCard({ course, showSubtitle = false }) {
   };
 
   return (
-    <div className="catalog-course-card">
+    <div 
+      className="catalog-course-card"
+      onClick={handleCardClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          router.push(courseUrl);
+        }
+      }}
+    >
       <div className="catalog-card-image-box">
         <img
           src={course.image || 'https://picsum.photos/seed/bdps/800/600'}
@@ -119,8 +140,8 @@ export default function CourseCard({ course, showSubtitle = false }) {
         </div>
 
         <div className="catalog-card-actions">
-          <Link href={courseUrl} className="btn-catalog-details">
-            <span>View Details</span> <ArrowRight size={14} />
+          <Link href={courseUrl} className="btn-catalog-details" onClick={(e) => e.stopPropagation()}>
+            <span>Enroll</span> <ArrowRight size={14} />
           </Link>
           <button
             onClick={handleShare}
