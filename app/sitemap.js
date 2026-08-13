@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // revalidate every 1 hour
 
 export default async function sitemap() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bdpscomputer.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bdpsit.com';
   const currentDate = new Date().toISOString();
 
   // Static core routes

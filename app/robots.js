@@ -1,5 +1,5 @@
 export default function robots() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bdpscomputer.com';
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bdpsit.com';
 
   return {
     rules: [
