@@ -9,7 +9,7 @@ const outfit = Outfit({
   display: 'swap',
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bdpscomputer.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bdpsit.com';
 const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 const googleVerification = process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION;
 
