@@ -2,6 +2,7 @@ import { Outfit } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import PopupAdModal from '@/components/integrations/PopupAdModal';
+import ScrollToTop from '@/components/ScrollToTop';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -56,6 +57,14 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'BDPS Computer Education | Top IT Training Institute Kakinada',
     description: 'Practical computer lab training, PGDCA, Core Java, Python, and Tally Prime courses in Kakinada.',
+  },
+  icons: {
+    icon: [
+      { url: '/bdps-logo-transparent.png', type: 'image/png' },
+      { url: '/bdps-logo.png', type: 'image/png' },
+    ],
+    shortcut: '/bdps-logo-transparent.png',
+    apple: '/bdps-logo-transparent.png',
   },
   robots: {
     index: true,
@@ -216,6 +225,7 @@ export default function RootLayout({ children }) {
 
         {children}
         <PopupAdModal />
+        <ScrollToTop />
       </body>
     </html>
   );

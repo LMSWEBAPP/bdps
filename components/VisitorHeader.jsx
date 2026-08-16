@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
-  Search, ChevronDown, Award, Phone, Mail, Clock, MapPin, Menu, X, ShieldCheck, Briefcase, ArrowRight, BookOpen
+  Search, ChevronDown, Award, Phone, Mail, Clock, MapPin, Menu, X, ShieldCheck, Briefcase, ArrowRight, BookOpen, Sparkles, Home, Info, LogIn
 } from 'lucide-react';
 import StipendRegistrationModal from './StipendRegistrationModal';
 import InternshipModal from './forms/InternshipModal';
@@ -96,7 +96,8 @@ export default function VisitorHeader() {
       href: '/contact',
       dropdown: [
         { label: 'Student Inquiry', href: '/contact?type=student' },
-        { label: 'Corporate Collaboration', href: '/contact?type=collaboration' }
+        { label: 'Corporate Collaboration', href: '/contact?type=collaboration' },
+        { label: 'IT Solutions & Services', href: '/contact?type=it-solutions' }
       ]
     }
   ];
@@ -146,118 +147,133 @@ export default function VisitorHeader() {
       {/* Main Sticky Navbar */}
       <header className="visitor-navbar">
         <div className="navbar-container">
-          {/* Logo */}
+          {/* 1. Left: Brand Logo */}
           <Link href="/" className="navbar-logo">
-            <div className="logo-badge">{siteSettings?.headerLogoBadge || 'BDPS'}</div>
-            <div className="logo-title-group">
-              <span className="logo-title">{siteSettings?.headerBrandTitle || 'BDPS Computer Education'}</span>
-              <span className="logo-subtitle">{siteSettings?.headerBrandSubtitle || 'COMPUTER TRAINING INSTITUTE'}</span>
-            </div>
+            {siteSettings?.headerLogo ? (
+              <img 
+                src={siteSettings.headerLogo} 
+                alt={siteSettings?.headerBrandTitle || 'BDPS Computer Education & IT Solutions'} 
+                className="navbar-logo-img"
+              />
+            ) : (
+              <>
+                <div className="logo-badge">{siteSettings?.headerLogoBadge || 'BDPS'}</div>
+                <div className="logo-title-group">
+                  <span className="logo-title">{siteSettings?.headerBrandTitle || 'BDPS Computer Education'}</span>
+                  <span className="logo-subtitle">{siteSettings?.headerBrandSubtitle || 'COMPUTER TRAINING INSTITUTE'}</span>
+                </div>
+              </>
+            )}
           </Link>
 
-          {/* Quick Search */}
-          <form onSubmit={handleSearch} className="header-search-form">
-            <input
-              type="text"
-              placeholder="Search courses..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
-            <button type="submit" className="search-btn" aria-label="Submit Search">
-              <Search size={16} />
-            </button>
-          </form>
-
-          {/* Desktop Navigation Links */}
-          <nav className="desktop-nav">
-            {navLinks.map((link, idx) => (
-              <div
-                key={idx}
-                className="nav-item-wrapper"
-                onMouseEnter={() => (link.dropdown || link.isMegaMenu) && setActiveDropdown(idx)}
-                onMouseLeave={() => setActiveDropdown(null)}
-              >
-                <Link
-                  href={link.href}
-                  className={`nav-item-link ${pathname === link.href ? 'active' : ''}`}
+          {/* 2. Right: Menu Links + Action Buttons Together */}
+          <div className="navbar-right-cluster">
+            {/* Desktop Navigation Links */}
+            <nav className="desktop-nav">
+              {navLinks.map((link, idx) => (
+                <div
+                  key={idx}
+                  className="nav-item-wrapper"
+                  onMouseEnter={() => (link.dropdown || link.isMegaMenu) && setActiveDropdown(idx)}
+                  onMouseLeave={() => setActiveDropdown(null)}
                 >
-                  {link.title}
-                  {(link.dropdown || link.isMegaMenu) && <ChevronDown size={14} />}
-                </Link>
+                  <Link
+                    href={link.href}
+                    className={`nav-item-link ${pathname === link.href ? 'active' : ''}`}
+                  >
+                    <span>{link.title}</span>
+                    {(link.dropdown || link.isMegaMenu) && <ChevronDown size={13} />}
+                  </Link>
 
-                {/* Regular Dropdown */}
-                {link.dropdown && activeDropdown === idx && (
-                  <div className="nav-dropdown-menu">
-                    {link.dropdown.map((item, subIdx) => (
-                      <Link
-                        key={subIdx}
-                        href={item.href}
-                        className="nav-dropdown-item"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-
-                {/* Mega Main Menu for All Courses */}
-                {link.isMegaMenu && activeDropdown === idx && (
-                  <div className="nav-mega-menu">
-                    <div className="mega-menu-header">
-                      <span className="mega-menu-header-title">Our Flagship IT Programs</span>
-                      <span className="mega-menu-header-badge">{liveCourses.length} Courses Available</span>
-                    </div>
-
-                    <div className="mega-menu-grid">
-                      {liveCourses.map((c, cIdx) => (
+                  {/* Regular Dropdown */}
+                  {link.dropdown && activeDropdown === idx && (
+                    <div className="nav-dropdown-menu">
+                      {link.dropdown.map((item, subIdx) => (
                         <Link
-                          key={cIdx}
-                          href={`/courses/${c.id || c._id}`}
-                          className="mega-menu-course-item"
-                          title={c.title}
+                          key={subIdx}
+                          href={item.href}
+                          className="nav-dropdown-item"
                         >
-                          <span className="mega-course-bullet">›</span>
-                          <span className="mega-course-title">{c.title}</span>
+                          {item.label}
                         </Link>
                       ))}
                     </div>
+                  )}
 
-                    <div className="mega-menu-footer">
-                      <span className="mega-menu-footer-hint">
-                        💡 100% Practical Computer Labs & Placement Assistance
-                      </span>
-                      <Link href="/courses" className="mega-menu-footer-link">
-                        <span>Explore All Programs</span> <ArrowRight size={13} />
-                      </Link>
+                  {/* Mega Main Menu for All Courses */}
+                  {link.isMegaMenu && activeDropdown === idx && (
+                    <div className="nav-mega-menu">
+                      <div className="mega-menu-header">
+                        <span className="mega-menu-header-title">Our Flagship IT Programs</span>
+                        <span className="mega-menu-header-badge">{liveCourses.length} Courses Available</span>
+                      </div>
+
+                      <div className="mega-menu-grid">
+                        {liveCourses.map((c, cIdx) => (
+                          <Link
+                            key={cIdx}
+                            href={`/courses/${c.id || c._id}`}
+                            className="mega-menu-course-item"
+                            title={c.title}
+                          >
+                            <span className="mega-course-bullet">›</span>
+                            <span className="mega-course-title">{c.title}</span>
+                          </Link>
+                        ))}
+                      </div>
+
+                      <div className="mega-menu-footer">
+                        <span className="mega-menu-footer-hint">
+                          💡 100% Practical Computer Labs & Placement Assistance
+                        </span>
+                        <Link href="/courses" className="mega-menu-footer-link">
+                          <span>Explore All Programs</span> <ArrowRight size={13} />
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            ))}
+                  )}
+                </div>
+              ))}
+            </nav>
 
-            <div className="header-cta-group">
+            {/* Action Buttons Group */}
+            <div className="navbar-cta-group">
+              {/* IT Solutions CTA Button */}
+              <Link
+                href="/contact?type=it-solutions"
+                className="btn-stipend btn-it-solutions-nav"
+                title="BDPS IT Solutions & Enterprise Software Services"
+              >
+                <Sparkles size={13} className="icon-orange-accent" />
+                <span className="cta-label-text">IT Solutions</span>
+                <span className="btn-stipend-tag tag-soon">SOON</span>
+              </Link>
+
+              {/* Internship CTA Button */}
               <button
                 onClick={() => setInternshipModalOpen(true)}
                 className={`btn-stipend btn-internship-nav ${!isInternshipActive ? 'btn-stipend-disabled' : ''}`}
                 title="Apply for Internship"
               >
-                <Briefcase size={14} className="icon-orange-accent" />
+                <Briefcase size={13} className="icon-orange-accent" />
                 <span className="cta-label-text">Internship</span>
                 {!isInternshipActive && <span className="btn-stipend-tag tag-closed">CLOSED</span>}
               </button>
 
+              {/* Stipend CTA Button */}
               {isStipendActive && (
                 <button
                   onClick={() => setStipendModalOpen(true)}
                   className="btn-stipend stipend-pulse-highlight btn-stipend-nav"
                   title="Stipend Registration"
                 >
-                  <Award size={14} className="stipend-icon" />
+                  <Award size={13} className="stipend-icon" />
                   <span className="cta-label-text">Stipend</span>
                   <span className="btn-stipend-tag tag-open">OPEN</span>
                 </button>
               )}
+
+              {/* Student Login Button */}
               <a
                 href={process.env.NEXT_PUBLIC_FRAPPE_URL ? `${process.env.NEXT_PUBLIC_FRAPPE_URL}/login` : 'http://localhost:3000/login'}
                 className="btn-login"
@@ -266,131 +282,207 @@ export default function VisitorHeader() {
                 Student Login
               </a>
             </div>
-          </nav>
 
-          {/* Mobile Toggle Button */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="mobile-toggle-btn"
-          >
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+            {/* Mobile Toggle Button (only on phones & portrait tablets) */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="mobile-toggle-btn"
+              aria-label="Toggle mobile menu"
+            >
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
+        {/* Fullscreen Blurred Backdrop Overlay & Floating Card Menu */}
         {menuOpen && (
-          <div className="mobile-nav-drawer">
-            {navLinks.map((link, idx) => (
-              <div key={idx} className="mobile-nav-group">
-                {link.isMegaMenu ? (
-                  <>
-                    <div 
-                      onClick={() => setMobileCoursesExpanded(!mobileCoursesExpanded)}
-                      className="mobile-nav-link"
-                      style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
-                    >
-                      <span>{link.title}</span>
-                      <ChevronDown 
-                        size={16} 
-                        style={{ 
-                          transform: mobileCoursesExpanded ? 'rotate(180deg)' : 'none', 
-                          transition: 'transform 0.2s' 
-                        }} 
-                      />
-                    </div>
-                    {mobileCoursesExpanded && (
-                      <div className="mobile-nav-subgroup">
-                        <Link
-                          href="/courses"
-                          onClick={() => setMenuOpen(false)}
-                          className="mobile-nav-sublink"
-                          style={{ fontWeight: '700', color: 'var(--brand-orange)' }}
-                        >
-                          📁 All Courses Catalog & Syllabus →
-                        </Link>
-                        {liveCourses.map((c, cIdx) => (
-                          <Link
-                            key={cIdx}
-                            href={`/courses/${c.id || c._id}`}
-                            onClick={() => setMenuOpen(false)}
-                            className="mobile-nav-sublink"
-                          >
-                            • {c.title}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href={link.href}
-                      onClick={() => setMenuOpen(false)}
-                      className="mobile-nav-link"
-                    >
-                      {link.title}
-                    </Link>
-                    {link.dropdown && (
-                      <div className="mobile-nav-subgroup">
-                        {link.dropdown.map((item, subIdx) => (
-                          <Link
-                            key={subIdx}
-                            href={item.href}
-                            onClick={() => setMenuOpen(false)}
-                            className="mobile-nav-sublink"
-                          >
-                            {item.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            ))}
-
-            <div className="mobile-cta-wrapper">
-              <form onSubmit={handleSearch} className="mobile-search-form">
-                <input
-                  type="text"
-                  placeholder="Search courses..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="mobile-search-input"
-                />
-                <button type="submit" className="mobile-search-submit">
-                  <Search size={16} />
-                </button>
-              </form>
-              <button
-                onClick={() => { setMenuOpen(false); setInternshipModalOpen(true); }}
-                className={`btn-stipend mobile-btn-stipend ${!isInternshipActive ? 'btn-stipend-disabled' : ''}`}
-                style={{ backgroundColor: '#0f172a', borderColor: '#334155', color: '#fff' }}
-              >
-                <Briefcase size={16} style={{ color: '#FF7518' }} />
-                <span>Apply for Internship</span>
-                {!isInternshipActive && <span className="btn-stipend-tag tag-closed" style={{ marginLeft: '6px' }}>CLOSED</span>}
-              </button>
-
-              {isStipendActive && (
+          <div 
+            className="mobile-modal-overlay" 
+            onClick={() => setMenuOpen(false)} 
+            aria-modal="true"
+            role="dialog"
+          >
+            {/* Floating Card Popup (Image 2 style) */}
+            <div 
+              className="mobile-popup-card" 
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button Top Right */}
+              <div className="mobile-card-top">
                 <button
-                  onClick={() => { setMenuOpen(false); setStipendModalOpen(true); }}
-                  className="btn-stipend stipend-pulse-highlight mobile-btn-stipend"
+                  type="button"
+                  onClick={() => setMenuOpen(false)}
+                  className="mobile-card-close"
+                  aria-label="Close navigation menu"
                 >
-                  <Award size={16} className="stipend-icon" />
-                  <span>Stipend Registration</span>
-                  <span className="btn-stipend-tag tag-open">
-                    OPEN
-                  </span>
+                  <X size={17} />
                 </button>
-              )}
-              <a
-                href={process.env.NEXT_PUBLIC_FRAPPE_URL ? `${process.env.NEXT_PUBLIC_FRAPPE_URL}/login` : 'http://localhost:3000/login'}
-                onClick={() => setMenuOpen(false)}
-                className="mobile-btn-login"
-              >
-                Student Login
-              </a>
+              </div>
+
+              {/* Navigation Items */}
+              <div className="mobile-card-items">
+                {/* 1. Home */}
+                <Link
+                  href="/"
+                  onClick={() => setMenuOpen(false)}
+                  className={`mobile-card-item ${pathname === '/' ? 'mobile-card-item-active' : ''}`}
+                >
+                  <div className="mobile-item-left">
+                    <Home size={18} className="mobile-item-icon" />
+                    <span>Home</span>
+                  </div>
+                </Link>
+
+                {/* 2. All Courses */}
+                <div className="mobile-card-expandable">
+                  <div
+                    onClick={() => setMobileCoursesExpanded(!mobileCoursesExpanded)}
+                    className={`mobile-card-item ${pathname.startsWith('/courses') ? 'mobile-card-item-active' : ''}`}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className="mobile-item-left">
+                      <BookOpen size={18} className="mobile-item-icon" />
+                      <span>All Courses</span>
+                    </div>
+                    <ChevronDown 
+                      size={15} 
+                      style={{ 
+                        transform: mobileCoursesExpanded ? 'rotate(180deg)' : 'none', 
+                        transition: 'transform 0.2s',
+                        opacity: 0.7
+                      }} 
+                    />
+                  </div>
+                  {mobileCoursesExpanded && (
+                    <div className="mobile-card-subgroup">
+                      <Link
+                        href="/courses"
+                        onClick={() => setMenuOpen(false)}
+                        className="mobile-card-sublink"
+                        style={{ color: '#FF7518', fontWeight: '700' }}
+                      >
+                        Explore All Programs →
+                      </Link>
+                      {liveCourses.map((c, cIdx) => (
+                        <Link
+                          key={cIdx}
+                          href={`/courses/${c.id || c._id}`}
+                          onClick={() => setMenuOpen(false)}
+                          className="mobile-card-sublink"
+                        >
+                          {c.title}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* 3. Jobs */}
+                <Link
+                  href="/jobs"
+                  onClick={() => setMenuOpen(false)}
+                  className={`mobile-card-item ${pathname === '/jobs' ? 'mobile-card-item-active' : ''}`}
+                >
+                  <div className="mobile-item-left">
+                    <Briefcase size={18} className="mobile-item-icon" />
+                    <span>Jobs</span>
+                  </div>
+                </Link>
+
+                {/* 4. Verify Certificate */}
+                <Link
+                  href="/verify-certificate"
+                  onClick={() => setMenuOpen(false)}
+                  className={`mobile-card-item ${pathname === '/verify-certificate' ? 'mobile-card-item-active' : ''}`}
+                >
+                  <div className="mobile-item-left">
+                    <ShieldCheck size={18} className="mobile-item-icon" />
+                    <span>Verify Certificate</span>
+                  </div>
+                </Link>
+
+                {/* 5. About Us */}
+                <Link
+                  href="/about"
+                  onClick={() => setMenuOpen(false)}
+                  className={`mobile-card-item ${pathname === '/about' ? 'mobile-card-item-active' : ''}`}
+                >
+                  <div className="mobile-item-left">
+                    <Info size={18} className="mobile-item-icon" />
+                    <span>About Us</span>
+                  </div>
+                </Link>
+
+                {/* 6. Contact Us */}
+                <Link
+                  href="/contact"
+                  onClick={() => setMenuOpen(false)}
+                  className={`mobile-card-item ${pathname === '/contact' ? 'mobile-card-item-active' : ''}`}
+                >
+                  <div className="mobile-item-left">
+                    <Phone size={18} className="mobile-item-icon" />
+                    <span>Contact Us</span>
+                  </div>
+                </Link>
+
+                {/* Divider */}
+                <div className="mobile-card-divider" />
+
+                {/* 7. IT Solutions */}
+                <Link
+                  href="/contact?type=it-solutions"
+                  onClick={() => setMenuOpen(false)}
+                  className="mobile-card-item"
+                >
+                  <div className="mobile-item-left">
+                    <Sparkles size={18} style={{ color: '#FF7518' }} />
+                    <span>IT Solutions</span>
+                  </div>
+                  <span className="btn-stipend-tag tag-soon">SOON</span>
+                </Link>
+
+                {/* 8. Internship */}
+                <button
+                  type="button"
+                  onClick={() => { setMenuOpen(false); setInternshipModalOpen(true); }}
+                  className="mobile-card-item"
+                  style={{ width: '100%', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer' }}
+                >
+                  <div className="mobile-item-left">
+                    <Briefcase size={18} style={{ color: '#FF7518' }} />
+                    <span>Internship</span>
+                  </div>
+                  {!isInternshipActive && <span className="btn-stipend-tag tag-closed">CLOSED</span>}
+                </button>
+
+                {/* 9. Stipend */}
+                {isStipendActive && (
+                  <button
+                    type="button"
+                    onClick={() => { setMenuOpen(false); setStipendModalOpen(true); }}
+                    className="mobile-card-item"
+                    style={{ width: '100%', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer' }}
+                  >
+                    <div className="mobile-item-left">
+                      <Award size={18} style={{ color: '#FF7518' }} />
+                      <span>Stipend Registration</span>
+                    </div>
+                    <span className="btn-stipend-tag tag-open">OPEN</span>
+                  </button>
+                )}
+
+                {/* 10. Student Login */}
+                <a
+                  href={process.env.NEXT_PUBLIC_FRAPPE_URL ? `${process.env.NEXT_PUBLIC_FRAPPE_URL}/login` : 'http://localhost:3000/login'}
+                  onClick={() => setMenuOpen(false)}
+                  className="mobile-card-item mobile-card-login"
+                >
+                  <div className="mobile-item-left" style={{ justifyContent: 'center', width: '100%' }}>
+                    <LogIn size={18} className="mobile-item-icon" />
+                    <span>Student Login</span>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
         )}

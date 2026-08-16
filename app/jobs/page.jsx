@@ -4,11 +4,12 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Briefcase, Search, MapPin, Building2, Calendar, 
-  ExternalLink, Sparkles, Filter, IndianRupee, Layers, GraduationCap
+  ExternalLink, Sparkles, Filter, IndianRupee, Layers, GraduationCap, ShieldCheck
 } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
 import InternshipModal from '@/components/forms/InternshipModal';
+import JobLeadModal from '@/components/forms/JobLeadModal';
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState([]);
@@ -17,6 +18,8 @@ export default function JobsPage() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedLocation, setSelectedLocation] = useState('All');
   const [internshipModalOpen, setInternshipModalOpen] = useState(false);
+  const [jobModalOpen, setJobModalOpen] = useState(false);
+  const [selectedJobForModal, setSelectedJobForModal] = useState(null);
   const [siteSettings, setSiteSettings] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,6 +91,20 @@ export default function JobsPage() {
     setCurrentPage(page);
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 380, behavior: 'smooth' });
+    }
+  };
+
+  const handleApplyClick = (job) => {
+    if (typeof window !== 'undefined') {
+      const hasSubmitted = localStorage.getItem('bdps_job_lead_submitted') === 'true';
+      if (hasSubmitted) {
+        // Direct seamless redirect for returning users
+        window.open(job.redirectUrl || 'https://www.adzuna.in', '_blank', 'noopener,noreferrer');
+      } else {
+        // First-time gate: capture lead in Sanity
+        setSelectedJobForModal(job);
+        setJobModalOpen(true);
+      }
     }
   };
 
@@ -263,14 +280,17 @@ export default function JobsPage() {
                   </p>
 
                   <div className="job-card-footer">
-                    <a
-                      href={job.redirectUrl || 'https://www.adzuna.in'}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <span className="job-posted-by-badge">
+                      <ShieldCheck size={13} className="posted-badge-icon" />
+                      <span>Posted by BDPS</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleApplyClick(job)}
                       className="btn-apply-job"
                     >
-                      Apply on Official Portal <ExternalLink size={15} />
-                    </a>
+                      Apply on Official Portal <ExternalLink size={14} />
+                    </button>
                   </div>
                 </div>
               ))}
@@ -318,6 +338,18 @@ export default function JobsPage() {
         isOpen={internshipModalOpen}
         onClose={() => setInternshipModalOpen(false)}
         siteSettings={siteSettings}
+      />
+
+      <JobLeadModal
+        job={selectedJobForModal}
+        isOpen={jobModalOpen}
+        onClose={() => setJobModalOpen(false)}
+        onSuccess={(redirectUrl) => {
+          setJobModalOpen(false);
+          if (typeof window !== 'undefined') {
+            window.open(redirectUrl || 'https://www.adzuna.in', '_blank', 'noopener,noreferrer');
+          }
+        }}
       />
     </div>
   );

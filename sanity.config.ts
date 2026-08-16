@@ -8,11 +8,19 @@ import {
 import { schemaTypes } from './sanity/schemas';
 import { projectId, dataset } from './lib/sanity.client';
 import LeadExportComponent from './sanity/tools/LeadExportComponent';
+import LeadsSpreadsheetComponent from './sanity/tools/LeadsSpreadsheetComponent';
 import JobSyncComponent from './sanity/tools/JobSyncComponent';
 import CertificateImportTool from './sanity/tools/CertificateImportTool';
 import SeedContentTool from './sanity/tools/SeedContentTool';
 
 const SINGLETON_TYPES = new Set(['siteSettings', 'homePage', 'aboutPage', 'contactPage']);
+
+const leadsSpreadsheetTool: Tool = {
+  name: 'leads-spreadsheet',
+  title: '📊 Leads Spreadsheet (Excel View)',
+  icon: UsersIcon,
+  component: LeadsSpreadsheetComponent,
+};
 
 const seedContentTool: Tool = {
   name: 'seed-content',
@@ -153,13 +161,17 @@ export default defineConfig({
                       .title('Internship Applicants')
                       .schemaType('internshipApplicant')
                       .child(S.documentTypeList('internshipApplicant').title('Internship Applicants')),
+                    S.listItem()
+                      .title('Job Portal Leads / Applicants')
+                      .schemaType('jobLead')
+                      .child(S.documentTypeList('jobLead').title('Job Portal Applicants')),
                   ])
               ),
           ]),
     }),
   ],
 
-  tools: (prev) => [...prev, seedContentTool, leadExportTool, jobSyncTool, certificateImportTool],
+  tools: (prev) => [leadsSpreadsheetTool, leadExportTool, jobSyncTool, certificateImportTool, seedContentTool, ...prev],
 
   schema: {
     types: schemaTypes,

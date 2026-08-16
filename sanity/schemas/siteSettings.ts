@@ -21,6 +21,16 @@ export const siteSettingsSchema = {
       description: 'Optional top announcement banner shown at the very top of the visitor website.' 
     },
     {
+      name: 'headerLogo',
+      title: 'Main Brand Logo Image',
+      type: 'image',
+      fieldset: 'header',
+      options: {
+        hotspot: true,
+      },
+      description: 'Upload official logo (PNG / JPEG / WebP / SVG). If uploaded, it is rendered in the Header Navbar and Footer responsively.',
+    },
+    {
       name: 'headerBrandTitle',
       title: 'Brand Title (Logo)',
       type: 'string',

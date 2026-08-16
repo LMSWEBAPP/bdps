@@ -7,6 +7,7 @@ import { heroSlideSchema } from './heroSlide';
 import { jobPostingSchema } from './jobPosting';
 import { certificateSchema } from './certificate';
 import { internshipApplicantSchema } from './internshipApplicant';
+import { jobLeadSchema } from './jobLead';
 import { homePageSchema } from './homePage';
 import { aboutPageSchema } from './aboutPage';
 import { contactPageSchema } from './contactPage';
@@ -31,6 +32,7 @@ export const schemaTypes = [
   leadSubmissionSchema,
   stipendApplicationSchema,
   internshipApplicantSchema,
+  jobLeadSchema,
 ];
 
 
