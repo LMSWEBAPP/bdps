@@ -71,7 +71,7 @@ body {
   background-color: var(--bg, #F9F8F6);
   color: var(--text, #1C1917);
   font-family: var(--font-outfit), 'Segoe UI', sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 * {

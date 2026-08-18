@@ -37,7 +37,7 @@ html, body {
   padding: 0;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   background-color: var(--bg);
   color: var(--text);
   font-family: var(--font-outfit), 'Segoe UI', system-ui, sans-serif;
@@ -82,7 +82,7 @@ html, body {
   min-height: 100vh;
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
   background-color: var(--bg);
   color: var(--text);
 }
@@ -281,11 +281,18 @@ html, body {
   transform: translateY(-50%) scale(1.1);
 }
 
+.visitor-header-sticky-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  background-color: #ffffff;
+}
+
 .visitor-navbar {
   background-color: #ffffff;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 999;
   padding: 4px 16px;
   width: 100%;

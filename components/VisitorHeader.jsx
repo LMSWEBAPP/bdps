@@ -107,45 +107,46 @@ export default function VisitorHeader() {
 
   return (
     <>
-      {/* Optional Top Announcement Banner with Close Button */}
-      {siteSettings?.announcementBanner && !announcementClosed && (
-        <div className="visitor-announcement-bar">
-          <span className="announcement-text">{siteSettings.announcementBanner}</span>
-          <button
-            type="button"
-            onClick={handleCloseAnnouncement}
-            className="announcement-close-btn"
-            aria-label="Close Announcement Banner"
-            title="Dismiss Announcement"
-          >
-            <X size={14} />
-          </button>
-        </div>
-      )}
+      <header className="visitor-header-sticky-wrapper">
+        {/* Optional Top Announcement Banner with Close Button */}
+        {siteSettings?.announcementBanner && !announcementClosed && (
+          <div className="visitor-announcement-bar">
+            <span className="announcement-text">{siteSettings.announcementBanner}</span>
+            <button
+              type="button"
+              onClick={handleCloseAnnouncement}
+              className="announcement-close-btn"
+              aria-label="Close Announcement Banner"
+              title="Dismiss Announcement"
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
 
-      {/* Top Contact Bar */}
-      <div className="visitor-top-bar">
-        <div className="top-bar-contact">
-          <a href={`tel:${siteSettings?.contactPhone?.replace(/\s+/g, '') || '+918500108016'}`} className="top-bar-link">
-            <Phone size={13} /> {siteSettings?.contactPhone || '+91 85001 08016'}
-          </a>
-          <a href={`mailto:${siteSettings?.contactEmail || 'bdpskkd@gmail.com'}`} className="top-bar-link">
-            <Mail size={13} /> {siteSettings?.contactEmail || 'bdpskkd@gmail.com'}
-          </a>
+        {/* Top Contact Bar */}
+        <div className="visitor-top-bar">
+          <div className="top-bar-contact">
+            <a href={`tel:${siteSettings?.contactPhone?.replace(/\s+/g, '') || '+918500108016'}`} className="top-bar-link">
+              <Phone size={13} /> {siteSettings?.contactPhone || '+91 85001 08016'}
+            </a>
+            <a href={`mailto:${siteSettings?.contactEmail || 'bdpskkd@gmail.com'}`} className="top-bar-link">
+              <Mail size={13} /> {siteSettings?.contactEmail || 'bdpskkd@gmail.com'}
+            </a>
+          </div>
+          <div className="top-bar-links-group">
+            <Link href="/about" className="top-bar-sublink">
+              {siteSettings?.headerTopBarLegacyText || 'Our Legacy (Since 2006)'}
+            </Link>
+            <span className="top-bar-divider">|</span>
+            <Link href="/contact?type=collaboration" className="top-bar-sublink">
+              {siteSettings?.headerTopBarAlliancesText || 'Placement Alliances'}
+            </Link>
+          </div>
         </div>
-        <div className="top-bar-links-group">
-          <Link href="/about" className="top-bar-sublink">
-            {siteSettings?.headerTopBarLegacyText || 'Our Legacy (Since 2006)'}
-          </Link>
-          <span className="top-bar-divider">|</span>
-          <Link href="/contact?type=collaboration" className="top-bar-sublink">
-            {siteSettings?.headerTopBarAlliancesText || 'Placement Alliances'}
-          </Link>
-        </div>
-      </div>
 
-      {/* Main Sticky Navbar */}
-      <header className="visitor-navbar">
+        {/* Main Sticky Navbar */}
+        <div className="visitor-navbar">
         <div className="navbar-container">
           {/* 1. Left: Brand Logo */}
           <Link href="/" className="navbar-logo">
@@ -293,6 +294,7 @@ export default function VisitorHeader() {
             </button>
           </div>
         </div>
+      </div>
 
         {/* Fullscreen Blurred Backdrop Overlay & Floating Card Menu */}
         {menuOpen && (
@@ -435,7 +437,6 @@ export default function VisitorHeader() {
                   className="mobile-card-item"
                 >
                   <div className="mobile-item-left">
-                    <Sparkles size={18} style={{ color: '#FF7518' }} />
                     <span>IT Solutions</span>
                   </div>
                   <span className="btn-stipend-tag tag-soon">SOON</span>
