@@ -2,7 +2,7 @@ import { defineConfig, Tool } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { 
   DownloadIcon, RefreshIcon, PublishIcon, 
-  CogIcon, HomeIcon, InfoOutlineIcon, PhoneIcon, 
+  CogIcon, HomeIcon, InfoOutlineIcon, EnvelopeIcon, 
   BookIcon, CommentIcon, ImageIcon, CaseIcon, UsersIcon, SparklesIcon 
 } from '@sanity/icons';
 import { schemaTypes } from './sanity/schemas';
@@ -95,7 +95,7 @@ export default defineConfig({
                     S.listItem()
                       .title('Contact Us Page Content')
                       .id('contactPage')
-                      .icon(PhoneIcon)
+                      .icon(EnvelopeIcon)
                       .child(S.document().schemaType('contactPage').documentId('contactPage')),
                   ])
               ),

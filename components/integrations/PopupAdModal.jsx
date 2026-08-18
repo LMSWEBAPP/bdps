@@ -68,6 +68,9 @@ export default function PopupAdModal() {
             src={adData.image}
             alt={adData.title || 'BDPS Advertisement'}
             className="poster-banner-img"
+            width="473"
+            height="711"
+            loading="lazy"
           />
         </Link>
 

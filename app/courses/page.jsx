@@ -92,6 +92,7 @@ function VisitorCoursesCatalogContent() {
             <input
               type="text"
               placeholder="Search course name (e.g. Java, Python, Tally, PGDCA)..."
+              aria-label="Search course name"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="hero-search-input-field"

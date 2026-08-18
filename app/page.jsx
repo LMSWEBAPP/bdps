@@ -255,7 +255,15 @@ export default function VisitorHomepage() {
                     transition={{ delay: 0.3, duration: 0.6 }}
                     className="hero-img-card"
                   >
-                    <img src={slide.image || 'https://picsum.photos/seed/bdps/800/600'} alt={slide.title} className="hero-img" />
+                    <img 
+                      src={slide.image || 'https://picsum.photos/seed/bdps/800/600'} 
+                      alt={slide.title} 
+                      className="hero-img" 
+                      width="678"
+                      height="452"
+                      fetchPriority={idx === 0 ? "high" : "auto"}
+                      loading={idx === 0 ? "eager" : "lazy"}
+                    />
                   </motion.div>
                 </div>
               </div>
@@ -269,6 +277,7 @@ export default function VisitorHomepage() {
             <button
               key={idx}
               onClick={() => setActiveSlide(idx)}
+              aria-label={`Go to slide ${idx + 1}`}
               className={`hero-dot-btn ${idx === activeSlide ? 'hero-dot-active' : 'hero-dot-inactive'}`}
             />
           ))}
@@ -278,6 +287,7 @@ export default function VisitorHomepage() {
         <button
           onClick={() => setActiveSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)}
           className="hero-nav-prev"
+          aria-label="Previous Slide"
         >
           <ChevronLeft size={22} />
         </button>
@@ -285,6 +295,7 @@ export default function VisitorHomepage() {
         <button
           onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
           className="hero-nav-next"
+          aria-label="Next Slide"
         >
           <ChevronRight size={22} />
         </button>
@@ -339,9 +350,9 @@ export default function VisitorHomepage() {
               <div className="csr-badge">
                 <HeartHandshake size={32} className="contact-icon" />
                 <div>
-                  <h4 className="csr-title">
+                  <h3 className="csr-title">
                     {homeData.csrTitle || 'CSR Initiative Collaboration'}
-                  </h4>
+                  </h3>
                   <p className="csr-desc">
                     {homeData.csrDescription || 'BDPS proudly collaborates with Embracing Humanity Foundation (EHF) to implement CSR skill development, digital literacy, and youth employment training.'}
                   </p>
@@ -453,9 +464,9 @@ export default function VisitorHomepage() {
                   <DynamicIcon name={pillar.icon || 'Briefcase'} size={22} className="icon-white" />
                 </div>
                 <div>
-                  <h4 className="support-pillar-title">
+                  <h3 className="support-pillar-title">
                     {pillar.title}
-                  </h4>
+                  </h3>
                   <p className="support-pillar-desc">
                     {pillar.desc}
                   </p>
@@ -516,9 +527,9 @@ export default function VisitorHomepage() {
           </p>
 
           <div>
-            <h4 className="testimonial-author">
+            <h3 className="testimonial-author">
               {testimonials[activeTestimonial % testimonials.length]?.name}
-            </h4>
+            </h3>
             <span className="testimonial-role">
               {testimonials[activeTestimonial % testimonials.length]?.role}
               {testimonials[activeTestimonial % testimonials.length]?.company ? ` at ${testimonials[activeTestimonial % testimonials.length].company}` : ''}
@@ -536,6 +547,7 @@ export default function VisitorHomepage() {
                 <button
                   key={idx}
                   onClick={() => setActiveTestimonial(idx)}
+                  aria-label={`Go to testimonial ${idx + 1}`}
                   className={`testimonial-dot ${idx === (activeTestimonial % testimonials.length) ? 'testimonial-dot-active' : 'testimonial-dot-inactive'}`}
                 />
               ))}

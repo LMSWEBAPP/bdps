@@ -59,12 +59,9 @@ export const metadata = {
     description: 'Practical computer lab training, PGDCA, Core Java, Python, and Tally Prime courses in Kakinada.',
   },
   icons: {
-    icon: [
-      { url: '/bdps-logo-transparent.png', type: 'image/png' },
-      { url: '/bdps-logo.png', type: 'image/png' },
-    ],
-    shortcut: '/bdps-logo-transparent.png',
-    apple: '/bdps-logo-transparent.png',
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/icon.png',
   },
   robots: {
     index: true,
@@ -196,6 +193,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={outfit.variable}>
       <head>
+        {/* Preconnect to crucial CDNs for instant LCP delivery */}
+        <link rel="preconnect" href="https://cdn.sanity.io" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://cdn.sanity.io" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://www.google-analytics.com" />
+
         {/* Google Schema.org JSON-LD for Rich Sitelinks */}
         <script
           type="application/ld+json"

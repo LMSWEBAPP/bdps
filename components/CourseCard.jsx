@@ -91,6 +91,9 @@ export default function CourseCard({ course, showSubtitle = false }) {
           src={course.image || 'https://picsum.photos/seed/bdps/800/600'}
           alt={course.title}
           className="catalog-card-img"
+          width="512"
+          height="288"
+          loading="lazy"
         />
         <span className="catalog-badge-category">
           {course.category || 'Certification'}
@@ -103,7 +106,7 @@ export default function CourseCard({ course, showSubtitle = false }) {
           onClick={handleShare}
           className={`catalog-share-overlay-btn ${copied ? 'copied' : ''}`}
           title={copied ? 'Link Copied!' : 'Share Course'}
-          aria-label="Share Course"
+          aria-label={`Share ${course.title} course`}
         >
           {copied ? <Check size={15} /> : <Share2 size={15} />}
           {copied && <span className="share-toast-pop">Copied!</span>}
@@ -140,14 +143,19 @@ export default function CourseCard({ course, showSubtitle = false }) {
         </div>
 
         <div className="catalog-card-actions">
-          <Link href={courseUrl} className="btn-catalog-details" onClick={(e) => e.stopPropagation()}>
+          <Link 
+            href={courseUrl} 
+            className="btn-catalog-details" 
+            aria-label={`Enroll in ${course.title} course`}
+            onClick={(e) => e.stopPropagation()}
+          >
             <span>Enroll</span> <ArrowRight size={14} />
           </Link>
           <button
             onClick={handleShare}
             className={`btn-share-course ${copied ? 'copied' : ''}`}
             title={copied ? 'Link Copied!' : 'Share Course'}
-            aria-label="Share Course"
+            aria-label={`Share ${course.title} course`}
           >
             {copied ? <Check size={16} /> : <Share2 size={16} />}
           </button>
