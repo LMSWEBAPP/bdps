@@ -450,7 +450,7 @@ export default function VisitorHomepage() {
             {supportPillars.map((pillar, idx) => (
               <div key={idx} className="support-pillar-card">
                 <div className="support-icon-box">
-                  <DynamicIcon name={pillar.icon || 'Briefcase'} size={22} className="icon-orange" />
+                  <DynamicIcon name={pillar.icon || 'Briefcase'} size={22} className="icon-white" />
                 </div>
                 <div>
                   <h4 className="support-pillar-title">
@@ -466,7 +466,7 @@ export default function VisitorHomepage() {
 
           <div className="support-bottom-bar">
             <div className="support-bottom-text">
-              <ShieldCheck size={18} className="icon-orange" />
+              <ShieldCheck size={18} className="icon-white" />
               <span>Ready to boost your computing & career skills?</span>
             </div>
             <Link href="/contact" className="btn-support-counseling">

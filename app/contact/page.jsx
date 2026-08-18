@@ -25,6 +25,7 @@ const DEFAULT_COURSES = [
 ];
 
 const DEFAULT_COLLAB_TYPES = [
+  'IT Solutions & Enterprise Software',
   'Campus Placement / Talent Recruitment',
   'Corporate Employee Upskilling',
   'Lab & Capstone Project Sponsorship',
@@ -34,13 +35,13 @@ const DEFAULT_COLLAB_TYPES = [
 function ContactFormContent() {
   const searchParams = useSearchParams();
   const formType = searchParams.get('type') || 'student';
-  const isCollab = formType === 'collaboration';
+  const isCollab = formType === 'collaboration' || formType === 'it-solutions';
 
   const [contactData, setContactData] = useState({
     studentBannerTitle: 'Contact Our Advisors',
     studentBannerDesc: 'Get in touch to clear course doubts, check batch timings, or request custom syllabus modules.',
-    collabBannerTitle: 'Corporate & Institutional Collaboration',
-    collabBannerDesc: 'Partner with BDPS to recruit skilled software talent, execute corporate training bootcamps, or sponsor academic project labs.',
+    collabBannerTitle: formType === 'it-solutions' ? 'IT Solutions & Enterprise Services' : 'Corporate & Institutional Collaboration',
+    collabBannerDesc: formType === 'it-solutions' ? 'Discover our upcoming customized software development, cloud infrastructure, and enterprise IT consulting services.' : 'Partner with BDPS to recruit skilled software talent, execute corporate training bootcamps, or sponsor academic project labs.',
     branches: [DEFAULT_BRANCH],
     studentCourses: DEFAULT_COURSES,
     collabTypes: DEFAULT_COLLAB_TYPES
@@ -75,7 +76,7 @@ function ContactFormContent() {
     contactName: '',
     email: '',
     phone: '',
-    collabType: collabTypes[0] || 'Campus Placement / Talent Recruitment',
+    collabType: formType === 'it-solutions' ? 'IT Solutions & Enterprise Software' : (collabTypes[0] || 'Campus Placement / Talent Recruitment'),
     message: ''
   });
 

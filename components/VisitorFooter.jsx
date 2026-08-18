@@ -80,10 +80,22 @@ export default function VisitorFooter() {
         {/* Column 1: Info & Brand */}
         <div className="footer-column">
           <div className="footer-brand-logo-row">
-            <div className="footer-logo-badge">
-              {branding.logoText.charAt(0)}<span className="about-heading-accent">{branding.logoText.slice(1)}</span>
-            </div>
-            <span className="footer-logo-title">{branding.title}</span>
+            {siteSettings?.headerLogo ? (
+              <div className="footer-logo-card">
+                <img 
+                  src={siteSettings.headerLogo} 
+                  alt={branding.title} 
+                  className="footer-logo-img" 
+                />
+              </div>
+            ) : (
+              <>
+                <div className="footer-logo-badge">
+                  {branding.logoText.charAt(0)}<span className="about-heading-accent">{branding.logoText.slice(1)}</span>
+                </div>
+                <span className="footer-logo-title">{branding.title}</span>
+              </>
+            )}
           </div>
           <p className="footer-tagline">
             {branding.tagline}

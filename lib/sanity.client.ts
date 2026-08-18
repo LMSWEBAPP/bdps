@@ -94,6 +94,7 @@ export async function getSanitySiteSettings() {
   try {
     const query = `*[_type == "siteSettings" && !(_id in path("drafts.**"))] | order((_id == "siteSettings") desc, _updatedAt desc)[0] {
       announcementBanner,
+      "headerLogo": headerLogo.asset->url,
       headerBrandTitle,
       headerBrandSubtitle,
       headerLogoBadge,
