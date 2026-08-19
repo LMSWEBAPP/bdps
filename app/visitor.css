@@ -4023,6 +4023,10 @@ html, body {
   margin-top: 55px;
 }
 
+.marquee-section-why .marquee-track {
+  animation-duration: 60s !important;
+}
+
 @media (max-width: 480px) {
   .hero-section {
     height: 340px !important;
