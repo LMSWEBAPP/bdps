@@ -9,14 +9,29 @@ export const sanityClient = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: false,
+  useCdn: true, // Use Sanity CDN edge caching for ultra-fast response
 });
 
 const builder = imageUrlBuilder(sanityClient);
 
-export function urlFor(source: any) {
+/**
+ * Optimizes any Sanity CDN image URL to modern WebP/AVIF format with width and quality constraints
+ */
+export function optimizeSanityImageUrl(url: string | undefined | null, width = 800, quality = 80): string {
+  if (!url) return '';
+  if (!url.includes('cdn.sanity.io')) return url;
+  const separator = url.includes('?') ? '&' : '?';
+  // If params already exist, don't double append
+  if (url.includes('auto=format')) return url;
+  return `${url}${separator}auto=format&fit=max&w=${width}&q=${quality}`;
+}
+
+export function urlFor(source: any, width = 800, quality = 80) {
   if (!source) return '';
-  return builder.image(source).url();
+  if (typeof source === 'string') {
+    return optimizeSanityImageUrl(source, width, quality);
+  }
+  return builder.image(source).auto('format').fit('max').width(width).quality(quality).url();
 }
 
 export async function getSanityCourses() {
@@ -38,8 +53,12 @@ export async function getSanityCourses() {
       description,
       isFeatured
     }`;
-    const courses = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
-    return courses || [];
+    const courses = await sanityClient.fetch(query, {}, { cache: 'no-store' });
+    if (!Array.isArray(courses)) return [];
+    return courses.map((course: any) => ({
+      ...course,
+      image: optimizeSanityImageUrl(course.image, 600, 75),
+    }));
   } catch (error) {
     console.error('Error fetching courses from Sanity:', error);
     return [];
@@ -66,8 +85,12 @@ export async function getSanityCourseById(id: string) {
       description,
       isFeatured
     }`;
-    const course = await sanityClient.fetch(query, { id }, { cache: 'no-store', next: { revalidate: 0 } });
-    return course;
+    const course = await sanityClient.fetch(query, { id }, { cache: 'no-store' });
+    if (!course) return null;
+    return {
+      ...course,
+      image: optimizeSanityImageUrl(course.image, 1000, 80),
+    };
   } catch (error) {
     console.error('Error fetching course by ID from Sanity:', error);
     return null;
@@ -82,8 +105,12 @@ export async function getSanityPopupAd() {
       targetUrl,
       buttonText
     }`;
-    const ad = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
-    return ad || null;
+    const ad = await sanityClient.fetch(query, {}, { cache: 'no-store' });
+    if (!ad) return null;
+    return {
+      ...ad,
+      image: optimizeSanityImageUrl(ad.image, 600, 75),
+    };
   } catch (error) {
     console.error('Error fetching popup ad from Sanity:', error);
     return null;
@@ -122,8 +149,12 @@ export async function getSanitySiteSettings() {
       footerAccreditationText,
       footerCopyrightText
     }`;
-    const settings = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
-    return settings || null;
+    const settings = await sanityClient.fetch(query, {}, { cache: 'no-store' });
+    if (!settings) return null;
+    return {
+      ...settings,
+      headerLogo: optimizeSanityImageUrl(settings.headerLogo, 300, 85),
+    };
   } catch (error) {
     console.error('Error fetching site settings from Sanity:', error);
     return null;
@@ -146,8 +177,13 @@ export async function getSanityHeroSlides() {
       secondaryButtonText,
       secondaryButtonLink
     }`;
-    const slides = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
-    return slides || [];
+    const slides = await sanityClient.fetch(query, {}, { cache: 'no-store' });
+    if (!Array.isArray(slides)) return [];
+    return slides.map((slide: any) => ({
+      ...slide,
+      image: optimizeSanityImageUrl(slide.image, 800, 80),
+      bgImage: optimizeSanityImageUrl(slide.bgImage, 1600, 75),
+    }));
   } catch (error) {
     console.error('Error fetching hero slides from Sanity:', error);
     return [];
@@ -175,7 +211,7 @@ export async function getSanityHomePage() {
       hiringPartnersSubtitle,
       hiringPartners
     }`;
-    const homeData = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
+    const homeData = await sanityClient.fetch(query, {}, { cache: 'no-store' });
     return homeData || null;
   } catch (error) {
     console.error('Error fetching home page data from Sanity:', error);
@@ -202,7 +238,7 @@ export async function getSanityAboutPage() {
       beliefsTitle,
       beliefs
     }`;
-    const aboutData = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
+    const aboutData = await sanityClient.fetch(query, {}, { cache: 'no-store' });
     return aboutData || null;
   } catch (error) {
     console.error('Error fetching about page data from Sanity:', error);
@@ -221,7 +257,7 @@ export async function getSanityContactPage() {
       studentCourses,
       collabTypes
     }`;
-    const contactData = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
+    const contactData = await sanityClient.fetch(query, {}, { cache: 'no-store' });
     return contactData || null;
   } catch (error) {
     console.error('Error fetching contact page data from Sanity:', error);
@@ -241,11 +277,14 @@ export async function getSanityTestimonials() {
       rating,
       "avatar": avatar.asset->url
     }`;
-    const testimonials = await sanityClient.fetch(query, {}, { cache: 'no-store', next: { revalidate: 0 } });
-    return testimonials || [];
+    const testimonials = await sanityClient.fetch(query, {}, { cache: 'no-store' });
+    if (!Array.isArray(testimonials)) return [];
+    return testimonials.map((t: any) => ({
+      ...t,
+      avatar: optimizeSanityImageUrl(t.avatar, 160, 80),
+    }));
   } catch (error) {
     console.error('Error fetching testimonials from Sanity:', error);
     return [];
   }
 }
-

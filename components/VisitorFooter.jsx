@@ -86,6 +86,9 @@ export default function VisitorFooter() {
                   src={siteSettings.headerLogo} 
                   alt={branding.title} 
                   className="footer-logo-img" 
+                  width="160"
+                  height="52"
+                  loading="lazy"
                 />
               </div>
             ) : (
