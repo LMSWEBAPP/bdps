@@ -160,8 +160,8 @@ export default function VisitorHeader() {
                   src={siteSettings.headerLogo} 
                   alt={siteSettings?.headerBrandTitle || 'BDPS Computer Education & IT Solutions'} 
                   className="navbar-logo-img"
-                  width="160"
-                  height="52"
+                  width="240"
+                  height="100"
                   loading="eager"
                   fetchPriority="high"
                 />
