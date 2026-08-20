@@ -10,6 +10,7 @@ import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
 import InternshipModal from '@/components/forms/InternshipModal';
 import JobLeadModal from '@/components/forms/JobLeadModal';
+import { fetchCached } from '@/lib/api-cache';
 
 export default function JobsPage() {
   const [jobs, setJobs] = useState([]);
@@ -26,10 +27,9 @@ export default function JobsPage() {
   const JOBS_PER_PAGE = 6;
 
   useEffect(() => {
-    fetch('/api/site-settings', { cache: 'no-store' })
-      .then(res => res.json())
+    fetchCached('/api/site-settings')
       .then(data => {
-        if (data.success && data.settings) {
+        if (data && data.success && data.settings) {
           setSiteSettings(data.settings);
         }
       })
@@ -94,14 +94,44 @@ export default function JobsPage() {
     }
   };
 
+  const [appliedJobIds, setAppliedJobIds] = useState([]);
+
+  const syncAppliedJobsFromStorage = () => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = JSON.parse(localStorage.getItem('bdps_applied_job_ids') || '[]');
+        setAppliedJobIds(saved);
+      } catch (e) {}
+    }
+  };
+
+  useEffect(() => {
+    syncAppliedJobsFromStorage();
+  }, []);
+
+  const hasRedirectUrl = (job) => Boolean(
+    job?.redirectUrl &&
+    typeof job.redirectUrl === 'string' &&
+    job.redirectUrl.trim() !== '' &&
+    job.redirectUrl !== 'null' &&
+    job.redirectUrl !== 'undefined'
+  );
+
+  const isApplied = (job) => {
+    const jobId = job?._id || job?.adzunaId;
+    return Boolean(jobId && appliedJobIds.includes(jobId));
+  };
+
   const handleApplyClick = (job) => {
     if (typeof window !== 'undefined') {
-      const hasSubmitted = localStorage.getItem('bdps_job_lead_submitted') === 'true';
-      if (hasSubmitted) {
-        // Direct seamless redirect for returning users
-        window.open(job.redirectUrl || 'https://www.adzuna.in', '_blank', 'noopener,noreferrer');
+      const jobHasLink = hasRedirectUrl(job);
+      const alreadyApplied = isApplied(job);
+
+      if (jobHasLink && alreadyApplied) {
+        // Direct seamless redirect for jobs with links that were already applied
+        window.open(job.redirectUrl, '_blank', 'noopener,noreferrer');
       } else {
-        // First-time gate: capture lead in Sanity
+        // Open lead modal for first-time application or custom jobs
         setSelectedJobForModal(job);
         setJobModalOpen(true);
       }
@@ -282,14 +312,24 @@ export default function JobsPage() {
                   <div className="job-card-footer">
                     <span className="job-posted-by-badge">
                       <ShieldCheck size={13} className="posted-badge-icon" />
-                      <span>Posted by BDPS</span>
+                      <span>{job.isCustom ? 'BDPS Custom Job' : 'Posted by BDPS'}</span>
                     </span>
                     <button
                       type="button"
                       onClick={() => handleApplyClick(job)}
-                      className="btn-apply-job"
+                      className={`btn-apply-job ${isApplied(job) && !hasRedirectUrl(job) ? 'btn-stipend-disabled' : ''}`}
+                      disabled={isApplied(job) && !hasRedirectUrl(job)}
+                      style={isApplied(job) && !hasRedirectUrl(job) ? { opacity: 0.7, cursor: 'not-allowed', backgroundColor: '#1e293b' } : {}}
                     >
-                      Apply on Official Portal <ExternalLink size={14} />
+                      {isApplied(job) && !hasRedirectUrl(job) ? (
+                        <span>Applied ✓</span>
+                      ) : hasRedirectUrl(job) ? (
+                        <>
+                          <span>{isApplied(job) ? 'Visit Official Portal' : 'Apply on Official Portal'}</span> <ExternalLink size={14} />
+                        </>
+                      ) : (
+                        <span>{isApplied(job) ? 'Applied ✓' : 'Apply Now'}</span>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -343,11 +383,15 @@ export default function JobsPage() {
       <JobLeadModal
         job={selectedJobForModal}
         isOpen={jobModalOpen}
-        onClose={() => setJobModalOpen(false)}
+        onClose={() => {
+          setJobModalOpen(false);
+          syncAppliedJobsFromStorage();
+        }}
         onSuccess={(redirectUrl) => {
           setJobModalOpen(false);
-          if (typeof window !== 'undefined') {
-            window.open(redirectUrl || 'https://www.adzuna.in', '_blank', 'noopener,noreferrer');
+          syncAppliedJobsFromStorage();
+          if (typeof window !== 'undefined' && redirectUrl) {
+            window.open(redirectUrl, '_blank', 'noopener,noreferrer');
           }
         }}
       />

@@ -1495,6 +1495,359 @@ html, body {
   line-height: 1.25;
 }
 
+/* ==========================================================================
+   Responsive Overrides for Hero Carousel Section, 4-Stat Banner & Spacing
+   ========================================================================== */
+
+/* Laptop / Small Desktop (861px to 1024px) */
+@media (max-width: 1024px) {
+  .hero-carousel-container {
+    min-height: 380px;
+    padding: 28px 40px 44px 40px;
+  }
+
+  .hero-slide-grid {
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 24px;
+  }
+
+  .hero-image-side {
+    height: 320px;
+  }
+
+  .hero-main-title {
+    font-size: clamp(24px, 3.2vw, 38px);
+  }
+
+  .hero-stats-banner {
+    padding: 16px 24px;
+  }
+
+  .hero-stats-container {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  .hero-stat-card {
+    gap: 10px;
+  }
+
+  .hero-stat-number {
+    font-size: 16px;
+  }
+
+  .hero-stat-label {
+    font-size: 11.5px;
+  }
+}
+
+/* Tablet Portrait & Medium Screens (641px to 860px) - (e.g. 768px) */
+@media (max-width: 860px) {
+  .hero-carousel-container {
+    min-height: 340px !important;
+    padding: 24px 32px 42px 32px !important;
+  }
+
+  .hero-slide-grid {
+    grid-template-columns: 1.1fr 0.9fr !important;
+    gap: 20px !important;
+  }
+
+  .hero-text-side {
+    padding-left: 0 !important;
+    gap: 12px !important;
+  }
+
+  .hero-tag-red {
+    font-size: 12px !important;
+    letter-spacing: 1.2px !important;
+  }
+
+  .hero-main-title {
+    font-size: 26px !important;
+    line-height: 1.2 !important;
+  }
+
+  .hero-desc-text {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    max-width: 100% !important;
+  }
+
+  .hero-buttons-row {
+    gap: 10px !important;
+    margin-top: 6px !important;
+  }
+
+  .btn-hero-primary, .btn-hero-danger {
+    padding: 11px 20px !important;
+    font-size: 13.5px !important;
+  }
+
+  .hero-image-side {
+    height: 250px !important;
+  }
+
+  .hero-arrow-btn {
+    width: 36px !important;
+    height: 36px !important;
+    background-color: #ffffff !important;
+    border: 1px solid rgba(6, 24, 56, 0.15) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .hero-arrow-left {
+    left: 6px !important;
+  }
+
+  .hero-arrow-right {
+    right: 6px !important;
+  }
+
+  .hero-dots-row {
+    left: 32px !important;
+    bottom: 12px !important;
+  }
+
+  .hero-stats-banner {
+    padding: 14px 18px !important;
+  }
+
+  .hero-stats-container {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .hero-stat-icon-circle {
+    width: 34px !important;
+    height: 34px !important;
+  }
+
+  .hero-stat-icon-circle svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .hero-stat-number {
+    font-size: 13.5px !important;
+  }
+
+  .hero-stat-label {
+    font-size: 10px !important;
+  }
+}
+
+/* Mobile Screens (<= 640px) - Prominent, High-Quality Hero Section & No Bottom Gap */
+@media (max-width: 640px) {
+  .hero-carousel-container {
+    min-height: 260px !important;
+    padding: 20px 22px 38px 22px !important;
+  }
+
+  .hero-slide-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .hero-text-side {
+    padding-left: 0 !important;
+    gap: 5px !important;
+  }
+
+  .hero-tag-red {
+    font-size: 9.5px !important;
+    letter-spacing: 0.6px !important;
+  }
+
+  .hero-main-title {
+    font-size: clamp(13.5px, 3.8vw, 17.5px) !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.2px !important;
+  }
+
+  .hero-desc-text {
+    font-size: clamp(10px, 2.6vw, 11.5px) !important;
+    line-height: 1.35 !important;
+    max-width: 100% !important;
+    color: #475569 !important;
+  }
+
+  .hero-buttons-row {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 5px !important;
+    width: 100% !important;
+    margin-top: 3px !important;
+  }
+
+  .btn-hero-primary, .btn-hero-danger {
+    flex: 1 1 0% !important;
+    padding: 6px 8px !important;
+    font-size: 10px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 3px !important;
+    border-radius: 5px !important;
+    white-space: nowrap !important;
+  }
+
+  .btn-hero-primary svg, .btn-hero-danger svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+
+  .hero-image-side {
+    height: 180px !important;
+    width: 100% !important;
+    margin-top: 0 !important;
+  }
+
+  .hero-faded-img-wrapper {
+    border-radius: 0 10px 10px 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.15) 12%, rgba(0, 0, 0, 0.85) 40%, #000000 100%) !important;
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.15) 12%, rgba(0, 0, 0, 0.85) 40%, #000000 100%) !important;
+  }
+
+  .hero-dots-row {
+    left: 22px !important;
+    bottom: 10px !important;
+    gap: 5px !important;
+  }
+
+  .hero-dot {
+    width: 7px !important;
+    height: 7px !important;
+  }
+
+  .hero-dot-active {
+    width: 16px !important;
+  }
+
+  /* Carousel Navigation Arrows on Mobile: Crisp, Visible & Well-Positioned */
+  .hero-arrow-btn {
+    width: 30px !important;
+    height: 30px !important;
+    background-color: #ffffff !important;
+    border: 1px solid rgba(6, 24, 56, 0.15) !important;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14) !important;
+    z-index: 30 !important;
+    opacity: 0.95 !important;
+  }
+
+  .hero-arrow-btn svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .hero-arrow-left {
+    left: 4px !important;
+  }
+
+  .hero-arrow-right {
+    right: 4px !important;
+  }
+
+  /* 4-Stat Banner on Mobile: 4 Columns Single-Row Layout (Zero Clipping) */
+  .hero-stats-banner {
+    padding: 8px 4px !important;
+  }
+
+  .hero-stats-container {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 2px !important;
+  }
+
+  .hero-stat-card {
+    gap: 3px !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+  }
+
+  .hero-stat-icon-circle {
+    width: 22px !important;
+    height: 22px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .hero-stat-icon-circle svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+
+  .hero-stat-info {
+    min-width: 0 !important;
+  }
+
+  .hero-stat-number {
+    font-size: 9.5px !important;
+    font-weight: 800 !important;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+  }
+
+  .hero-stat-label {
+    font-size: 7px !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  /* Remove Huge Gap Below Hero & Marquee Section */
+  .explore-courses-section {
+    padding-top: 24px !important;
+    padding-bottom: 30px !important;
+  }
+}
+
+/* Extra Small Mobile Screens (<= 380px) */
+@media (max-width: 380px) {
+  .hero-carousel-container {
+    padding: 16px 14px 32px 14px !important;
+  }
+
+  .hero-main-title {
+    font-size: 15px !important;
+  }
+
+  .btn-hero-primary, .btn-hero-danger {
+    padding: 7px 8px !important;
+    font-size: 10px !important;
+  }
+
+  .hero-stats-banner {
+    padding: 6px 2px !important;
+  }
+
+  .hero-stats-container {
+    gap: 1px !important;
+  }
+
+  .hero-stat-card {
+    gap: 2px !important;
+  }
+
+  .hero-stat-icon-circle {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .hero-stat-icon-circle svg {
+    width: 9px !important;
+    height: 9px !important;
+  }
+
+  .hero-stat-number {
+    font-size: 8px !important;
+  }
+
+  .hero-stat-label {
+    font-size: 6px !important;
+  }
+}
+
 .hero-nav-next {
   position: absolute;
   right: 16px;
@@ -2202,6 +2555,32 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.btn-explore {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #FF7518 0%, #E05A00 100%);
+  color: #FFFFFF !important;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 30px;
+  text-decoration: none !important;
+  box-shadow: 0 4px 14px rgba(255, 117, 24, 0.4);
+  transition: all 0.3s ease;
+  margin-top: 12px;
+  align-self: flex-start;
+  cursor: pointer;
+}
+
+.btn-explore:hover {
+  background: linear-gradient(135deg, #FF8C38 0%, #FF6000 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 117, 24, 0.55);
+  color: #FFFFFF !important;
 }
 
 .card-heading-light {

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { MapPin, Phone, Mail, Facebook, Twitter, Linkedin, Youtube, Instagram, ArrowRight, ShieldCheck } from 'lucide-react';
+import { fetchCached } from '@/lib/api-cache';
 import InternshipModal from './forms/InternshipModal';
 
 const DEFAULT_COURSE_LINKS = [
@@ -30,10 +31,9 @@ export default function VisitorFooter() {
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
-    fetch('/api/site-settings', { cache: 'no-store' })
-      .then(res => res.json())
+    fetchCached('/api/site-settings')
       .then(data => {
-        if (data.success && data.settings) {
+        if (data && data.success && data.settings) {
           setSiteSettings(data.settings);
         }
       })

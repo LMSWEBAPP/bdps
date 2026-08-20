@@ -20,17 +20,9 @@ export default function PopupAdModal() {
           }, 1000);
           return () => clearTimeout(timer);
         } else {
-          // Fallback if no image uploaded in Sanity CMS
-          setAdData({
-            title: 'BDPS Computer Education',
-            image: 'https://picsum.photos/seed/bdps-ad/800/1200',
-            targetUrl: '/contact?type=student',
-            buttonText: 'Learn More'
-          });
-          const timer = setTimeout(() => {
-            setIsOpen(true);
-          }, 1000);
-          return () => clearTimeout(timer);
+          // No active popup ad configured in Sanity CMS - keep closed
+          setIsOpen(false);
+          setAdData(null);
         }
       })
       .catch(err => {

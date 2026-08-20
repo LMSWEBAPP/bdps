@@ -20,6 +20,27 @@ export async function POST(req: Request) {
     const body = await req.json();
     const validated = jobLeadSchema.parse(body);
 
+    // Server-side duplicate check: query existing jobLead by phone/email + jobTitle
+    let existingLead: any = null;
+    try {
+      const checkQuery = `*[_type == "jobLead" && (phone == $phone || email == $email) && jobTitle == $jobTitle][0]`;
+      existingLead = await sanityWriteClient.fetch(checkQuery, {
+        phone: validated.phone.trim(),
+        email: validated.email.trim(),
+        jobTitle: validated.jobTitle,
+      });
+    } catch (e) {}
+
+    if (existingLead) {
+      return NextResponse.json({
+        success: true,
+        alreadyApplied: true,
+        id: existingLead._id,
+        message: 'You have already submitted an application for this position.',
+        redirectUrl: validated.appliedJobUrl,
+      });
+    }
+
     const doc = {
       _type: 'jobLead',
       fullName: validated.fullName.trim(),

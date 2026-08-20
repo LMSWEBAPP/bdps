@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSanityAboutPage } from '@/lib/sanity.client';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export const DEFAULT_ABOUT_PAGE = {
   bannerBadge: 'Established 2006 • Kakinada HQ',

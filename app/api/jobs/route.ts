@@ -15,6 +15,7 @@ export async function GET(req: Request) {
     const query = `*[_type == "jobPosting"] | order(postedAt desc) [0...100] {
       _id,
       adzunaId,
+      isCustom,
       title,
       company,
       location,

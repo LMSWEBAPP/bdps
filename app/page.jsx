@@ -17,6 +17,7 @@ import CourseCard from '@/components/CourseCard';
 import DynamicIcon from '@/components/DynamicIcon';
 import { DEFAULT_HOME_PAGE } from '@/app/api/home-page/route';
 import { DEFAULT_TESTIMONIALS } from '@/app/api/testimonials/route';
+import { fetchCached } from '@/lib/api-cache';
 
 const renderHeroTitle = (title, highlightWord) => {
   if (!title) return null;
@@ -105,10 +106,9 @@ export default function VisitorHomepage() {
 
   // Fetch live courses from Sanity CMS — fall back to defaults only if Sanity returns nothing
   useEffect(() => {
-    fetch('/api/courses', { cache: 'no-store' })
-      .then(res => res.json())
+    fetchCached('/api/courses')
       .then(data => {
-        if (data.success && data.courses && data.courses.length > 0) {
+        if (data && data.success && data.courses && data.courses.length > 0) {
           setCourses(data.courses);
         } else {
           setCourses(DEFAULT_HOMEPAGE_COURSES);
@@ -120,10 +120,9 @@ export default function VisitorHomepage() {
 
   // Fetch live hero slides from Sanity CMS — fall back to defaults only if Sanity returns nothing
   useEffect(() => {
-    fetch('/api/hero-slides', { cache: 'no-store' })
-      .then(res => res.json())
+    fetchCached('/api/hero-slides')
       .then(data => {
-        if (data.success && data.slides && data.slides.length > 0) {
+        if (data && data.success && data.slides && data.slides.length > 0) {
           setHeroSlides(data.slides);
         } else {
           setHeroSlides(DEFAULT_HERO_SLIDES);
@@ -135,10 +134,9 @@ export default function VisitorHomepage() {
 
   // Fetch home page section settings
   useEffect(() => {
-    fetch('/api/home-page', { cache: 'no-store' })
-      .then(res => res.json())
+    fetchCached('/api/home-page')
       .then(res => {
-        if (res.success && res.data) {
+        if (res && res.success && res.data) {
           setHomeData(res.data);
         }
       })
@@ -147,10 +145,9 @@ export default function VisitorHomepage() {
 
   // Fetch testimonials
   useEffect(() => {
-    fetch('/api/testimonials', { cache: 'no-store' })
-      .then(res => res.json())
+    fetchCached('/api/testimonials')
       .then(res => {
-        if (res.success && res.testimonials && res.testimonials.length > 0) {
+        if (res && res.success && res.testimonials && res.testimonials.length > 0) {
           setTestimonials(res.testimonials);
         }
       })

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Briefcase, User, Phone, Mail, GraduationCap, Clock, CheckCircle2, X, Sparkles, BookOpen, AlertCircle } from 'lucide-react';
+import { fetchCached } from '@/lib/api-cache';
 
 export default function InternshipModal({ isOpen, onClose, onSuccess, siteSettings }) {
   const [fullName, setFullName] = useState('');
@@ -40,11 +41,10 @@ export default function InternshipModal({ isOpen, onClose, onSuccess, siteSettin
         setCourse(siteSettings.internshipCourses[0]);
       }
     } else {
-      // Fetch active courses from backend if available
-      fetch('/api/courses')
-        .then((res) => res.json())
+      // Fetch active courses with caching & deduplication
+      fetchCached('/api/courses')
         .then((data) => {
-          if (data.success && Array.isArray(data.courses) && data.courses.length > 0) {
+          if (data && data.success && Array.isArray(data.courses) && data.courses.length > 0) {
             const courseTitles = data.courses.map((c) => c.title).filter(Boolean);
             if (courseTitles.length > 0) {
               setAvailableCourses(courseTitles);

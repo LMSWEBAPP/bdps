@@ -14,10 +14,21 @@ export default function JobLeadModal({ job, isOpen, onClose, onSuccess }) {
 
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [submittedSuccess, setSubmittedSuccess] = useState(false);
 
-  // Auto-fill from previous session cache if available
+  const hasRedirectUrl = Boolean(
+    job?.redirectUrl &&
+    typeof job.redirectUrl === 'string' &&
+    job.redirectUrl.trim() !== '' &&
+    job.redirectUrl !== 'null' &&
+    job.redirectUrl !== 'undefined'
+  );
+
+  // Auto-fill from previous session cache if available & reset state
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && isOpen) {
+      setSubmittedSuccess(false);
+      setErrorMessage('');
       try {
         const saved = localStorage.getItem('bdps_applicant_info');
         if (saved) {
@@ -57,12 +68,12 @@ export default function JobLeadModal({ job, isOpen, onClose, onSuccess }) {
         fullName: fullName.trim(),
         email: email.trim(),
         phone: phone.trim(),
-        jobTitle: job.title || 'Indian Job Opening',
+        jobTitle: job.title || 'Job Application',
         company: job.company || 'Direct Employer',
         qualification,
         experience,
         city: city.trim() || 'India',
-        appliedJobUrl: job.redirectUrl || 'https://www.adzuna.in',
+        appliedJobUrl: hasRedirectUrl ? job.redirectUrl : 'Direct BDPS Application',
         notes: notes.trim(),
       };
 
@@ -81,10 +92,23 @@ export default function JobLeadModal({ job, isOpen, onClose, onSuccess }) {
               'bdps_applicant_info',
               JSON.stringify({ fullName, email, phone, qualification, experience, city })
             );
+
+            // Save job ID to applied IDs array
+            const appliedIds = JSON.parse(localStorage.getItem('bdps_applied_job_ids') || '[]');
+            const jobId = job._id || job.adzunaId;
+            if (jobId && !appliedIds.includes(jobId)) {
+              appliedIds.push(jobId);
+              localStorage.setItem('bdps_applied_job_ids', JSON.stringify(appliedIds));
+            }
           } catch (e) {}
         }
-        if (onSuccess) {
-          onSuccess(job.redirectUrl || 'https://www.adzuna.in');
+
+        if (hasRedirectUrl) {
+          if (onSuccess) {
+            onSuccess(job.redirectUrl);
+          }
+        } else {
+          setSubmittedSuccess(true);
         }
       } else {
         setErrorMessage(data.message || 'Failed to submit application. Please try again.');
@@ -99,7 +123,29 @@ export default function JobLeadModal({ job, isOpen, onClose, onSuccess }) {
   return (
     <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
       <div className="modal-content-card job-lead-modal" onClick={(e) => e.stopPropagation()}>
-        {/* Header Banner */}
+        {submittedSuccess ? (
+          <div style={{ padding: '36px 24px', textAlign: 'center' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#DCFCE7', color: '#166534', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
+              <CheckCircle2 size={36} />
+            </div>
+            <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#0F172A', marginBottom: '8px' }}>
+              Application Submitted Successfully!
+            </h3>
+            <p style={{ fontSize: '14px', color: '#475569', lineHeight: '1.5', maxWidth: '420px', margin: '0 auto 24px auto' }}>
+              Your application for <strong>{job.title}</strong> at <strong>{job.company || 'Direct Employer'}</strong> has been registered with BDPS Placement Cell. Our team will contact you shortly.
+            </p>
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn-job-lead-submit"
+              style={{ maxWidth: '200px', margin: '0 auto' }}
+            >
+              Close Window
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Header Banner */}
         <div className="job-lead-modal-header">
           {onClose && (
             <button onClick={onClose} className="modal-close-btn" aria-label="Close form">
@@ -258,7 +304,9 @@ export default function JobLeadModal({ job, isOpen, onClose, onSuccess }) {
             )}
           </button>
         </form>
-      </div>
-    </div>
+      </>
+    )}
+  </div>
+</div>
   );
 }

@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getSanityPopupAd } from '@/lib/sanity.client';
 
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+export const revalidate = 60;
 
 export async function GET() {
   try {
@@ -11,9 +10,7 @@ export async function GET() {
       { success: true, ad },
       {
         headers: {
-          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0',
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
         },
       }
     );

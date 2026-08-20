@@ -3,6 +3,7 @@ export const jobPostingSchema = {
   title: 'Indian Job Listings',
   type: 'document',
   fields: [
+    { name: 'isCustom', title: 'Custom Client Job?', type: 'boolean', initialValue: false },
     { name: 'adzunaId', title: 'Adzuna Job ID', type: 'string' },
     { name: 'title', title: 'Job Title', type: 'string' },
     { name: 'company', title: 'Company Name', type: 'string' },

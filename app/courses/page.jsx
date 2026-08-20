@@ -8,6 +8,7 @@ import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
 import RatingStars from '@/components/RatingStars';
 import CourseCard from '@/components/CourseCard';
+import { fetchCached } from '@/lib/api-cache';
 
 const DEFAULT_COURSES = [
   { id: '1', title: 'Post Graduate Diploma in Computer Applications (PGDCA)', category: 'Full Stack', instructor: 'Certified Coach', rating: 5.0, reviewsCount: '120+ reviews', fee: '15,000', subtitle: 'Comprehensive 1-year graduate diploma program covering office software & databases.', image: 'https://picsum.photos/seed/course-pgdca/800/600', duration: '1 Year' },
@@ -26,12 +27,11 @@ function VisitorCoursesCatalogContent() {
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
 
-  // Fetch live courses from Sanity CMS
+  // Fetch live courses from Sanity CMS with caching & deduplication
   useEffect(() => {
-    fetch('/api/courses', { cache: 'no-store' })
-      .then(res => res.json())
+    fetchCached('/api/courses')
       .then(data => {
-        if (data.success && data.courses && data.courses.length > 0) {
+        if (data && data.success && data.courses && data.courses.length > 0) {
           setAllCourses(data.courses);
         } else {
           setAllCourses(DEFAULT_COURSES);
