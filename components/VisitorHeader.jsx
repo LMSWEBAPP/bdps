@@ -113,7 +113,7 @@ export default function VisitorHeader() {
   return (
     <>
       {/* Optional Top Announcement Banner with Close Button */}
-      {siteSettings?.announcementBanner && !announcementClosed && (
+      {/* {siteSettings?.announcementBanner && !announcementClosed && (
         <div className="visitor-announcement-bar">
           <span className="announcement-text">{siteSettings.announcementBanner}</span>
           <button
@@ -126,17 +126,17 @@ export default function VisitorHeader() {
             <X size={14} />
           </button>
         </div>
-      )}
+      )} */}
 
       {/* Top Contact Bar */}
       <div className="visitor-top-bar">
         <div className="top-bar-contact">
-          <a href={`tel:${siteSettings?.contactPhone?.replace(/\s+/g, '') || '+918500108016'}`} className="top-bar-link">
+          {/* <a href={`tel:${siteSettings?.contactPhone?.replace(/\s+/g, '') || '+918500108016'}`} className="top-bar-link">
             <Phone size={13} /> {siteSettings?.contactPhone || '+91 85001 08016'}
-          </a>
-          <a href={`mailto:${siteSettings?.contactEmail || 'bdpskkd@gmail.com'}`} className="top-bar-link">
+          </a> */}
+          {/* <a href={`mailto:${siteSettings?.contactEmail || 'bdpskkd@gmail.com'}`} className="top-bar-link">
             <Mail size={13} /> {siteSettings?.contactEmail || 'bdpskkd@gmail.com'}
-          </a>
+          </a> */}
         </div>
         <div className="top-bar-links-group">
           <Link href="/about" className="top-bar-sublink">

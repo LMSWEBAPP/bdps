@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Star, Clock, User, Share2, ArrowRight, CheckCircle2, 
   Award, ShieldCheck, ChevronLeft, ChevronRight,
-  TrendingUp, Code, Cloud, Database, ShieldAlert, Cpu, X, Bot, Sparkles, Briefcase, FileText, Target, Compass, HeartHandshake, Layers
+  TrendingUp, Code, Cloud, Database, ShieldAlert, Cpu, X, Bot, Sparkles, Briefcase, FileText, Target, Compass, HeartHandshake, Layers, GraduationCap, Users, Trophy
 } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
@@ -18,39 +18,64 @@ import DynamicIcon from '@/components/DynamicIcon';
 import { DEFAULT_HOME_PAGE } from '@/app/api/home-page/route';
 import { DEFAULT_TESTIMONIALS } from '@/app/api/testimonials/route';
 
+const renderHeroTitle = (title, highlightWord) => {
+  if (!title) return null;
+  if (highlightWord && title.includes(highlightWord)) {
+    const parts = title.split(highlightWord);
+    return (
+      <>
+        {parts[0]}
+        <span className="hero-title-red-highlight">{highlightWord}</span>
+        {parts[1]}
+      </>
+    );
+  }
+  const words = title.split(' ');
+  if (words.length > 2) {
+    const mainPart = words.slice(0, words.length - 2).join(' ');
+    const redPart = words.slice(words.length - 2).join(' ');
+    return (
+      <>
+        {mainPart} <span className="hero-title-red-highlight">{redPart}</span>
+      </>
+    );
+  }
+  return title;
+};
+
 const DEFAULT_HERO_SLIDES = [
   {
-    title: 'Post Graduate Diploma in Computer Applications',
-    subtitle: 'Professional PGDCA Certification',
-    desc: 'Comprehensive 1-year graduate diploma program covering office software, database systems, and foundational IT concepts.',
-    image: 'https://picsum.photos/seed/course-pgdca/800/600',
+    subtitle: 'SINCE 2006',
+    title: 'BUILD YOUR FUTURE WITH THE RIGHT DIGITAL SKILLS',
+    highlightWord: 'DIGITAL SKILLS',
+    desc: 'Industry-focused computer education, practical training and career-oriented programs designed for the next generation of IT professionals.',
+    image: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80',
     buttonText: 'Explore Courses',
     buttonLink: '/courses',
-    secondaryButtonText: 'Get Counseling',
+    secondaryButtonText: 'Enquire Now',
     secondaryButtonLink: '/contact',
-    backgroundPreset: 'linear-gradient(135deg, #BD601C 0%, #7A3700 100%)'
   },
   {
-    title: 'Core Java & Software Programming',
-    subtitle: 'Object-Oriented Development',
-    desc: 'Master object-oriented coding, collections framework, multi-threading, JDBC, and SQL databases with hands-on practice.',
-    image: 'https://picsum.photos/seed/course-java/800/600',
+    subtitle: 'CAREER READY PROGRAMS',
+    title: 'MASTER CORE JAVA & FULL STACK DEVELOPMENT',
+    highlightWord: 'DEVELOPMENT',
+    desc: 'Gain practical software engineering skills, hands-on coding experience, and expert mentorship for top IT careers.',
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80',
     buttonText: 'Explore Courses',
     buttonLink: '/courses',
-    secondaryButtonText: 'Get Counseling',
+    secondaryButtonText: 'Enquire Now',
     secondaryButtonLink: '/contact',
-    backgroundPreset: 'linear-gradient(135deg, #B45309 0%, #92400E 100%)'
   },
   {
-    title: 'Tally Prime & Financial Accounting',
-    subtitle: 'GST & Commercial Bookkeeping',
-    desc: 'Master commercial accounting, taxation (GST, TDS), payroll management, and generate professional balance sheets.',
-    image: 'https://picsum.photos/seed/course-tally/800/600',
+    subtitle: 'COMMERCIAL ACCOUNTING',
+    title: 'TALLY PRIME WITH GST & FINANCIAL ACCOUNTING',
+    highlightWord: 'FINANCIAL ACCOUNTING',
+    desc: 'Master commercial bookkeeping, GST taxation, payroll management, and computerized accounting standards.',
+    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80',
     buttonText: 'Explore Courses',
     buttonLink: '/courses',
-    secondaryButtonText: 'Get Counseling',
+    secondaryButtonText: 'Enquire Now',
     secondaryButtonLink: '/contact',
-    backgroundPreset: 'linear-gradient(135deg, #2D3748 0%, #1A202C 100%)'
   }
 ];
 
@@ -194,111 +219,164 @@ export default function VisitorHomepage() {
     <div className="visitor-theme">
       <VisitorHeader />
 
-      {/* Section 1: Hero Carousel Section */}
-      <section className="hero-section">
-        <AnimatePresence mode="wait">
-          {heroSlides.map((slide, idx) => idx === activeSlide && (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8 }}
-              className="hero-slide"
-              style={{ background: getSlideBackground(slide, idx) }}
-            >
-              <div className="hero-grid">
-                <div className="hero-text-content">
-                  <motion.span
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className="hero-subtitle"
-                  >
-                    {slide.subtitle || 'BDPS COMPUTER EDUCATION'}
-                  </motion.span>
-                  <motion.h1
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="hero-title"
-                  >
-                    {slide.title}
-                  </motion.h1>
-                  <motion.p
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    className="hero-desc"
-                  >
-                    {slide.desc}
-                  </motion.p>
-                  <motion.div
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    className="hero-actions"
-                  >
-                    <Link href={slide.buttonLink || '/courses'} className="btn-explore">
-                      {slide.buttonText || 'Explore Courses'}
-                    </Link>
-                    <Link href={slide.secondaryButtonLink || '/contact'} className="btn-counseling">
-                      {slide.secondaryButtonText || 'Get Counseling'}
-                    </Link>
-                  </motion.div>
-                </div>
+      {/* Section 1: Redesigned Hero Carousel Section with Faded Image Transition & 4-Stat Banner */}
+      <section className="hero-section-wrapper">
+        <div className="hero-carousel-container">
+          <AnimatePresence mode="wait">
+            {heroSlides.map((slide, idx) => idx === activeSlide && (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.65, ease: "easeInOut" }}
+                className="hero-faded-slide"
+              >
+                <div className="hero-slide-grid">
+                  {/* Left Content Side */}
+                  <div className="hero-text-side">
+                    <motion.span
+                      initial={{ y: 14, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.15 }}
+                      className="hero-tag-red"
+                    >
+                      {slide.subtitle || 'SINCE 2006'}
+                    </motion.span>
 
-                <div className="hero-img-container">
-                  <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.3, duration: 0.6 }}
-                    className="hero-img-card"
-                  >
-                    <img 
-                      src={slide.image || 'https://picsum.photos/seed/bdps/800/600'} 
-                      alt={slide.title} 
-                      className="hero-img" 
-                      width="678"
-                      height="452"
-                      fetchPriority={idx === 0 ? "high" : "auto"}
-                      loading={idx === 0 ? "eager" : "lazy"}
-                    />
-                  </motion.div>
+                    <motion.h1
+                      initial={{ y: 14, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.25 }}
+                      className="hero-main-title"
+                    >
+                      {renderHeroTitle(slide.title || 'BUILD YOUR FUTURE WITH THE RIGHT DIGITAL SKILLS', slide.highlightWord)}
+                    </motion.h1>
+
+                    <motion.p
+                      initial={{ y: 14, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.35 }}
+                      className="hero-desc-text"
+                    >
+                      {slide.desc || 'Industry-focused computer education, practical training and career-oriented programs designed for the next generation of IT professionals.'}
+                    </motion.p>
+
+                    <motion.div
+                      initial={{ y: 14, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.45 }}
+                      className="hero-buttons-row"
+                    >
+                      <Link href={slide.buttonLink || '/courses'} className="btn-hero-primary">
+                        <span>{slide.buttonText || 'Explore Courses'}</span> <ArrowRight size={16} />
+                      </Link>
+                      <Link href={slide.secondaryButtonLink || '/contact'} className="btn-hero-danger">
+                        <span>{slide.secondaryButtonText || 'Enquire Now'}</span> <ArrowRight size={16} />
+                      </Link>
+                    </motion.div>
+                  </div>
+
+                  {/* Right Image Side with Left Soft Fade Overlay */}
+                  <div className="hero-image-side">
+                    <motion.div
+                      initial={{ scale: 0.96, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ duration: 0.55 }}
+                      className="hero-faded-img-wrapper"
+                    >
+                      <img 
+                        src={slide.image || 'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1200&q=80'} 
+                        alt={slide.title} 
+                        className="hero-faded-img" 
+                        fetchPriority={idx === 0 ? "high" : "auto"}
+                        loading={idx === 0 ? "eager" : "lazy"}
+                      />
+                      <div className="hero-left-fade-gradient" />
+                    </motion.div>
+                  </div>
                 </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+
+          {/* Carousel Indicators & Controls */}
+          {heroSlides.length > 1 && (
+            <>
+              <div className="hero-dots-row">
+                {heroSlides.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveSlide(idx)}
+                    aria-label={`Go to slide ${idx + 1}`}
+                    className={`hero-dot ${idx === activeSlide ? 'hero-dot-active' : ''}`}
+                  />
+                ))}
               </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
 
-        {/* Carousel Indicators */}
-        <div className="hero-dots-container">
-          {heroSlides.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setActiveSlide(idx)}
-              aria-label={`Go to slide ${idx + 1}`}
-              className={`hero-dot-btn ${idx === activeSlide ? 'hero-dot-active' : 'hero-dot-inactive'}`}
-            />
-          ))}
+              <button
+                onClick={() => setActiveSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)}
+                className="hero-arrow-btn hero-arrow-left"
+                aria-label="Previous Slide"
+              >
+                <ChevronLeft size={20} />
+              </button>
+
+              <button
+                onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
+                className="hero-arrow-btn hero-arrow-right"
+                aria-label="Next Slide"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </>
+          )}
         </div>
 
-        {/* Navigation Controls */}
-        <button
-          onClick={() => setActiveSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)}
-          className="hero-nav-prev"
-          aria-label="Previous Slide"
-        >
-          <ChevronLeft size={22} />
-        </button>
+        {/* 4 Boxes Stat Banner Anchor directly below Hero */}
+        <div className="hero-stats-banner">
+          <div className="hero-stats-container">
+            <div className="hero-stat-card">
+              <div className="hero-stat-icon-circle">
+                <GraduationCap size={22} />
+              </div>
+              <div className="hero-stat-info">
+                <span className="hero-stat-number">Since 2006</span>
+                <span className="hero-stat-label">20+ Years Experience</span>
+              </div>
+            </div>
 
-        <button
-          onClick={() => setActiveSlide((prev) => (prev + 1) % heroSlides.length)}
-          className="hero-nav-next"
-          aria-label="Next Slide"
-        >
-          <ChevronRight size={22} />
-        </button>
+            <div className="hero-stat-card">
+              <div className="hero-stat-icon-circle">
+                <Users size={22} />
+              </div>
+              <div className="hero-stat-info">
+                <span className="hero-stat-number">5000+</span>
+                <span className="hero-stat-label">Students Trained</span>
+              </div>
+            </div>
+
+            <div className="hero-stat-card">
+              <div className="hero-stat-icon-circle">
+                <BookOpen size={22} />
+              </div>
+              <div className="hero-stat-info">
+                <span className="hero-stat-number">20+</span>
+                <span className="hero-stat-label">Career-focused Courses</span>
+              </div>
+            </div>
+
+            <div className="hero-stat-card">
+              <div className="hero-stat-icon-circle">
+                <Trophy size={22} />
+              </div>
+              <div className="hero-stat-info">
+                <span className="hero-stat-number">100+</span>
+                <span className="hero-stat-label">Training Initiatives</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Permanent Announcement Bar on Top of 1st Marquee Bar */}
