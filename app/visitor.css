@@ -3078,11 +3078,8 @@ html, body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  flex: 1 1 0px;
-  min-width: 140px;
-  max-width: 220px;
-  gap: 8px;
-  padding: 11px 18px;
+  flex: 0 0 auto;
+  padding: 10px 22px;
   border-radius: 30px;
   font-weight: 700;
   font-size: 13.5px;
