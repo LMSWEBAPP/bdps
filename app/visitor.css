@@ -3150,6 +3150,42 @@ html, body {
 }
 
 /* --------------------------------------------------------------------------
+   Mobile View Organized 2-Column Table Grid Layout (<= 640px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .category-tabs-row, .category-pills-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-bottom: 20px !important;
+  }
+
+  .category-tab-btn, .category-pill-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    flex: none !important;
+    padding: 8.5px 8px !important;
+    font-size: 12px !important;
+    box-sizing: border-box !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .pill-count-badge {
+    font-size: 10px !important;
+    padding: 1px 6px !important;
+    margin-left: 3px !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
    About Us & BDPS AI Tutor Spotlight
    -------------------------------------------------------------------------- */
 .about-section {

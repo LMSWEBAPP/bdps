@@ -78,11 +78,7 @@ export default function VisitorHeader() {
 
   const navLinks = [
     { title: 'Home', href: '/' },
-    { 
-      title: 'All Courses', 
-      href: '/courses',
-      isMegaMenu: true 
-    },
+    { title: 'All Courses', href: '/courses' },
     { title: 'Jobs', href: '/jobs' },
     { title: 'Verify Certificate', href: '/verify-certificate' },
     { title: 'About Us', href: '/about' },
