@@ -376,6 +376,53 @@ export default function VisitorHomepage() {
         </div>
       </section>
 
+      {/* Section 5: Explore Our Courses (Featured Training Programs) */}
+      {courses.length > 0 && (
+      <section id="courses-section" className="explore-courses-section">
+        <div className="section-header-center">
+          <h2 className="section-title">
+            {homeData.featuredCoursesTitle ? (
+              <span>{homeData.featuredCoursesTitle}</span>
+            ) : (
+              <>Featured Training <span className="section-title-accent">Programs</span></>
+            )}
+          </h2>
+          <p className="about-paragraph">
+            {homeData.featuredCoursesSubtitle || 'Choose from our job-oriented software, AI, accounting, and technical tracks.'}
+          </p>
+        </div>
+
+        {/* Category Tabs Selector */}
+        <div className="category-tabs-bar">
+          <div className="category-tabs-row">
+            {categoriesList.map((cat, idx) => (
+              <button
+                key={idx}
+                onClick={() => setSelectedCategoryTab(cat)}
+                className={`category-tab-btn ${selectedCategoryTab === cat ? 'category-tab-active' : ''}`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Courses Grid - Up to 6 Courses */}
+        <div className="explore-courses-grid">
+          {filteredExploreCourses.map((course) => (
+            <CourseCard key={`tab-${course.id || course._id}`} course={course} showSubtitle={true} />
+          ))}
+        </div>
+
+        {/* See More Courses Button */}
+        <div className="explore-see-more-row">
+          <Link href="/courses" className="btn-see-more-courses">
+            See More Courses ({courses.length}+ Available) <ArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
+      )}
+
       {/* Permanent Announcement Bar on Top of 1st Marquee Bar */}
       <div className="visitor-announcement-bar visitor-announcement-bar-permanent">
         <span className="announcement-text">
@@ -383,7 +430,7 @@ export default function VisitorHomepage() {
         </span>
       </div>
 
-      {/* Section 3: Continuous Partner Marquee Slider */}
+      {/* Section 3: Continuous Partner Marquee Slider (1st Marquee after Featured Training Programs) */}
       <section className="marquee-section">
         <div className="marquee-header">
           <span className="marquee-tag">
@@ -402,51 +449,6 @@ export default function VisitorHomepage() {
           </div>
         </div>
       </section>
-
-      {/* Section 5: Explore Our Courses (Featured Training Programs shifted complete above Why Choose BDPS) */}
-      {courses.length > 0 && (
-      <section id="courses-section" className="explore-courses-section">
-        <div className="section-header-center">
-          <h2 className="section-title">
-            {homeData.featuredCoursesTitle ? (
-              <span>{homeData.featuredCoursesTitle}</span>
-            ) : (
-              <>Featured Training <span className="section-title-accent">Programs</span></>
-            )}
-          </h2>
-          <p className="about-paragraph">
-            {homeData.featuredCoursesSubtitle || 'Choose from our job-oriented software, AI, accounting, and technical tracks.'}
-          </p>
-        </div>
-
-        {/* Category Tabs Selector */}
-        <div className="category-tabs-row">
-          {categoriesList.map((cat, idx) => (
-            <button
-              key={idx}
-              onClick={() => setSelectedCategoryTab(cat)}
-              className={`category-tab-btn ${selectedCategoryTab === cat ? 'category-tab-active' : ''}`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        {/* Courses Grid - Up to 6 Courses */}
-        <div className="explore-courses-grid">
-          {filteredExploreCourses.map((course) => (
-            <CourseCard key={`tab-${course.id || course._id}`} course={course} showSubtitle={true} />
-          ))}
-        </div>
-
-        {/* See More Courses Button */}
-        <div className="explore-see-more-row">
-          <Link href="/courses" className="btn-see-more-courses">
-            See More Courses ({courses.length}+ Available) <ArrowRight size={16} />
-          </Link>
-        </div>
-      </section>
-      )}
 
       {/* Section 4: 20+ Years of Academic Excellence & BDPS AI Tutor (WHY CHOOSE BDPS) */}
       <section className="about-section">
