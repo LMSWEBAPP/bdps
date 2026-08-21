@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Briefcase, Search, MapPin, Building2, Calendar, 
-  ExternalLink, Sparkles, Filter, IndianRupee, Layers, GraduationCap, ShieldCheck
+  ExternalLink, Sparkles, Filter, IndianRupee, Layers, GraduationCap, ShieldCheck, CheckCircle2
 } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
@@ -329,18 +329,19 @@ export default function JobsPage() {
                     <button
                       type="button"
                       onClick={() => handleApplyClick(job)}
-                      className={`btn-apply-job ${isApplied(job) && !hasRedirectUrl(job) ? 'btn-stipend-disabled' : ''}`}
+                      className={`btn-apply-job ${isApplied(job) && !hasRedirectUrl(job) ? 'btn-job-applied' : ''}`}
                       disabled={isApplied(job) && !hasRedirectUrl(job)}
-                      style={isApplied(job) && !hasRedirectUrl(job) ? { opacity: 0.7, cursor: 'not-allowed', backgroundColor: '#1e293b' } : {}}
                     >
                       {isApplied(job) && !hasRedirectUrl(job) ? (
-                        <span>Applied ✓</span>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                          <CheckCircle2 size={15} /> Applied
+                        </span>
                       ) : hasRedirectUrl(job) ? (
                         <>
                           <span>{isApplied(job) ? 'Visit Official Portal' : 'Apply on Official Portal'}</span> <ExternalLink size={14} />
                         </>
                       ) : (
-                        <span>{isApplied(job) ? 'Applied ✓' : 'Apply Now'}</span>
+                        <span>Apply Now</span>
                       )}
                     </button>
                   </div>
