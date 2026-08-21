@@ -2051,8 +2051,9 @@ html, body {
 
 .catalog-category-bar {
   width: 100%;
-  overflow-x: auto;
-  padding-bottom: 4px;
+  overflow: visible;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .category-pills-row {
@@ -3054,13 +3055,14 @@ html, body {
 /* --------------------------------------------------------------------------
    Explore Our Courses & Category Selector Tabs System (Equal Width Grid)
    -------------------------------------------------------------------------- */
-.category-tabs-bar {
+.category-tabs-bar, .catalog-category-bar {
   width: 100%;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
   background: transparent;
   border: none;
-  padding: 0;
+  padding: 8px 0;
   box-shadow: none;
+  overflow: visible !important;
 }
 
 .category-tabs-row, .category-pills-row {
@@ -3070,7 +3072,11 @@ html, body {
   justify-content: flex-start;
   gap: 12px;
   width: 100%;
-  margin-bottom: 24px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: -6px;
+  margin-bottom: 16px;
+  overflow: visible !important;
 }
 
 .category-tab-btn, .category-pill-btn {
@@ -3096,12 +3102,12 @@ html, body {
   border-color: #0284C7;
   background-color: #BAE6FD;
   color: #0284C7;
-  transform: scale(1.06) translateY(-2px); /* Slightly big hover scale animation */
+  transform: scale(1.05); /* Smooth scaling without top clipping */
   box-shadow: 0 6px 18px rgba(14, 165, 233, 0.22);
 }
 
 .category-tab-btn:active, .category-pill-btn:active {
-  transform: scale(0.96); /* Slightly small click scale animation */
+  transform: scale(0.96);
 }
 
 .category-tab-active, .category-pill-btn.active {
@@ -3114,7 +3120,7 @@ html, body {
 .category-tab-active:hover, .category-pill-btn.active:hover {
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #0369A1 0%, #075985 100%) !important;
-  transform: scale(1.06) translateY(-2px) !important;
+  transform: scale(1.05) !important;
 }
 
 /* Applied Status Button Badge */
@@ -5089,11 +5095,12 @@ html, body {
   display: flex;
   align-items: center;
   gap: 8px;
-  overflow-x: auto;
+  overflow: visible;
   white-space: nowrap;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding-bottom: 2px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   width: 100%;
 }
 
