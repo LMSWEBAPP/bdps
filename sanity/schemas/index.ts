@@ -1,4 +1,5 @@
 import { courseSchema } from './course';
+import { courseCategorySchema } from './courseCategory';
 import { siteSettingsSchema } from './siteSettings';
 import { popupAdSchema } from './popupAd';
 import { leadSubmissionSchema } from './leadSubmission';
@@ -21,6 +22,7 @@ export const schemaTypes = [
   contactPageSchema,
 
   // Collections & Catalog
+  courseCategorySchema,
   courseSchema,
   testimonialSchema,
   heroSlideSchema,

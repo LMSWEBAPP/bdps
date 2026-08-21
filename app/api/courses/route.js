@@ -1,13 +1,16 @@
 import { NextResponse } from 'next/server';
-import { getSanityCourses } from '@/lib/sanity.client';
+import { getSanityCourses, getSanityCourseCategories } from '@/lib/sanity.client';
 
 export const revalidate = 60;
 
 export async function GET() {
   try {
-    const sanityCourses = await getSanityCourses();
+    const [sanityCourses, sanityCategories] = await Promise.all([
+      getSanityCourses(),
+      getSanityCourseCategories()
+    ]);
     return NextResponse.json(
-      { success: true, courses: sanityCourses },
+      { success: true, courses: sanityCourses, categories: sanityCategories },
       {
         headers: {
           'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',

@@ -34,26 +34,34 @@ export default function InternshipModal({ isOpen, onClose, onSuccess, siteSettin
   const closedNotice = siteSettings?.internshipNoticeText || 'Internship applications for the current batch are currently closed. Please check back for upcoming announcements.';
 
   useEffect(() => {
-    // Dynamically update available courses from siteSettings or API if provided
-    if (siteSettings?.internshipCourses && Array.isArray(siteSettings.internshipCourses) && siteSettings.internshipCourses.length > 0) {
-      setAvailableCourses(siteSettings.internshipCourses);
-      if (!siteSettings.internshipCourses.includes(course)) {
-        setCourse(siteSettings.internshipCourses[0]);
-      }
-    } else {
-      // Fetch active courses with caching & deduplication
-      fetchCached('/api/courses')
-        .then((data) => {
-          if (data && data.success && Array.isArray(data.courses) && data.courses.length > 0) {
-            const courseTitles = data.courses.map((c) => c.title).filter(Boolean);
-            if (courseTitles.length > 0) {
-              setAvailableCourses(courseTitles);
-              setCourse(courseTitles[0]);
-            }
+    fetchCached('/api/courses')
+      .then((data) => {
+        let catalogTitles = [];
+        if (data && data.success && Array.isArray(data.courses) && data.courses.length > 0) {
+          catalogTitles = data.courses.map((c) => c.title).filter(Boolean);
+        }
+        
+        let customDomains = (siteSettings?.internshipCourses && Array.isArray(siteSettings.internshipCourses))
+          ? siteSettings.internshipCourses 
+          : [];
+
+        const mergedList = Array.from(new Set([
+          ...customDomains,
+          ...catalogTitles,
+          'Python Full Stack Development',
+          'Core & Advanced Java',
+          'Web Development & MERN Stack',
+          'Tally Prime & Financial Accounting'
+        ])).filter(Boolean);
+
+        if (mergedList.length > 0) {
+          setAvailableCourses(mergedList);
+          if (!mergedList.includes(course)) {
+            setCourse(mergedList[0]);
           }
-        })
-        .catch(() => {});
-    }
+        }
+      })
+      .catch(() => {});
   }, [siteSettings]);
 
   useEffect(() => {

@@ -112,25 +112,23 @@ function VisitorCoursesCatalogContent() {
       {/* Main Catalog Container */}
       <main className="catalog-container">
         {/* Horizontal Category Filter Pills Bar */}
-        <div className="catalog-category-bar">
-          <div className="category-pills-row">
-            {categoriesList.map((cat, idx) => {
-              const count = cat === 'All' 
-                ? allCourses.length 
-                : allCourses.filter(c => c.category && c.category.toLowerCase().includes(cat.toLowerCase())).length;
+        <div className="category-pills-row" style={{ marginBottom: '28px' }}>
+          {categoriesList.map((cat, idx) => {
+            const count = cat === 'All' 
+              ? allCourses.length 
+              : allCourses.filter(c => c.category && c.category.toLowerCase().includes(cat.toLowerCase())).length;
 
-              return (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`category-pill-btn ${selectedCategory === cat ? 'active' : ''}`}
-                >
-                  <span>{cat}</span>
-                  <span className="pill-count-badge">{count}</span>
-                </button>
-              );
-            })}
-          </div>
+            return (
+              <button
+                key={idx}
+                onClick={() => setSelectedCategory(cat)}
+                className={`category-pill-btn ${selectedCategory === cat ? 'active' : ''}`}
+              >
+                <span>{cat}</span>
+                <span className="pill-count-badge">{count}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Results Header */}

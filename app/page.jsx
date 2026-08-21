@@ -104,12 +104,21 @@ export default function VisitorHomepage() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
-  // Fetch live courses from Sanity CMS — fall back to defaults only if Sanity returns nothing
+  const [sanityCategories, setSanityCategories] = useState([]);
+
+  // Fetch live courses & categories from Sanity CMS — fall back to defaults only if Sanity returns nothing
   useEffect(() => {
     fetchCached('/api/courses')
       .then(data => {
-        if (data && data.success && data.courses && data.courses.length > 0) {
-          setCourses(data.courses);
+        if (data && data.success) {
+          if (data.courses && data.courses.length > 0) {
+            setCourses(data.courses);
+          } else {
+            setCourses(DEFAULT_HOMEPAGE_COURSES);
+          }
+          if (data.categories && data.categories.length > 0) {
+            setSanityCategories(data.categories.map(c => c.title).filter(Boolean));
+          }
         } else {
           setCourses(DEFAULT_HOMEPAGE_COURSES);
         }
@@ -162,7 +171,10 @@ export default function VisitorHomepage() {
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
-  const categoriesList = ['All', ...new Set(courses.map(c => c.category).filter(Boolean))];
+  const categoriesList = ['All', ...new Set([
+    ...sanityCategories,
+    ...courses.map(c => c.category).filter(Boolean)
+  ])];
 
   const filteredExploreCourses = (selectedCategoryTab === 'All'
     ? courses
@@ -393,18 +405,16 @@ export default function VisitorHomepage() {
         </div>
 
         {/* Category Tabs Selector */}
-        <div className="category-tabs-bar">
-          <div className="category-tabs-row">
-            {categoriesList.map((cat, idx) => (
-              <button
-                key={idx}
-                onClick={() => setSelectedCategoryTab(cat)}
-                className={`category-tab-btn ${selectedCategoryTab === cat ? 'category-tab-active' : ''}`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+        <div className="category-tabs-row">
+          {categoriesList.map((cat, idx) => (
+            <button
+              key={idx}
+              onClick={() => setSelectedCategoryTab(cat)}
+              className={`category-tab-btn ${selectedCategoryTab === cat ? 'category-tab-active' : ''}`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
         {/* Courses Grid - Up to 6 Courses */}

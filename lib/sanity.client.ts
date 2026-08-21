@@ -65,6 +65,23 @@ export async function getSanityCourses() {
   }
 }
 
+export async function getSanityCourseCategories() {
+  try {
+    const query = `*[_type == "courseCategory" && !(_id in path("drafts.**"))] | order(order asc, title asc) {
+      _id,
+      title,
+      "slug": slug.current,
+      description,
+      icon
+    }`;
+    const categories = await sanityClient.fetch(query, {}, { cache: 'no-store' });
+    return Array.isArray(categories) ? categories : [];
+  } catch (error) {
+    console.error('Error fetching course categories from Sanity:', error);
+    return [];
+  }
+}
+
 export async function getSanityCourseById(id: string) {
   try {
     const query = `*[_type == "course" && !(_id in path("drafts.**")) && (_id == $id || slug.current == $id)][0] {
@@ -132,6 +149,7 @@ export async function getSanitySiteSettings() {
       internshipActive,
       internshipNoticeText,
       internshipCourses,
+      jobCities,
       contactEmail,
       contactPhone,
       whatsappNumber,

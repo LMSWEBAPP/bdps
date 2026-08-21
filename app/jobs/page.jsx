@@ -139,7 +139,9 @@ export default function JobsPage() {
   };
 
   const categories = ['All', 'IT Jobs', 'Accounting', 'Engineering', 'Customer Service'];
-  const locations = ['All', 'Hyderabad', 'Visakhapatnam', 'Bengaluru', 'Chennai', 'Mumbai'];
+  const locations = ['All', ...(siteSettings?.jobCities && Array.isArray(siteSettings.jobCities) && siteSettings.jobCities.length > 0
+    ? siteSettings.jobCities 
+    : ['Hyderabad', 'Visakhapatnam', 'Vijayawada', 'Kakinada', 'Bengaluru', 'Chennai', 'Mumbai', 'Pune', 'Delhi NCR'])];
 
   return (
     <div className="visitor-theme">
@@ -158,16 +160,18 @@ export default function JobsPage() {
             Discover real-time verified job openings in Software Engineering, Java, Full Stack, Tally Accounting, and Data Operations across India & AP region.
           </p>
 
-          {/* Integrated Search Box */}
-          <form onSubmit={handleSearchSubmit} className="courses-hero-search-box">
-            <Search size={18} className="search-box-icon" />
-            <input
-              type="text"
-              placeholder="Search job title, skill, or company (e.g. Java, Developer, Tally, Hyderabad)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="hero-search-input-field"
-            />
+          {/* Integrated Search Box & City Input */}
+          <form onSubmit={handleSearchSubmit} className="courses-hero-search-box" style={{ gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', flex: 1, gap: '8px' }}>
+              <Search size={18} className="search-box-icon" />
+              <input
+                type="text"
+                placeholder="Search job title, skill, or company (e.g. Java, Developer, Tally)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="hero-search-input-field"
+              />
+            </div>
             {searchQuery ? (
               <button 
                 type="button" 
@@ -178,7 +182,7 @@ export default function JobsPage() {
               </button>
             ) : (
               <button type="submit" className="btn-clear-search" style={{ backgroundColor: '#FF7518', color: '#fff' }}>
-                Search
+                Search Jobs
               </button>
             )}
           </form>
@@ -212,35 +216,43 @@ export default function JobsPage() {
 
       {/* Main Content Container */}
       <main className="catalog-container">
-        {/* Status Bar & Controls */}
-        <div className="job-controls-bar">
-          <div className="job-filters-group">
+        {/* Status Bar & Equal Width Controls */}
+        <div className="job-controls-bar" style={{ marginBottom: '24px' }}>
+          <div className="job-filters-group" style={{ display: 'flex', flexDirection: 'column', gap: '18px', width: '100%' }}>
             {/* Category Filters */}
-            <div className="category-pills-row">
-              <span className="filter-label"><Layers size={14} /> Category:</span>
-              {categories.map((cat, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`category-pill-btn ${selectedCategory === cat ? 'active' : ''}`}
-                >
-                  {cat}
-                </button>
-              ))}
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: '800', color: '#64748B', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Layers size={14} color="#0284C7" /> Select Job Category:
+              </div>
+              <div className="category-pills-row">
+                {categories.map((cat, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`category-pill-btn ${selectedCategory === cat ? 'active' : ''}`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
             </div>
 
-            {/* Location Filters */}
-            <div className="category-pills-row">
-              <span className="filter-label"><MapPin size={14} /> Location:</span>
-              {locations.map((loc, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedLocation(loc)}
-                  className={`category-pill-btn ${selectedLocation === loc ? 'active' : ''}`}
-                >
-                  {loc === 'All' ? 'All India' : loc}
-                </button>
-              ))}
+            {/* City / Location Filters */}
+            <div>
+              <div style={{ fontSize: '13px', fontWeight: '800', color: '#64748B', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <MapPin size={14} color="#0284C7" /> Select City / Location:
+              </div>
+              <div className="category-pills-row">
+                {locations.map((loc, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedLocation(loc)}
+                    className={`category-pill-btn ${selectedLocation === loc ? 'active' : ''}`}
+                  >
+                    {loc === 'All' ? 'All Cities' : loc}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
