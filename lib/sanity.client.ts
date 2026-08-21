@@ -41,7 +41,7 @@ export async function getSanityCourses() {
       "id": _id,
       title,
       "slug": slug.current,
-      category,
+      "category": coalesce(categoryRef->title, category, "General"),
       subtitle,
       "tagline": subtitle,
       duration,

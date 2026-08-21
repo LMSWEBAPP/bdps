@@ -1461,21 +1461,29 @@ html, body {
   padding: 18px 24px;
   width: 100%;
   box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .hero-stats-container {
   max-width: 1380px;
+  width: 100%;
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: 20px;
   align-items: center;
+  justify-content: center;
 }
 
 .hero-stat-card {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 14px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .hero-stat-icon-circle {
@@ -3047,63 +3055,72 @@ html, body {
    -------------------------------------------------------------------------- */
 .category-tabs-bar {
   width: 100%;
-  margin-bottom: 36px;
+  margin-bottom: 28px;
   background: transparent;
   border: none;
   padding: 0;
   box-shadow: none;
 }
 
-.category-tabs-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+.category-tabs-row, .category-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
   gap: 12px;
   width: 100%;
-  margin-bottom: 36px;
+  margin-bottom: 24px;
 }
 
-.category-tab-btn {
+.category-tab-btn, .category-pill-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 100%;
-  padding: 11px 16px;
+  flex: 1 1 0px;
+  min-width: 140px;
+  max-width: 220px;
+  gap: 8px;
+  padding: 11px 18px;
   border-radius: 30px;
   font-weight: 700;
   font-size: 13.5px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   border: 1.5px solid #BAE6FD;
   background-color: #E0F2FE;
   color: #0369A1;
   box-shadow: 0 2px 6px rgba(14, 165, 233, 0.08);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.category-tab-btn:hover {
+.category-tab-btn:hover, .category-pill-btn:hover {
   border-color: #0284C7;
   background-color: #BAE6FD;
   color: #0284C7;
-  transform: translateY(-1px);
+  transform: scale(1.06) translateY(-2px); /* Slightly big hover scale animation */
+  box-shadow: 0 6px 18px rgba(14, 165, 233, 0.22);
 }
 
-.category-tab-active {
+.category-tab-btn:active, .category-pill-btn:active {
+  transform: scale(0.96); /* Slightly small click scale animation */
+}
+
+.category-tab-active, .category-pill-btn.active {
   border: 1.5px solid #0284C7 !important;
   background: linear-gradient(135deg, #0284C7 0%, #0369A1 100%) !important;
   color: #FFFFFF !important;
   box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35) !important;
 }
 
-.category-tab-active:hover {
+.category-tab-active:hover, .category-pill-btn.active:hover {
   color: #FFFFFF !important;
   background: linear-gradient(135deg, #0369A1 0%, #075985 100%) !important;
+  transform: scale(1.06) translateY(-2px) !important;
 }
 
 /* --------------------------------------------------------------------------
-   Courses Catalog Category Bar & Pills (All Courses Page & Jobs Equal Width Grid)
+   Courses Catalog Category Bar & Pills
    -------------------------------------------------------------------------- */
 .catalog-category-bar {
   width: 100%;
