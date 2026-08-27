@@ -417,6 +417,59 @@ function ContactFormContent() {
             )}
           </div>
         </div>
+
+        {/* Upcoming IT Projects Showcase Container for Collaboration */}
+        {isCollab && (contactData.upcomingITProjects || []).length > 0 && (
+          <section className="it-projects-section" style={{ marginTop: '54px' }}>
+            <div className="section-header-center" style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <h2 className="section-title" style={{ fontSize: '26px', fontWeight: '800', color: '#0F172A' }}>
+                Upcoming IT Projects & <span className="section-title-accent" style={{ color: '#FF7518' }}>Collaboration Opportunities</span>
+              </h2>
+              <p className="about-paragraph" style={{ maxWidth: '760px', margin: '8px auto 0 auto', color: '#64748B', fontSize: '14.5px' }}>
+                Explore active enterprise software, AI solutions, and capstone initiatives at BDPS. Corporate clients & institutions can collaborate on software development, talent sponsorship, or joint technical projects.
+              </p>
+            </div>
+
+            <div className="it-projects-grid">
+              {(contactData.upcomingITProjects || []).map((project, idx) => (
+                <div key={idx} className="it-project-card">
+                  <div className="it-project-header">
+                    <span className="it-project-category-badge">{project.category || 'IT Solutions'}</span>
+                    <span className={`it-project-status-badge ${project.status?.toLowerCase().includes('open') ? 'status-open' : 'status-dev'}`}>
+                      {project.status || 'Open for Collaboration'}
+                    </span>
+                  </div>
+
+                  <h3 className="it-project-title">{project.title}</h3>
+                  <p className="it-project-desc">{project.description}</p>
+
+                  {Array.isArray(project.techStack) && project.techStack.length > 0 && (
+                    <div className="it-project-tech-row">
+                      {project.techStack.map((tech, tIdx) => (
+                        <span key={tIdx} className="it-project-tech-tag">{tech}</span>
+                      ))}
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCollabForm(prev => ({
+                        ...prev,
+                        collabType: 'IT Solutions & Enterprise Software',
+                        message: `Inquiring regarding partnership for project: ${project.title}`
+                      }));
+                      window.scrollTo({ top: 300, behavior: 'smooth' });
+                    }}
+                    className="btn-collab-project"
+                  >
+                    <Handshake size={15} /> Partner on this Project
+                  </button>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
 
       <VisitorFooter />

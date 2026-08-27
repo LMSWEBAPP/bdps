@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import StipendRegistrationModal from './StipendRegistrationModal';
 import InternshipModal from './forms/InternshipModal';
+import StudentLoginModal from './forms/StudentLoginModal';
 
 import { fetchCached } from '@/lib/api-cache';
 
@@ -17,6 +18,7 @@ export default function VisitorHeader() {
   
   const [stipendModalOpen, setStipendModalOpen] = useState(false);
   const [internshipModalOpen, setInternshipModalOpen] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [announcementClosed, setAnnouncementClosed] = useState(false);
 
@@ -96,11 +98,7 @@ export default function VisitorHeader() {
 
   const navLinks = [
     { title: 'Home', href: '/' },
-    { 
-      title: 'All Courses', 
-      href: '/courses',
-      isMegaMenu: true 
-    },
+    { title: 'All Courses', href: '/courses' },
     { title: 'Jobs', href: '/jobs' },
     { title: 'Verify Certificate', href: '/verify-certificate' },
     { title: 'About Us', href: '/about' },
@@ -219,13 +217,14 @@ export default function VisitorHeader() {
                   </button>
                 )}
 
-                <a
-                  href={process.env.NEXT_PUBLIC_FRAPPE_URL ? `${process.env.NEXT_PUBLIC_FRAPPE_URL}/login` : 'http://localhost:3000/login'}
+                <button
+                  type="button"
+                  onClick={() => setLoginModalOpen(true)}
                   className="btn-login"
-                  title="Student Login Portal"
+                  title="Student Login Portal Notice"
                 >
                   Login
-                </a>
+                </button>
               </div>
             </div>
 
@@ -375,13 +374,14 @@ export default function VisitorHeader() {
               )}
 
               {/* Student Login Button */}
-              <a
-                href={process.env.NEXT_PUBLIC_FRAPPE_URL ? `${process.env.NEXT_PUBLIC_FRAPPE_URL}/login` : 'http://localhost:3000/login'}
+              <button
+                type="button"
+                onClick={() => setLoginModalOpen(true)}
                 className="btn-login"
-                title="Student Login Portal"
+                title="Student Login Portal Notice"
               >
                 Student Login
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -399,6 +399,12 @@ export default function VisitorHeader() {
         isOpen={internshipModalOpen}
         onClose={() => setInternshipModalOpen(false)}
         siteSettings={siteSettings}
+      />
+
+      {/* Student Login Notice Modal */}
+      <StudentLoginModal
+        isOpen={loginModalOpen}
+        onClose={() => setLoginModalOpen(false)}
       />
     </>
   );

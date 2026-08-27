@@ -75,7 +75,18 @@ export default function CourseDetailsPage({ params }) {
   const router = useRouter();
   const courseId = params?.id || '1';
 
-  const [course, setCourse] = useState(DEFAULT_COURSES_DB[courseId] || DEFAULT_COURSES_DB['1']);
+  const [course, setCourse] = useState(
+    DEFAULT_COURSES_DB[courseId] || {
+      id: courseId,
+      title: 'Loading Course...',
+      category: 'Certification',
+      image: null,
+      thumbnail: null,
+      syllabus: [],
+      description: '',
+      subtitle: ''
+    }
+  );
   const [allCourses, setAllCourses] = useState([]);
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [formData, setFormData] = useState({
@@ -184,11 +195,11 @@ export default function CourseDetailsPage({ params }) {
               <ArrowLeft size={16} className="btn-back-icon" /> <span className="btn-back-text">Back to All Courses</span>
             </Link>
             <div className="course-badge-inline">
-              {course.category || 'Certification'}
+              {course?.category || 'Certification'}
             </div>
           </div>
-          <h1 className="courses-banner-title">{course.title}</h1>
-          <p className="courses-banner-desc">{course.subtitle || course.tagline}</p>
+          <h1 className="courses-banner-title">{course?.title || 'Loading Course...'}</h1>
+          <p className="courses-banner-desc">{course?.subtitle || course?.tagline}</p>
         </div>
       </section>
 
@@ -200,21 +211,21 @@ export default function CourseDetailsPage({ params }) {
           <div className="course-detail-card">
             <h3 className="course-detail-heading">Course Overview</h3>
             <p className="course-detail-text">
-              {course.description || course.subtitle}
+              {course?.description || course?.subtitle}
             </p>
 
             <div className="course-meta-divider course-meta-bottom">
               <div className="course-meta-item">
                 <Clock size={16} className="course-meta-icon" />
-                <span><strong>Duration:</strong> {course.duration || '3-4 Months'}</span>
+                <span><strong>Duration:</strong> {course?.duration || '3-4 Months'}</span>
               </div>
               <div className="course-meta-item">
                 <User size={16} className="course-meta-icon" />
-                <span><strong>Instructor:</strong> {course.instructor || 'Senior Technical Coach'}</span>
+                <span><strong>Instructor:</strong> {course?.instructor || 'Senior Technical Coach'}</span>
               </div>
               <div className="course-meta-item">
                 <Award size={16} className="course-meta-icon" />
-                <span><strong>Fee:</strong> ₹{course.fee || '8,000'}</span>
+                <span><strong>Fee:</strong> ₹{course?.fee || '8,000'}</span>
               </div>
             </div>
           </div>
@@ -223,7 +234,7 @@ export default function CourseDetailsPage({ params }) {
           <div className="course-detail-card">
             <h3 className="course-detail-heading">Curriculum & Syllabus Highlights</h3>
             <div className="syllabus-list">
-              {(course.syllabus && course.syllabus.length > 0 ? course.syllabus : [
+              {(course?.syllabus && course.syllabus.length > 0 ? course.syllabus : [
                 'Module 1: Foundations & Core Logic Building',
                 'Module 2: Advanced Concepts & Object Models',
                 'Module 3: Database Integration & Storage',

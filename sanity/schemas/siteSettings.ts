@@ -9,6 +9,7 @@ export const siteSettingsSchema = {
     { name: 'footer', title: '🦶 Website Footer Customization', options: { collapsible: true, collapsed: false } },
     { name: 'internship', title: '💼 Internship Program (On/Off Toggle)', options: { collapsible: true, collapsed: false } },
     { name: 'stipend', title: '🎓 Stipend & Scholarship (On/Off Toggle)', options: { collapsible: true, collapsed: false } },
+    { name: 'jobs', title: '💼 Job Portal & Cities Settings', options: { collapsible: true, collapsed: false } },
   ],
   fields: [
     // Header & Announcement
@@ -282,6 +283,27 @@ export const siteSettingsSchema = {
       type: 'text', 
       fieldset: 'stipend',
       initialValue: 'Stipend registrations for the current batch are now closed. Please check back for upcoming cohort announcements.' 
+    },
+
+    // Job Portal & Cities Settings
+    {
+      name: 'jobCities',
+      title: 'Searchable Indian Cities for Job Portal',
+      type: 'array',
+      fieldset: 'jobs',
+      initialValue: [
+        'Hyderabad',
+        'Visakhapatnam',
+        'Vijayawada',
+        'Kakinada',
+        'Bengaluru',
+        'Chennai',
+        'Mumbai',
+        'Pune',
+        'Delhi NCR'
+      ],
+      of: [{ type: 'string' }],
+      description: 'List of cities available for filtering job listings in the Job Portal.',
     },
   ],
   preview: {

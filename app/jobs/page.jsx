@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Briefcase, Search, MapPin, Building2, Calendar, 
-  ExternalLink, Sparkles, Filter, IndianRupee, Layers, GraduationCap, ShieldCheck
+  ExternalLink, Sparkles, Filter, IndianRupee, Layers, GraduationCap, ShieldCheck, CheckCircle2
 } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
@@ -139,7 +139,9 @@ export default function JobsPage() {
   };
 
   const categories = ['All', 'IT Jobs', 'Accounting', 'Engineering', 'Customer Service'];
-  const locations = ['All', 'Hyderabad', 'Visakhapatnam', 'Bengaluru', 'Chennai', 'Mumbai'];
+  const locations = ['All', ...(siteSettings?.jobCities && Array.isArray(siteSettings.jobCities) && siteSettings.jobCities.length > 0
+    ? siteSettings.jobCities 
+    : ['Hyderabad', 'Visakhapatnam', 'Vijayawada', 'Kakinada', 'Bengaluru', 'Chennai', 'Mumbai', 'Pune', 'Delhi NCR'])];
 
   return (
     <div className="visitor-theme">
@@ -158,16 +160,18 @@ export default function JobsPage() {
             Discover verified job openings in Software Engineering, Java, Full Stack, Tally Accounting, and Computer Operations with placement assistance.
           </p>
 
-          {/* Integrated Search Box */}
-          <form onSubmit={handleSearchSubmit} className="courses-hero-search-box">
-            <Search size={18} className="search-box-icon" />
-            <input
-              type="text"
-              placeholder="Search job title, skill, or company (e.g. Java, Developer, Tally, Hyderabad)..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="hero-search-input-field"
-            />
+          {/* Integrated Search Box & City Input */}
+          <form onSubmit={handleSearchSubmit} className="courses-hero-search-box" style={{ gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', flex: 1, gap: '8px' }}>
+              <Search size={18} className="search-box-icon" />
+              <input
+                type="text"
+                placeholder="Search job title, skill, or company (e.g. Java, Developer, Tally)..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="hero-search-input-field"
+              />
+            </div>
             {searchQuery ? (
               <button 
                 type="button" 
@@ -178,7 +182,7 @@ export default function JobsPage() {
               </button>
             ) : (
               <button type="submit" className="btn-clear-search" style={{ backgroundColor: '#FF7518', color: '#fff' }}>
-                Search
+                Search Jobs
               </button>
             )}
           </form>
@@ -212,36 +216,82 @@ export default function JobsPage() {
 
       {/* Main Content Container */}
       <main className="catalog-container">
-        {/* Status Bar & Controls */}
-        <div className="job-controls-bar">
-          <div className="job-filters-group">
-            {/* Category Filters */}
-            <div className="category-pills-row">
-              <span className="filter-label"><Layers size={14} /> Category:</span>
-              {categories.map((cat, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`category-pill-btn ${selectedCategory === cat ? 'active' : ''}`}
-                >
-                  {cat}
-                </button>
-              ))}
+        {/* Status Bar & Side-by-Side Select Controls */}
+        <div className="job-controls-bar" style={{ marginBottom: '24px', padding: '20px 24px', backgroundColor: '#ffffff', borderRadius: '14px', boxShadow: '0 4px 14px rgba(0,0,0,0.04)', border: '1px solid #E2E8F0' }}>
+          <div className="job-filters-group" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', width: '100%', alignItems: 'center' }}>
+            
+            {/* Category Searchable Dropdown */}
+            <div>
+              <label style={{ fontSize: '13px', fontWeight: '800', color: '#475569', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Layers size={15} color="#FF7518" /> Search / Select Category:
+              </label>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  list="categories-datalist"
+                  placeholder="Type or select category (e.g. IT Jobs, Accounting)..."
+                  value={selectedCategory === 'All' ? '' : selectedCategory}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedCategory(val.trim() === '' ? 'All' : val);
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '12px 38px 12px 16px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#0F172A',
+                    backgroundColor: '#F8FAFC',
+                    border: '1.5px solid #CBD5E1',
+                    borderRadius: '10px',
+                    outline: 'none'
+                  }}
+                />
+                <datalist id="categories-datalist">
+                  {categories.filter(c => c !== 'All').map((cat, idx) => (
+                    <option key={idx} value={cat} />
+                  ))}
+                </datalist>
+                <Filter size={15} style={{ position: 'absolute', right: '14px', pointerEvents: 'none', color: '#64748B' }} />
+              </div>
             </div>
 
-            {/* Location Filters */}
-            <div className="category-pills-row">
-              <span className="filter-label"><MapPin size={14} /> Location:</span>
-              {locations.map((loc, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedLocation(loc)}
-                  className={`category-pill-btn ${selectedLocation === loc ? 'active' : ''}`}
-                >
-                  {loc === 'All' ? 'All India' : loc}
-                </button>
-              ))}
+            {/* City / Location Searchable Dropdown */}
+            <div>
+              <label style={{ fontSize: '13px', fontWeight: '800', color: '#475569', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <MapPin size={15} color="#FF7518" /> Search / Select Location:
+              </label>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  list="locations-datalist"
+                  placeholder="Type or select city (e.g. Hyderabad, Visakhapatnam)..."
+                  value={selectedLocation === 'All' ? '' : selectedLocation}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedLocation(val.trim() === '' ? 'All' : val);
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '12px 38px 12px 16px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#0F172A',
+                    backgroundColor: '#F8FAFC',
+                    border: '1.5px solid #CBD5E1',
+                    borderRadius: '10px',
+                    outline: 'none'
+                  }}
+                />
+                <datalist id="locations-datalist">
+                  {locations.filter(l => l !== 'All').map((loc, idx) => (
+                    <option key={idx} value={loc} />
+                  ))}
+                </datalist>
+                <MapPin size={15} style={{ position: 'absolute', right: '14px', pointerEvents: 'none', color: '#64748B' }} />
+              </div>
             </div>
+
           </div>
         </div>
 
@@ -318,14 +368,27 @@ export default function JobsPage() {
                       <ShieldCheck size={13} className="posted-badge-icon" />
                       <span>{job.isCustom ? 'BDPS Custom Job' : 'Posted by BDPS'}</span>
                     </span>
-                    <Link
-                      href={`/jobs/${job._id || job.adzunaId}`}
-                      className="btn-apply-job"
-                      style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-                    >
-                      <span>View Details & Apply</span>
-                      <ExternalLink size={14} />
-                    </Link>
+                    {isApplied(job) && !hasRedirectUrl(job) ? (
+                      <button
+                        type="button"
+                        className="btn-apply-job btn-job-applied"
+                        disabled
+                        style={{ opacity: 0.7, cursor: 'not-allowed' }}
+                      >
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                          <CheckCircle2 size={15} /> Applied
+                        </span>
+                      </button>
+                    ) : (
+                      <Link
+                        href={`/jobs/${job._id || job.adzunaId}`}
+                        className="btn-apply-job"
+                        style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                      >
+                        <span>View Details & Apply</span>
+                        <ExternalLink size={14} />
+                      </Link>
+                    )}
                   </div>
                 </div>
               ))}

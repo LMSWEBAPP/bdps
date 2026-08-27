@@ -3,7 +3,7 @@ import { structureTool } from 'sanity/structure';
 import { 
   DownloadIcon, RefreshIcon, PublishIcon, 
   CogIcon, HomeIcon, InfoOutlineIcon, EnvelopeIcon, 
-  BookIcon, CommentIcon, ImageIcon, CaseIcon, UsersIcon, SparklesIcon 
+  BookIcon, CommentIcon, ImageIcon, CaseIcon, UsersIcon, SparklesIcon, TagIcon
 } from '@sanity/icons';
 import { schemaTypes } from './sanity/schemas';
 import { projectId, dataset } from './lib/sanity.client';
@@ -101,6 +101,12 @@ export default defineConfig({
               .icon(BookIcon)
               .schemaType('course')
               .child(S.documentTypeList('course').title('All Courses')),
+
+            S.listItem()
+              .title('Course Categories')
+              .icon(TagIcon)
+              .schemaType('courseCategory')
+              .child(S.documentTypeList('courseCategory').title('Course Categories')),
 
             S.listItem()
               .title('Student Testimonials')

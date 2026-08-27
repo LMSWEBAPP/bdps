@@ -6,6 +6,7 @@ export const contactPageSchema = {
     { name: 'banners', title: '🚩 Page Banners', options: { collapsible: true, collapsed: false } },
     { name: 'branches', title: '📍 Campus Branches & Google Map', options: { collapsible: true, collapsed: false } },
     { name: 'forms', title: '📝 Form Options & Dropdowns', options: { collapsible: true, collapsed: false } },
+    { name: 'itProjects', title: '💻 Upcoming IT Projects & Collaboration Showcase', options: { collapsible: true, collapsed: false } },
   ],
   fields: [
     // Student banner
@@ -108,6 +109,32 @@ export const contactPageSchema = {
         'Corporate Employee Upskilling',
         'Lab & Capstone Project Sponsorship',
         'Guest Lecture & IEEE Workshops',
+      ],
+    },
+
+    // Upcoming IT Projects Showcase
+    {
+      name: 'upcomingITProjects',
+      title: 'Upcoming IT Projects (Showcased under Collaboration)',
+      type: 'array',
+      fieldset: 'itProjects',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'title', title: 'Project Title', type: 'string', validation: (Rule: any) => Rule.required() },
+            { name: 'category', title: 'Domain / Category (e.g. Enterprise ERP, AI & ML, Mobile App)', type: 'string' },
+            { name: 'description', title: 'Project Overview & Scope', type: 'text', rows: 3 },
+            { name: 'status', title: 'Project Status (e.g. Open for Collaboration, Planning, In Development)', type: 'string', initialValue: 'Open for Collaboration' },
+            { name: 'techStack', title: 'Tech Stack Tags', type: 'array', of: [{ type: 'string' }] },
+          ],
+          preview: {
+            select: {
+              title: 'title',
+              subtitle: 'category',
+            },
+          },
+        },
       ],
     },
   ],

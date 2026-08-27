@@ -41,7 +41,7 @@ export async function getSanityCourses() {
       "id": _id,
       title,
       "slug": slug.current,
-      category,
+      "category": coalesce(categoryRef->title, category, "General"),
       subtitle,
       "tagline": subtitle,
       duration,
@@ -61,6 +61,23 @@ export async function getSanityCourses() {
     }));
   } catch (error) {
     console.error('Error fetching courses from Sanity:', error);
+    return [];
+  }
+}
+
+export async function getSanityCourseCategories() {
+  try {
+    const query = `*[_type == "courseCategory" && !(_id in path("drafts.**"))] | order(order asc, title asc) {
+      _id,
+      title,
+      "slug": slug.current,
+      description,
+      icon
+    }`;
+    const categories = await sanityClient.fetch(query, {}, { cache: 'no-store' });
+    return Array.isArray(categories) ? categories : [];
+  } catch (error) {
+    console.error('Error fetching course categories from Sanity:', error);
     return [];
   }
 }
@@ -132,6 +149,7 @@ export async function getSanitySiteSettings() {
       internshipActive,
       internshipNoticeText,
       internshipCourses,
+      jobCities,
       contactEmail,
       contactPhone,
       whatsappNumber,
@@ -255,7 +273,8 @@ export async function getSanityContactPage() {
       collabBannerDesc,
       branches,
       studentCourses,
-      collabTypes
+      collabTypes,
+      upcomingITProjects
     }`;
     const contactData = await sanityClient.fetch(query, {}, { cache: 'no-store' });
     return contactData || null;

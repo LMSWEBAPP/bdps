@@ -49,6 +49,7 @@ export async function GET() {
       branches: (contactData?.branches && contactData.branches.length > 0) ? contactData.branches : fallbackBranches,
       studentCourses: (contactData?.studentCourses && contactData.studentCourses.length > 0) ? contactData.studentCourses : fallbackCourses,
       collabTypes: (contactData?.collabTypes && contactData.collabTypes.length > 0) ? contactData.collabTypes : fallbackCollabTypes,
+      upcomingITProjects: contactData?.upcomingITProjects || [],
     };
 
     return NextResponse.json({

@@ -99,17 +99,38 @@ export default function VisitorHomepage() {
 
   const [homeData, setHomeData] = useState(DEFAULT_HOME_PAGE);
   const [testimonials, setTestimonials] = useState(DEFAULT_TESTIMONIALS);
+  const [latestJobs, setLatestJobs] = useState([]);
 
   const [selectedCategoryTab, setSelectedCategoryTab] = useState('All');
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
-  // Fetch live courses from Sanity CMS — fall back to defaults only if Sanity returns nothing
+  const [sanityCategories, setSanityCategories] = useState([]);
+
+  // Fetch latest real jobs from Sanity CMS for home page marquee
+  useEffect(() => {
+    fetchCached('/api/jobs')
+      .then(data => {
+        if (data && data.success && Array.isArray(data.jobs) && data.jobs.length > 0) {
+          setLatestJobs(data.jobs.slice(0, 15));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // Fetch live courses & categories from Sanity CMS — fall back to defaults only if Sanity returns nothing
   useEffect(() => {
     fetchCached('/api/courses')
       .then(data => {
-        if (data && data.success && data.courses && data.courses.length > 0) {
-          setCourses(data.courses);
+        if (data && data.success) {
+          if (data.courses && data.courses.length > 0) {
+            setCourses(data.courses);
+          } else {
+            setCourses(DEFAULT_HOMEPAGE_COURSES);
+          }
+          if (data.categories && data.categories.length > 0) {
+            setSanityCategories(data.categories.map(c => c.title).filter(Boolean));
+          }
         } else {
           setCourses(DEFAULT_HOMEPAGE_COURSES);
         }
@@ -162,7 +183,10 @@ export default function VisitorHomepage() {
     return () => clearInterval(timer);
   }, [heroSlides.length]);
 
-  const categoriesList = ['All', ...new Set(courses.map(c => c.category).filter(Boolean))];
+  const categoriesList = ['All', ...new Set([
+    ...sanityCategories,
+    ...courses.map(c => c.category).filter(Boolean)
+  ])];
 
   const filteredExploreCourses = (selectedCategoryTab === 'All'
     ? courses
@@ -376,34 +400,47 @@ export default function VisitorHomepage() {
         </div>
       </section>
 
-      {/* Permanent Announcement Bar on Top of 1st Marquee Bar */}
-      <div className="visitor-announcement-bar visitor-announcement-bar-permanent">
-        <span className="announcement-text">
-          ⚡ Admissions Open for Upcoming Batches! Enroll Now for Industry-Oriented IT & Computer Software Training.
-        </span>
-      </div>
-
-      {/* Section 3: Continuous Partner Marquee Slider */}
-      <section className="marquee-section">
-        <div className="marquee-header">
-          <span className="marquee-tag">
-            🤝 {homeData.hiringPartnersTitle || 'Our Graduates Work at Leading Global & National Brands'}
-          </span>
-        </div>
-
-        <div className="marquee-container">
-          <div className="marquee-track">
-            {[...partners, ...partners, ...partners, ...partners].map((partner, idx) => (
-              <div key={idx} className="marquee-item">
-                <span>{partner}</span>
-                <span className="marquee-bullet">•</span>
-              </div>
-            ))}
+      {/* Latest Real Jobs Scrolling Marquee Banner (Identical to Alumni Marquee Structure) */}
+      {latestJobs.length > 0 && (
+        <>
+          {/* Announcement Bar directly on top of Marquee */}
+          <div className="visitor-announcement-bar visitor-announcement-bar-permanent">
+            <span className="announcement-text">
+              ⚡ Admissions Open for Upcoming Batches! Enroll Now for Industry-Oriented IT & Computer Software Training.
+            </span>
           </div>
-        </div>
-      </section>
 
-      {/* Section 5: Explore Our Courses (Featured Training Programs shifted complete above Why Choose BDPS) */}
+          <section className="marquee-section" style={{ background: 'linear-gradient(135deg, #BD601C 0%, #7A3700 100%)' }}>
+            <div className="marquee-header">
+              <span className="marquee-tag">
+                🔥 LATEST JOB OPENINGS
+              </span>
+            </div>
+
+            <div className="marquee-container">
+              <div className="jobs-marquee-single-track">
+                {latestJobs.map((job, idx) => (
+                  <Link 
+                    key={idx} 
+                    href={`/jobs/${job._id || job.id || job.adzunaId}`}
+                    className="marquee-item"
+                    style={{ color: '#ffffff', textDecoration: 'none' }}
+                  >
+                    <span style={{ fontWeight: '800', color: '#FFEAD5', textTransform: 'uppercase' }}>{job.company || 'BDPS Partner'}</span>
+                    <span style={{ textTransform: 'uppercase' }}>{job.title}</span>
+                    {job.location && (
+                      <span style={{ color: '#FFD8B2', fontSize: '12px' }}>({job.location})</span>
+                    )}
+                    <span className="marquee-bullet">•</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* Section 5: Explore Our Courses (Featured Training Programs) */}
       {courses.length > 0 && (
       <section id="courses-section" className="explore-courses-section">
         <div className="section-header-center">
@@ -447,6 +484,33 @@ export default function VisitorHomepage() {
         </div>
       </section>
       )}
+
+      {/* Permanent Announcement Bar on Top of 1st Marquee Bar */}
+      <div className="visitor-announcement-bar visitor-announcement-bar-permanent">
+        <span className="announcement-text">
+          ⚡ Admissions Open for Upcoming Batches! Enroll Now for Industry-Oriented IT & Computer Software Training.
+        </span>
+      </div>
+
+      {/* Section 3: Continuous Partner Marquee Slider (1st Marquee after Featured Training Programs) */}
+      <section className="marquee-section">
+        <div className="marquee-header">
+          <span className="marquee-tag">
+            🤝 {homeData.hiringPartnersTitle || 'Our Graduates Work at Leading Global & National Brands'}
+          </span>
+        </div>
+
+        <div className="marquee-container">
+          <div className="marquee-track">
+            {[...partners, ...partners, ...partners, ...partners].map((partner, idx) => (
+              <div key={idx} className="marquee-item">
+                <span>{partner}</span>
+                <span className="marquee-bullet">•</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* Section 4: 20+ Years of Academic Excellence & BDPS AI Tutor (WHY CHOOSE BDPS) */}
       <section className="about-section">

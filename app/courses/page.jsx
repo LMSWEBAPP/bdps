@@ -27,12 +27,21 @@ function VisitorCoursesCatalogContent() {
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
 
+  const [sanityCategories, setSanityCategories] = useState([]);
+
   // Fetch live courses from Sanity CMS with caching & deduplication
   useEffect(() => {
     fetchCached('/api/courses')
       .then(data => {
-        if (data && data.success && data.courses && data.courses.length > 0) {
-          setAllCourses(data.courses);
+        if (data && data.success) {
+          if (data.courses && data.courses.length > 0) {
+            setAllCourses(data.courses);
+          } else {
+            setAllCourses(DEFAULT_COURSES);
+          }
+          if (data.categories && data.categories.length > 0) {
+            setSanityCategories(data.categories.map(c => c.title).filter(Boolean));
+          }
         } else {
           setAllCourses(DEFAULT_COURSES);
         }
@@ -69,7 +78,10 @@ function VisitorCoursesCatalogContent() {
     setFilteredCourses(result);
   }, [allCourses, searchQuery, selectedCategory]);
 
-  const categoriesList = ['All', ...new Set(allCourses.map(c => c.category).filter(Boolean))];
+  const categoriesList = ['All', ...new Set([
+    ...sanityCategories,
+    ...allCourses.map(c => c.category).filter(Boolean)
+  ])];
 
   return (
     <div className="visitor-theme">
@@ -112,25 +124,23 @@ function VisitorCoursesCatalogContent() {
       {/* Main Catalog Container */}
       <main className="catalog-container">
         {/* Horizontal Category Filter Pills Bar */}
-        <div className="catalog-category-bar">
-          <div className="category-pills-row">
-            {categoriesList.map((cat, idx) => {
-              const count = cat === 'All' 
-                ? allCourses.length 
-                : allCourses.filter(c => c.category && c.category.toLowerCase().includes(cat.toLowerCase())).length;
+        <div className="category-pills-row" style={{ marginBottom: '28px' }}>
+          {categoriesList.map((cat, idx) => {
+            const count = cat === 'All' 
+              ? allCourses.length 
+              : allCourses.filter(c => c.category && c.category.toLowerCase().includes(cat.toLowerCase())).length;
 
-              return (
-                <button
-                  key={idx}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`category-pill-btn ${selectedCategory === cat ? 'active' : ''}`}
-                >
-                  <span>{cat}</span>
-                  <span className="pill-count-badge">{count}</span>
-                </button>
-              );
-            })}
-          </div>
+            return (
+              <button
+                key={idx}
+                onClick={() => setSelectedCategory(cat)}
+                className={`category-pill-btn ${selectedCategory === cat ? 'active' : ''}`}
+              >
+                <span>{cat}</span>
+                <span className="pill-count-badge">{count}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Results Header */}

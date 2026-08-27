@@ -5,6 +5,7 @@ import { BookOpen, User, Phone, Mail, GraduationCap, Clock, CheckCircle2, Lock, 
 
 export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose }) {
   const [availableCourses, setAvailableCourses] = useState([]);
+  const [allCourseObjects, setAllCourseObjects] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState(course?.title || '');
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
@@ -22,6 +23,7 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose
       .then(res => res.json())
       .then(data => {
         if (data.success && Array.isArray(data.courses) && data.courses.length > 0) {
+          setAllCourseObjects(data.courses);
           const titles = data.courses
             .map(c => c.title || c.name || c.courseTitle)
             .filter(Boolean);
@@ -101,11 +103,19 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose
     ? (course?.title && !availableCourses.includes(course.title) ? [course.title, ...availableCourses] : availableCourses)
     : (course?.title ? [course.title] : []);
 
+  // Dynamically find active course object matching selected dropdown option to update logo
+  const activeCourseObj = allCourseObjects.find(
+    c => (c.title || c.name || c.courseTitle) === selectedCourse
+  ) || course;
+
+  const isLoading = !selectedCourse && (!course || course?.title === 'Loading Course...');
+  const courseLogo = activeCourseObj?.image || activeCourseObj?.thumbnail || course?.image || course?.thumbnail;
+
   return (
     <div className="modal-backdrop course-gate-backdrop" onClick={onClose} role="dialog" aria-modal="true">
       <div className="modal-content-card course-gate-modal" onClick={(e) => e.stopPropagation()}>
         {/* Header Banner */}
-        <div className="course-gate-header">
+        <div className="course-gate-header" style={{ padding: '20px 24px 16px 24px' }}>
           {onClose && (
             <button
               type="button"
@@ -114,18 +124,56 @@ export default function CourseLeadGateModal({ course, isOpen, onSuccess, onClose
               aria-label="Close modal"
               title="Close & return to courses"
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           )}
 
-          <div className="course-gate-badge">
-            <Lock size={14} /> Course Access Required
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', textAlign: 'left', marginBottom: '8px' }}>
+            {/* 58px Logo or Loading Spinner */}
+            {isLoading ? (
+              <div 
+                style={{
+                  width: '58px',
+                  height: '58px',
+                  borderRadius: '12px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}
+              >
+                <span style={{ display: 'inline-block', width: '22px', height: '22px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#FF7518', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />
+              </div>
+            ) : courseLogo ? (
+              <img
+                src={courseLogo}
+                alt={course?.title || 'Course'}
+                style={{
+                  width: '58px',
+                  height: '58px',
+                  borderRadius: '12px',
+                  objectFit: 'cover',
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                  backgroundColor: '#0b1329',
+                  flexShrink: 0
+                }}
+              />
+            ) : null}
+
+            <div>
+              <div className="course-gate-badge" style={{ margin: 0, display: 'inline-flex' }}>
+                <Lock size={12} /> Course Access Required
+              </div>
+              <h2 className="course-gate-title" style={{ fontSize: '19px', marginTop: '4px', textAlign: 'left', fontWeight: '800' }}>
+                Enroll & Unlock Full Syllabus Details
+              </h2>
+            </div>
           </div>
-          <h2 className="course-gate-title">
-            Enroll & Unlock Full Syllabus Details
-          </h2>
-          <p className="course-gate-subtitle">
-            Submit your contact details to access full course curriculum, batch schedules, and fee breakdown for <strong>{selectedCourse || course?.title || 'this course'}</strong>.
+
+          <p className="course-gate-subtitle" style={{ textAlign: 'left', marginTop: '6px', fontSize: '13.5px', lineHeight: '1.45', opacity: 0.95 }}>
+            Submit details to access full course curriculum, batch schedules, and fee breakdown for <strong>{isLoading ? 'this course' : (selectedCourse || course?.title || 'this course')}</strong>.
           </p>
         </div>
 
