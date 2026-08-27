@@ -23,6 +23,24 @@ export default function VisitorHeader() {
   // Dynamic Site Settings & Live Courses strictly from Sanity CMS
   const [siteSettings, setSiteSettings] = useState(null);
   const [liveCourses, setLiveCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(false);
+  const [coursesLoaded, setCoursesLoaded] = useState(false);
+
+  const ensureCoursesLoaded = () => {
+    if (coursesLoaded || coursesLoading) return;
+    setCoursesLoading(true);
+    fetchCached('/api/courses')
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.courses)) {
+          setLiveCourses(data.courses);
+        }
+      })
+      .catch((err) => console.error('Error fetching mega menu courses:', err))
+      .finally(() => {
+        setCoursesLoading(false);
+        setCoursesLoaded(true);
+      });
+  };
 
   // Close dropdown on outside click or route change
   useEffect(() => {

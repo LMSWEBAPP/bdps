@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
 import { sanityClient } from '@/lib/sanity.client';
-import { fetchAndSyncAdzunaJobs } from './sync/route';
-
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
@@ -11,8 +9,8 @@ export async function GET(req: Request) {
     const category = searchParams.get('category') || 'All';
     const location = searchParams.get('location') || 'All';
 
-    // Fetch jobs from Sanity CMS
-    const query = `*[_type == "jobPosting"] | order(postedAt desc) [0...100] {
+    // Fetch jobs from Sanity CMS (only custom manually posted jobs)
+    const query = `*[_type == "jobPosting" && (!defined(adzunaId) || isCustom == true)] | order(postedAt desc) [0...100] {
       _id,
       adzunaId,
       isCustom,
@@ -20,22 +18,21 @@ export async function GET(req: Request) {
       company,
       location,
       category,
+      jobType,
+      experienceRequired,
       description,
+      responsibilities,
+      requirements,
+      skills,
       salaryMin,
       salaryMax,
       redirectUrl,
+      contactEmail,
       postedAt,
       syncedAt
     }`;
 
     let jobs = await sanityClient.fetch(query, {}, { cache: 'no-store' });
-
-    // If no jobs in Sanity yet, trigger sync automatically
-    if (!jobs || jobs.length === 0) {
-      console.log('Sanity job listings empty. Triggering initial Adzuna sync...');
-      await fetchAndSyncAdzunaJobs();
-      jobs = await sanityClient.fetch(query, {}, { cache: 'no-store' });
-    }
 
     // Apply filtering in memory
     let filtered = jobs || [];

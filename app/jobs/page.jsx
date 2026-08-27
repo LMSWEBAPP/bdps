@@ -149,13 +149,13 @@ export default function JobsPage() {
       <section className="courses-banner-header">
         <div className="courses-banner-container">
           <div className="support-tag">
-            <Sparkles size={14} /> Daily Auto-Synced Indian Job Opportunities
+            <Sparkles size={14} /> Verified BDPS Career & Job Opportunities
           </div>
           <h1 className="courses-banner-title">
             Explore Latest Indian Vacancies & Campus Hiring
           </h1>
           <p className="courses-banner-desc">
-            Discover real-time verified job openings in Software Engineering, Java, Full Stack, Tally Accounting, and Data Operations across India & AP region.
+            Discover verified job openings in Software Engineering, Java, Full Stack, Tally Accounting, and Computer Operations with placement assistance.
           </p>
 
           {/* Integrated Search Box */}
@@ -259,13 +259,13 @@ export default function JobsPage() {
         {/* Jobs Grid */}
         {loading ? (
           <div className="section-header-center" style={{ padding: '60px 0' }}>
-            <div className="logo-badge">Loading Adzuna Verified Indian Jobs...</div>
+            <div className="logo-badge">Loading Verified Jobs...</div>
           </div>
         ) : jobs.length === 0 ? (
           <div className="catalog-empty-card">
             <Briefcase size={48} className="icon-orange" />
             <h3 className="bento-card-title">No matching jobs found</h3>
-            <p className="about-paragraph">Try searching with a different keyword or click "Refresh Latest Jobs".</p>
+            <p className="about-paragraph">Try searching with a different keyword or click "Reset Filters".</p>
             <button 
               onClick={() => { setSearchQuery(''); setSelectedCategory('All'); setSelectedLocation('All'); fetchJobs(); }}
               className="btn-explore"
@@ -287,7 +287,11 @@ export default function JobsPage() {
                     </span>
                   </div>
 
-                  <h3 className="job-title-text">{job.title}</h3>
+                  <h3 className="job-title-text">
+                    <Link href={`/jobs/${job._id || job.adzunaId}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                      {job.title}
+                    </Link>
+                  </h3>
 
                   <div className="job-company-row">
                     <Building2 size={15} className="icon-orange" />
@@ -314,23 +318,14 @@ export default function JobsPage() {
                       <ShieldCheck size={13} className="posted-badge-icon" />
                       <span>{job.isCustom ? 'BDPS Custom Job' : 'Posted by BDPS'}</span>
                     </span>
-                    <button
-                      type="button"
-                      onClick={() => handleApplyClick(job)}
-                      className={`btn-apply-job ${isApplied(job) && !hasRedirectUrl(job) ? 'btn-stipend-disabled' : ''}`}
-                      disabled={isApplied(job) && !hasRedirectUrl(job)}
-                      style={isApplied(job) && !hasRedirectUrl(job) ? { opacity: 0.7, cursor: 'not-allowed', backgroundColor: '#1e293b' } : {}}
+                    <Link
+                      href={`/jobs/${job._id || job.adzunaId}`}
+                      className="btn-apply-job"
+                      style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                     >
-                      {isApplied(job) && !hasRedirectUrl(job) ? (
-                        <span>Applied ✓</span>
-                      ) : hasRedirectUrl(job) ? (
-                        <>
-                          <span>{isApplied(job) ? 'Visit Official Portal' : 'Apply on Official Portal'}</span> <ExternalLink size={14} />
-                        </>
-                      ) : (
-                        <span>{isApplied(job) ? 'Applied ✓' : 'Apply Now'}</span>
-                      )}
-                    </button>
+                      <span>View Details & Apply</span>
+                      <ExternalLink size={14} />
+                    </Link>
                   </div>
                 </div>
               ))}

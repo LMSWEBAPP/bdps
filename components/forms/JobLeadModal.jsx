@@ -298,7 +298,7 @@ export default function JobLeadModal({ job, isOpen, onClose, onSuccess }) {
               <span>Connecting to Official Portal...</span>
             ) : (
               <>
-                <span>Submit & Apply on Official Portal</span>
+                <span>Submit & Apply Now</span>
                 <ArrowRight size={16} />
               </>
             )}

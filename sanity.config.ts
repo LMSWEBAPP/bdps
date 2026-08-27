@@ -9,7 +9,6 @@ import { schemaTypes } from './sanity/schemas';
 import { projectId, dataset } from './lib/sanity.client';
 import LeadExportComponent from './sanity/tools/LeadExportComponent';
 import LeadsSpreadsheetComponent from './sanity/tools/LeadsSpreadsheetComponent';
-import JobSyncComponent from './sanity/tools/JobSyncComponent';
 import CertificateImportTool from './sanity/tools/CertificateImportTool';
 import SeedContentTool from './sanity/tools/SeedContentTool';
 
@@ -36,12 +35,6 @@ const leadExportTool: Tool = {
   component: LeadExportComponent,
 };
 
-const jobSyncTool: Tool = {
-  name: 'job-sync',
-  title: 'Sync Indian Jobs',
-  icon: RefreshIcon,
-  component: JobSyncComponent,
-};
 
 const certificateImportTool: Tool = {
   name: 'certificate-import',
@@ -171,7 +164,7 @@ export default defineConfig({
     }),
   ],
 
-  tools: (prev) => [leadsSpreadsheetTool, leadExportTool, jobSyncTool, certificateImportTool, seedContentTool, ...prev],
+  tools: (prev) => [...prev, leadsSpreadsheetTool, leadExportTool, certificateImportTool, seedContentTool],
 
   schema: {
     types: schemaTypes,
