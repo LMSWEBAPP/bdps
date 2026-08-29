@@ -1,4 +1,4 @@
-import { getSanityCourses } from '@/lib/sanity.client';
+import { getSanityCourses, getSanityBlogPosts } from '@/lib/sanity.client';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 3600; // revalidate every 1 hour
@@ -20,6 +20,12 @@ export default async function sitemap() {
       lastModified: currentDate,
       changeFrequency: 'daily',
       priority: 0.9,
+    },
+    {
+      url: `${siteUrl}/blog`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 0.85,
     },
     {
       url: `${siteUrl}/about`,
@@ -63,5 +69,21 @@ export default async function sitemap() {
     console.error('Error generating dynamic course sitemap:', err);
   }
 
-  return [...staticRoutes, ...courseRoutes];
+  // Dynamic blog routes from Sanity CMS
+  let blogRoutes = [];
+  try {
+    const posts = await getSanityBlogPosts();
+    if (Array.isArray(posts) && posts.length > 0) {
+      blogRoutes = posts.map((post) => ({
+        url: `${siteUrl}/blog/${post.slug}`,
+        lastModified: currentDate,
+        changeFrequency: 'weekly',
+        priority: 0.8,
+      }));
+    }
+  } catch (err) {
+    console.error('Error generating dynamic blog sitemap:', err);
+  }
+
+  return [...staticRoutes, ...courseRoutes, ...blogRoutes];
 }

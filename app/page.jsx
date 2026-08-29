@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
+import BlogCarousel from '@/components/BlogCarousel';
 import RatingStars from '@/components/RatingStars';
 import BDPSLoadingScreen from '@/components/BDPSLoadingScreen';
 import CourseCard from '@/components/CourseCard';
@@ -641,6 +642,8 @@ export default function VisitorHomepage() {
           </div>
         </div>
       </section>
+
+      <BlogCarousel />
 
       {/* Section 7: Student Testimonials (Manual Control Slider) */}
       {testimonials.length > 0 && (

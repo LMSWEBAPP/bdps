@@ -14,6 +14,8 @@ import { aboutPageSchema } from './aboutPage';
 import { contactPageSchema } from './contactPage';
 import { testimonialSchema } from './testimonial';
 
+import { blogSchema } from './blog';
+
 export const schemaTypes = [
   // Global & Page Singletons
   siteSettingsSchema,
@@ -24,6 +26,7 @@ export const schemaTypes = [
   // Collections & Catalog
   courseCategorySchema,
   courseSchema,
+  blogSchema,
   testimonialSchema,
   heroSlideSchema,
   popupAdSchema,

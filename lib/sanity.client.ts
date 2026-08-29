@@ -17,11 +17,14 @@ const builder = imageUrlBuilder(sanityClient);
 /**
  * Optimizes any Sanity CDN image URL to modern WebP/AVIF format with width and quality constraints
  */
-export function optimizeSanityImageUrl(url: string | undefined | null, width = 800, quality = 80): string {
+export function optimizeSanityImageUrl(url: string | undefined | null, width = 800, quality = 75): string {
   if (!url) return '';
+  if (url.includes('images.unsplash.com')) {
+    if (url.includes('auto=format')) return url;
+    return `${url}&auto=format&fit=crop&w=${width}&q=${quality}&fm=webp`;
+  }
   if (!url.includes('cdn.sanity.io')) return url;
   const separator = url.includes('?') ? '&' : '?';
-  // If params already exist, don't double append
   if (url.includes('auto=format')) return url;
   return `${url}${separator}auto=format&fit=max&w=${width}&q=${quality}`;
 }
@@ -307,3 +310,62 @@ export async function getSanityTestimonials() {
     return [];
   }
 }
+
+export async function getSanityBlogPosts() {
+  try {
+    const query = `*[_type == "blog" && !(_id in path("drafts.**"))] | order(publishedAt desc, _createdAt desc) {
+      "_id": _id,
+      title,
+      "slug": slug.current,
+      publishedAt,
+      category,
+      author,
+      readTime,
+      excerpt,
+      content,
+      isFeatured,
+      "coverImage": coverImage.asset->url,
+      seoTitle,
+      seoDescription
+    }`;
+    const posts = await sanityClient.fetch(query, {}, { next: { revalidate: 60 } });
+    if (!Array.isArray(posts)) return [];
+    return posts.map((post: any) => ({
+      ...post,
+      coverImage: optimizeSanityImageUrl(post.coverImage, 600, 75),
+    }));
+  } catch (error) {
+    console.error('Error fetching blog posts from Sanity:', error);
+    return [];
+  }
+}
+
+export async function getSanityBlogPostBySlug(slug: string) {
+  try {
+    const query = `*[_type == "blog" && !(_id in path("drafts.**")) && slug.current == $slug][0] {
+      "_id": _id,
+      title,
+      "slug": slug.current,
+      publishedAt,
+      category,
+      author,
+      readTime,
+      excerpt,
+      content,
+      isFeatured,
+      "coverImage": coverImage.asset->url,
+      seoTitle,
+      seoDescription
+    }`;
+    const post = await sanityClient.fetch(query, { slug }, { next: { revalidate: 60 } });
+    if (!post) return null;
+    return {
+      ...post,
+      coverImage: optimizeSanityImageUrl(post.coverImage, 900, 80),
+    };
+  } catch (error) {
+    console.error(`Error fetching blog post "${slug}" from Sanity:`, error);
+    return null;
+  }
+}
+
