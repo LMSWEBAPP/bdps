@@ -112,13 +112,6 @@ const jsonLdSchema = {
         },
       ],
       priceRange: '₹₹',
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: '5.0',
-        bestRating: '5',
-        ratingCount: '1200',
-        reviewCount: '1200',
-      },
       sameAs: [
         'https://facebook.com/bdpscomputers',
         'https://instagram.com/bdpscomputers',
