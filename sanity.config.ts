@@ -11,12 +11,14 @@ import LeadExportComponent from './sanity/tools/LeadExportComponent';
 import LeadsSpreadsheetComponent from './sanity/tools/LeadsSpreadsheetComponent';
 import CertificateImportTool from './sanity/tools/CertificateImportTool';
 import SeedContentTool from './sanity/tools/SeedContentTool';
+import GoogleAnalyticsTool from './sanity/tools/GoogleAnalyticsTool';
+import { ChartIcon } from '@sanity/icons';
 
 const SINGLETON_TYPES = new Set(['siteSettings', 'homePage', 'aboutPage', 'contactPage']);
 
 const leadsSpreadsheetTool: Tool = {
   name: 'leads-spreadsheet',
-  title: '📊 Leads Spreadsheet (Excel View)',
+  title: '📊 Excel View & Bulk Delete',
   icon: UsersIcon,
   component: LeadsSpreadsheetComponent,
 };
@@ -41,6 +43,13 @@ const certificateImportTool: Tool = {
   title: 'Import Certificates (CSV)',
   icon: PublishIcon,
   component: CertificateImportTool,
+};
+
+const googleAnalyticsTool: Tool = {
+  name: 'google-analytics',
+  title: '📈 Website Analytics',
+  icon: ChartIcon,
+  component: GoogleAnalyticsTool,
 };
 
 export default defineConfig({
@@ -176,7 +185,7 @@ export default defineConfig({
     }),
   ],
 
-  tools: (prev) => [...prev, leadsSpreadsheetTool, leadExportTool, certificateImportTool, seedContentTool],
+  tools: (prev) => [...prev, googleAnalyticsTool, leadsSpreadsheetTool, leadExportTool, certificateImportTool, seedContentTool],
 
   schema: {
     types: schemaTypes,

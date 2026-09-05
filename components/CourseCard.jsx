@@ -102,15 +102,7 @@ export default function CourseCard({ course, showSubtitle = false }) {
           <span className="catalog-badge-fee">₹{course.fee}</span>
         )}
 
-        <button
-          onClick={handleShare}
-          className={`catalog-share-overlay-btn ${copied ? 'copied' : ''}`}
-          title={copied ? 'Link Copied!' : 'Share Course'}
-          aria-label={`Share ${course.title} course`}
-        >
-          {copied ? <Check size={15} /> : <Share2 size={15} />}
-          {copied && <span className="share-toast-pop">Copied!</span>}
-        </button>
+
       </div>
 
       <div className="catalog-card-body">

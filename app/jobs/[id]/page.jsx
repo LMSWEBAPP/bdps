@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { 
   Briefcase, Building2, MapPin, Calendar, IndianRupee, 
   ArrowLeft, ExternalLink, CheckCircle2, ShieldCheck, 
-  Clock, Award, Layers, Sparkles
+  Clock, Award, Layers, Sparkles, Share2, Check
 } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
@@ -17,6 +17,7 @@ export default function JobDetailPage({ params }) {
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [copied, setCopied] = useState(false);
   const [jobModalOpen, setJobModalOpen] = useState(false);
   const [appliedJobIds, setAppliedJobIds] = useState([]);
 
@@ -80,6 +81,35 @@ export default function JobDetailPage({ params }) {
   const isApplied = Boolean(
     job && (appliedJobIds.includes(job._id) || (job.adzunaId && appliedJobIds.includes(job.adzunaId)))
   );
+
+  const handleShare = async () => {
+    if (!job) return;
+    const fullUrl = typeof window !== 'undefined' ? window.location.href : `/jobs/${job._id}`;
+    const shareData = {
+      title: `${job.title} at ${job.company || 'BDPS Partner'}`,
+      text: `Check out this job opening for ${job.title} at ${job.company || 'BDPS Computer Education'}!`,
+      url: fullUrl,
+    };
+
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        // Fallback
+      }
+    }
+
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(fullUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      } catch (err) {
+        console.error('Failed to copy job URL:', err);
+      }
+    }
+  };
 
   const handleApplyClick = () => {
     if (typeof window !== 'undefined' && job) {
@@ -265,6 +295,18 @@ export default function JobDetailPage({ params }) {
                   ) : (
                     'Apply Now'
                   )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleShare}
+                  className={`btn-share-job-text ${copied ? 'copied' : ''}`}
+                  style={{ width: '100%', marginTop: '12px', justifyContent: 'center' }}
+                  title={copied ? 'Link Copied!' : 'Share Job Opening'}
+                >
+                  {copied ? <Check size={16} /> : <Share2 size={16} />}
+                  <span>{copied ? 'Link Copied!' : 'Share Job Opening'}</span>
+                  {copied && <span className="share-toast-pop">Copied!</span>}
                 </button>
 
                 <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#64748B' }}>

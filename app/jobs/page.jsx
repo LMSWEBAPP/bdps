@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Briefcase, Search, MapPin, Building2, Calendar, 
-  ExternalLink, Sparkles, Filter, IndianRupee, Layers, GraduationCap, ShieldCheck, CheckCircle2
+  ExternalLink, Sparkles, Filter, IndianRupee, Layers, GraduationCap, ShieldCheck, CheckCircle2, Share2, Check
 } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
@@ -23,6 +23,7 @@ export default function JobsPage() {
   const [selectedJobForModal, setSelectedJobForModal] = useState(null);
   const [siteSettings, setSiteSettings] = useState(null);
 
+  const [copiedId, setCopiedId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const JOBS_PER_PAGE = 6;
 
@@ -95,6 +96,38 @@ export default function JobsPage() {
   };
 
   const [appliedJobIds, setAppliedJobIds] = useState([]);
+
+  const handleShareJob = async (e, job) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const id = job._id || job.adzunaId || job.id;
+    const jobUrl = `/jobs/${id}`;
+    const fullUrl = typeof window !== 'undefined' ? `${window.location.origin}${jobUrl}` : jobUrl;
+    const shareData = {
+      title: `${job.title} at ${job.company || 'BDPS Partner'}`,
+      text: `Explore this job vacancy for ${job.title} at ${job.company || 'BDPS Computer Education'}!`,
+      url: fullUrl,
+    };
+
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        // Fallback to clipboard if cancelled
+      }
+    }
+
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(fullUrl);
+        setCopiedId(id);
+        setTimeout(() => setCopiedId(null), 2500);
+      } catch (err) {
+        console.error('Failed to copy job URL:', err);
+      }
+    }
+  };
 
   const syncAppliedJobsFromStorage = () => {
     if (typeof window !== 'undefined') {
@@ -363,32 +396,46 @@ export default function JobsPage() {
                     {job.description ? `${job.description.slice(0, 160)}...` : 'Comprehensive role details available on application portal.'}
                   </p>
 
-                  <div className="job-card-footer">
+                  <div className="job-card-footer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px', flexWrap: 'wrap' }}>
                     <span className="job-posted-by-badge">
                       <ShieldCheck size={13} className="posted-badge-icon" />
                       <span>{job.isCustom ? 'BDPS Custom Job' : 'Posted by BDPS'}</span>
                     </span>
-                    {isApplied(job) && !hasRedirectUrl(job) ? (
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <button
                         type="button"
-                        className="btn-apply-job btn-job-applied"
-                        disabled
-                        style={{ opacity: 0.7, cursor: 'not-allowed' }}
+                        onClick={(e) => handleShareJob(e, job)}
+                        className={`btn-share-job ${copiedId === (job._id || job.adzunaId) ? 'copied' : ''}`}
+                        title={copiedId === (job._id || job.adzunaId) ? 'Link Copied!' : 'Share Job Opening'}
+                        aria-label={`Share ${job.title} job posting`}
                       >
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                          <CheckCircle2 size={15} /> Applied
-                        </span>
+                        {copiedId === (job._id || job.adzunaId) ? <Check size={15} /> : <Share2 size={15} />}
+                        {copiedId === (job._id || job.adzunaId) && <span className="share-toast-pop">Copied!</span>}
                       </button>
-                    ) : (
-                      <Link
-                        href={`/jobs/${job._id || job.adzunaId}`}
-                        className="btn-apply-job"
-                        style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
-                      >
-                        <span>View Details & Apply</span>
-                        <ExternalLink size={14} />
-                      </Link>
-                    )}
+
+                      {isApplied(job) && !hasRedirectUrl(job) ? (
+                        <button
+                          type="button"
+                          className="btn-apply-job btn-job-applied"
+                          disabled
+                          style={{ opacity: 0.7, cursor: 'not-allowed' }}
+                        >
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                            <CheckCircle2 size={15} /> Applied
+                          </span>
+                        </button>
+                      ) : (
+                        <Link
+                          href={`/jobs/${job._id || job.adzunaId}`}
+                          className="btn-apply-job"
+                          style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                        >
+                          <span>View Details & Apply</span>
+                          <ExternalLink size={14} />
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

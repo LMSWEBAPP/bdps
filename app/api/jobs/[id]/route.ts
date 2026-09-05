@@ -13,7 +13,7 @@ export async function GET(
       return NextResponse.json({ success: false, message: 'Job ID is required' }, { status: 400 });
     }
 
-    const query = `*[_type == "jobPosting" && (_id == $id || adzunaId == $id)][0] {
+    const query = `*[_type == "jobPosting" && _id == $id && !defined(adzunaId) && !(_id match "job_adzuna_*")][0] {
       _id,
       adzunaId,
       isCustom,
@@ -37,7 +37,7 @@ export async function GET(
 
     const job = await sanityClient.fetch(query, { id: jobId }, { cache: 'no-store' });
 
-    if (!job) {
+    if (!job || (job.redirectUrl && job.redirectUrl.includes('adzuna.in'))) {
       return NextResponse.json({ success: false, message: 'Job posting not found' }, { status: 404 });
     }
 

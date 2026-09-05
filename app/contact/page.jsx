@@ -2,9 +2,10 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { MapPin, Phone, Mail, Send, CheckCircle2, Clock, Handshake } from 'lucide-react';
+import { MapPin, Phone, Mail, Send, CheckCircle2, Clock, Handshake, X, FileText } from 'lucide-react';
 import VisitorHeader from '@/components/VisitorHeader';
 import VisitorFooter from '@/components/VisitorFooter';
+import { trackLeadEvent } from '@/lib/gtag';
 
 const DEFAULT_BRANCH = {
   name: 'Kakinada Campus (Corporate HQ)',
@@ -31,6 +32,111 @@ const DEFAULT_COLLAB_TYPES = [
   'Lab & Capstone Project Sponsorship',
   'Guest Lecture & IEEE Workshops'
 ];
+
+function ProjectDetailsModal({ project, onClose, onPartnerClick }) {
+  if (!project) return null;
+
+  return (
+    <div className="project-modal-backdrop" onClick={onClose}>
+      <div className="project-modal-card" onClick={(e) => e.stopPropagation()}>
+        <div className="project-modal-header">
+          <div>
+            <div className="project-modal-badges">
+              <span className="it-project-category-badge">{project.category || 'IT Solutions'}</span>
+              <span className={`it-project-status-badge ${project.status?.toLowerCase().includes('open') ? 'status-open' : 'status-dev'}`}>
+                {project.status || 'Open for Collaboration'}
+              </span>
+            </div>
+            <h2 className="project-modal-title">{project.title}</h2>
+          </div>
+          <button type="button" className="project-modal-close" onClick={onClose} aria-label="Close modal">
+            <X size={18} />
+          </button>
+        </div>
+
+        <div className="project-modal-body">
+          <h4 className="project-modal-subtitle">Project Overview & Full Scope</h4>
+          <p className="project-modal-full-desc">{project.description}</p>
+
+          {Array.isArray(project.techStack) && project.techStack.length > 0 && (
+            <div style={{ marginTop: '22px' }}>
+              <h4 className="project-modal-subtitle">Recommended Tech Stack</h4>
+              <div className="it-project-tech-row">
+                {project.techStack.map((tech, tIdx) => (
+                  <span key={tIdx} className="it-project-tech-tag">{tech}</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="project-modal-footer">
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              onPartnerClick(project);
+            }}
+            className="btn-collab-project"
+          >
+            <Handshake size={16} /> Partner on this Project
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProjectCardItem({ project, onOpenModal, onPartnerClick }) {
+  const description = project.description || '';
+  const isLong = description.length > 180;
+  const shortSnippet = isLong ? `${description.slice(0, 180)}...` : description;
+
+  return (
+    <div className="it-project-card">
+      <div className="it-project-header">
+        <span className="it-project-category-badge">{project.category || 'IT Solutions'}</span>
+        <span className={`it-project-status-badge ${project.status?.toLowerCase().includes('open') ? 'status-open' : 'status-dev'}`}>
+          {project.status || 'Open for Collaboration'}
+        </span>
+      </div>
+
+      <h3 className="it-project-title">{project.title}</h3>
+
+      <div className="it-project-desc-wrapper">
+        <p className="it-project-desc it-project-desc-snippet">
+          {shortSnippet}
+        </p>
+        <button
+          type="button"
+          onClick={() => onOpenModal(project)}
+          className="btn-open-details-modal"
+        >
+          <FileText size={13} /> View Full Project Details ➔
+        </button>
+      </div>
+
+      {Array.isArray(project.techStack) && project.techStack.length > 0 && (
+        <div className="it-project-tech-row">
+          {project.techStack.slice(0, 4).map((tech, tIdx) => (
+            <span key={tIdx} className="it-project-tech-tag">{tech}</span>
+          ))}
+          {project.techStack.length > 4 && (
+            <span className="it-project-tech-tag">+{project.techStack.length - 4} more</span>
+          )}
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => onPartnerClick(project)}
+        className="btn-collab-project"
+      >
+        <Handshake size={15} /> Partner on this Project
+      </button>
+    </div>
+  );
+}
 
 function ContactFormContent() {
   const searchParams = useSearchParams();
@@ -80,6 +186,7 @@ function ContactFormContent() {
     message: ''
   });
 
+  const [activeProjectModal, setActiveProjectModal] = useState(null);
   const [status, setStatus] = useState({
     loading: false,
     success: false,
@@ -111,6 +218,7 @@ function ContactFormContent() {
       const data = await res.json();
       if (data.success) {
         setStatus({ loading: false, success: true, error: null });
+        trackLeadEvent('contact_form_student', { course: studentForm.course });
         setStudentForm({ name: '', email: '', phone: '', course: studentCourses[0] || 'General Counseling', message: '' });
       } else {
         setStatus({ loading: false, success: false, error: data.message || 'Submission failed.' });
@@ -145,6 +253,7 @@ function ContactFormContent() {
       const data = await res.json();
       if (data.success) {
         setStatus({ loading: false, success: true, error: null });
+        trackLeadEvent('contact_form_collaboration', { collabType: collabForm.collabType });
         setCollabForm({ companyName: '', contactName: '', email: '', phone: '', collabType: collabTypes[0] || 'Campus Placement / Talent Recruitment', message: '' });
       } else {
         setStatus({ loading: false, success: false, error: data.message || 'Submission failed.' });
@@ -432,43 +541,38 @@ function ContactFormContent() {
 
             <div className="it-projects-grid">
               {(contactData.upcomingITProjects || []).map((project, idx) => (
-                <div key={idx} className="it-project-card">
-                  <div className="it-project-header">
-                    <span className="it-project-category-badge">{project.category || 'IT Solutions'}</span>
-                    <span className={`it-project-status-badge ${project.status?.toLowerCase().includes('open') ? 'status-open' : 'status-dev'}`}>
-                      {project.status || 'Open for Collaboration'}
-                    </span>
-                  </div>
-
-                  <h3 className="it-project-title">{project.title}</h3>
-                  <p className="it-project-desc">{project.description}</p>
-
-                  {Array.isArray(project.techStack) && project.techStack.length > 0 && (
-                    <div className="it-project-tech-row">
-                      {project.techStack.map((tech, tIdx) => (
-                        <span key={tIdx} className="it-project-tech-tag">{tech}</span>
-                      ))}
-                    </div>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCollabForm(prev => ({
-                        ...prev,
-                        collabType: 'IT Solutions & Enterprise Software',
-                        message: `Inquiring regarding partnership for project: ${project.title}`
-                      }));
-                      window.scrollTo({ top: 300, behavior: 'smooth' });
-                    }}
-                    className="btn-collab-project"
-                  >
-                    <Handshake size={15} /> Partner on this Project
-                  </button>
-                </div>
+                <ProjectCardItem
+                  key={idx}
+                  project={project}
+                  onOpenModal={(proj) => setActiveProjectModal(proj)}
+                  onPartnerClick={(proj) => {
+                    setCollabForm(prev => ({
+                      ...prev,
+                      collabType: 'IT Solutions & Enterprise Software',
+                      message: `Inquiring regarding partnership for project: ${proj.title}`
+                    }));
+                    window.scrollTo({ top: 300, behavior: 'smooth' });
+                  }}
+                />
               ))}
             </div>
           </section>
+        )}
+
+        {/* Project Details Popup Modal */}
+        {activeProjectModal && (
+          <ProjectDetailsModal
+            project={activeProjectModal}
+            onClose={() => setActiveProjectModal(null)}
+            onPartnerClick={(proj) => {
+              setCollabForm(prev => ({
+                ...prev,
+                collabType: 'IT Solutions & Enterprise Software',
+                message: `Inquiring regarding partnership for project: ${proj.title}`
+              }));
+              window.scrollTo({ top: 300, behavior: 'smooth' });
+            }}
+          />
         )}
       </main>
 
